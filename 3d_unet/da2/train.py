@@ -41,6 +41,7 @@ def train(net, trainloader, optimizer, epoch):
         loss.backward()
         optimizer.step()
         losses.update(loss.item(), outputs.size(0))
+        print(f'debug: {volume_batch.sum()}')
         print(f'train epoch {epoch} batch {i_batch} loss {loss.item():.4f}')
     return losses.avg
 

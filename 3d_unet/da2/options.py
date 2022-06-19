@@ -2,6 +2,7 @@ import os
 import argparse
 from torchvision import transforms
 from dataloaders.data_kit import RandomCrop, CenterCrop, ToTensor
+from dataloaders.get_transform import get_transform
 
 
 class Options:
@@ -17,7 +18,7 @@ class Options:
         """ Parse the options, replace the default value if there is a new input """
         parser = argparse.ArgumentParser(description='')
         parser.add_argument('--dataset', type=str, default='kit19', help='dataset name')
-        parser.add_argument('--task', type=str, default='baseline', help='baseline, cutout, cutmix, cowout, cowmix, insmix')
+        parser.add_argument('--task', type=str, default='da2', help='')
         parser.add_argument('--fold', type=int, default=0, help='0-4, five fold cross validation')
         parser.add_argument('--pretrained', type=bool, default=False, help='True or False')
         parser.add_argument('--in-c', type=int, default=1, help='input channel')
@@ -42,7 +43,7 @@ class Options:
         self.dataset = args.dataset
         self.task = args.task
         self.fold = args.fold
-        self.root_dir = f'/home/ylindq/Data/KIT-19/yeung/preprocess'
+        self.root_dir = f'/home/ylindq/Data/KIT-19/preprocess'
         self.result_dir = f'/home/ylindq/Experiment/KIT19/{self.dataset}/'
         self.model['pretrained'] = args.pretrained
         self.model['in_c'] = args.in_c
@@ -77,20 +78,8 @@ class Options:
         self.post['min_area'] = 20  # minimum area for an object
 
         # define data transforms for training
-        self.transform['train'] = transforms.Compose([
-            RandomCrop(self.model['input_size']),
-            ToTensor()
-        ])
-
-        self.transform['val'] = transforms.Compose([
-            CenterCrop(self.model['input_size']),
-            ToTensor()
-        ])
-
-        self.transform['test'] = transforms.Compose([
-            CenterCrop(self.model['input_size']),
-            ToTensor()
-        ])
+        self.transform['train'] = get_transform(self, 'train')
+        self.transform['val'] = get_transform(self, 'val')
 
         if not os.path.exists(self.train['save_dir']):
             os.makedirs(self.train['save_dir'], exist_ok=True)

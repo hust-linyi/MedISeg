@@ -11,9 +11,8 @@ class DataFolder(Dataset):
     """ Kit19 Dataset """
     def __init__(self, root_dir, phase, fold, data_transform=None):
         self.root_dir = root_dir
-        self.data_transform = data_transform
-        self.image_list = [item.replace('','') for item in self.root_dir if item.endswith('_image.npy')]
-
+        self.transform = data_transform
+        self.image_list = [item.replace('_image.npy','') for item in os.listdir(self.root_dir) if item.endswith('_image.npy')]
         valnum = int(len(self.image_list) * 0.2)
         valstart = fold * valnum
         valend = (fold + 1) * valnum
@@ -33,6 +32,8 @@ class DataFolder(Dataset):
         image_name = self.image_list[idx]
         image = np.load(os.path.join(self.root_dir, image_name + "_image.npy"))
         label = np.load(os.path.join(self.root_dir, image_name + "_label.npy"))
+        image = np.squeeze(image)
+        label = np.squeeze(label)
         sample = {'image': image, 'label': label}
         if self.transform:
             sample = self.transform(sample)
@@ -214,48 +215,3 @@ class ToTensor(object):
         # label = self.to_onehot(label, 11)
         return {'image': torch.from_numpy(image), 'label': torch.from_numpy(label)}
 
-# class TwoStreamBatchSampler(Sampler):
-#     """Iterate two sets of indices
-
-#     An 'epoch' is one iteration through the primary indices.
-#     During the epoch, the secondary indices are iterated through
-#     as many times as needed.
-#     """
-#     def __init__(self, primary_indices, secondary_indices, batch_size, secondary_batch_size):
-#         self.primary_indices = primary_indices
-#         self.secondary_indices = secondary_indices
-#         self.secondary_batch_size = secondary_batch_size
-#         self.primary_batch_size = batch_size - secondary_batch_size
-
-#         assert len(self.primary_indices) >= self.primary_batch_size > 0
-#         assert len(self.secondary_indices) >= self.secondary_batch_size > 0
-
-#     def __iter__(self):
-#         primary_iter = iterate_once(self.primary_indices)
-#         secondary_iter = iterate_eternally(self.secondary_indices)
-#         return (
-#             primary_batch + secondary_batch
-#             for (primary_batch, secondary_batch)
-#             in zip(grouper(primary_iter, self.primary_batch_size),
-#                     grouper(secondary_iter, self.secondary_batch_size))
-#         )
-
-#     def __len__(self):
-#         return len(self.primary_indices) // self.primary_batch_size
-
-# def iterate_once(iterable):
-#     return np.random.permutation(iterable)
-
-
-# def iterate_eternally(indices):
-#     def infinite_shuffles():
-#         while True:
-#             yield np.random.permutation(indices)
-#     return itertools.chain.from_iterable(infinite_shuffles())
-
-
-# def grouper(iterable, n):
-#     "Collect data into fixed-length chunks or blocks"
-#     # grouper('ABCDEFG', 3) --> ABC DEF"
-#     args = [iter(iterable)] * n
-#     return zip(*args)
