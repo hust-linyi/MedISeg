@@ -1,12 +1,8 @@
-from ctypes import resize
 import os
-import numpy as np
 import argparse
-import albumentations as A
-from albumentations.pytorch import ToTensorV2
 from torchvision import transforms
-from dataloaders.data_temporalBone import CADA, RandomCrop, SelectedCrop, CenterCrop, \
-                RandomRotFlip, RandomMirroring, RandomNoise, GammaAdjust, ToTensor
+from dataloaders.data_kit import RandomCrop, CenterCrop, ToTensor
+from dataloaders.get_transform import get_transform
 
 
 class Options:
@@ -22,7 +18,7 @@ class Options:
         """ Parse the options, replace the default value if there is a new input """
         parser = argparse.ArgumentParser(description='')
         parser.add_argument('--dataset', type=str, default='kit19', help='dataset name')
-        parser.add_argument('--task', type=str, default='baseline', help='baseline, cutout, cutmix, cowout, cowmix, insmix')
+        parser.add_argument('--task', type=str, default='ensembleinit', help='')
         parser.add_argument('--fold', type=int, default=0, help='0-4, five fold cross validation')
         parser.add_argument('--pretrained', type=bool, default=False, help='True or False')
         parser.add_argument('--in-c', type=int, default=1, help='input channel')
@@ -30,13 +26,14 @@ class Options:
         parser.add_argument('--train-train-epochs', type=int, default=100, help='number of training epochs')
         parser.add_argument('--train-batch-size', type=int, default=2, help='batch size')
         parser.add_argument('--train-checkpoint-freq', type=int, default=20, help='epoch to save checkpoints')
-        parser.add_argument('--train-lr', type=float, default=3e-4, help='initial learning rate')
+        parser.add_argument('--train-lr', type=float, default=0.01, help='initial learning rate')
         parser.add_argument('--train-weight-decay', type=float, default=1e-4, help='weight decay')
         parser.add_argument('--train-workers', type=int, default=16, help='number of workers to load images')
         parser.add_argument('--train-gpus', type=list, default=[0, ], help='select gpu devices')
         parser.add_argument('--train-start-epoch', type=int, default=0, help='start epoch')
         parser.add_argument('--train-checkpoint', type=str, default='', help='checkpoint')
         parser.add_argument('--train-norm', type=str, default='bn', help='bn or in')
+        parser.add_argument('--train-seed', type=str, default=2019, help='bn or in')
         parser.add_argument('--test-test-epoch', type=int, default=999, help='test epoch')
         parser.add_argument('--test-gpus', type=list, default=[0, ], help='select gpu devices')
         parser.add_argument('--test-save-flag', type=bool, default=True, help='True or False')
@@ -46,15 +43,14 @@ class Options:
         self.dataset = args.dataset
         self.task = args.task
         self.fold = args.fold
-        self.root_dir = f'/home/ylindq/Data/KIT19/'
+        self.root_dir = f'/home/ylindq/Data/KIT-19/yeung/preprocess'
         self.result_dir = f'/home/ylindq/Experiment/KIT19/{self.dataset}/'
-        self.model['name'] = args.name
         self.model['pretrained'] = args.pretrained
         self.model['in_c'] = args.in_c
         self.model['input_size'] = args.patch_size
 
         # --- training params --- #
-        self.train['save_dir'] = '{:s}/{:s}/fold_{:d}'.format(self.result_dir, self.task, self.fold)  # path to save results
+        self.train['save_dir'] = '{:s}/{:s}/fold_{:d}/{:d}'.format(self.result_dir, self.task, self.fold, self.train['seed'])  # path to save results
         self.train['train_epochs'] = args.train_train_epochs
         self.train['batch_size'] = args.train_batch_size
         self.train['checkpoint_freq'] = args.train_checkpoint_freq
@@ -63,6 +59,7 @@ class Options:
         self.train['workers'] = args.train_workers
         self.train['gpus'] = args.train_gpus
         self.train['norm'] = args.train_norm
+        self.train['seed'] = args.train_seed
 
         # --- resume training --- #
         self.train['start_epoch'] = args.train_start_epoch
@@ -73,8 +70,6 @@ class Options:
         self.test['gpus'] = args.test_gpus
         self.test['save_flag'] = args.test_save_flag
         self.test['patch_size'] = args.test_patch_size
-        self.test['overlap'] = args.test_overlap
-        self.test['batch_size'] = args.test_batch_size
         self.test['save_dir'] = '{:s}/test_results'.format(self.train['save_dir'])
         self.test['checkpoint_dir'] = '{:s}/checkpoints/'.format(self.train['save_dir'])
         self.test['model_path'] = '{:s}/checkpoint_{:d}.pth.tar'.format(self.test['checkpoint_dir'], self.test['test_epoch'])
@@ -83,20 +78,8 @@ class Options:
         self.post['min_area'] = 20  # minimum area for an object
 
         # define data transforms for training
-        self.transform['train'] = transforms.Compose([
-            RandomCrop(self.model['input_size']),
-            ToTensor()
-        ])
-
-        self.transform['val'] = A.Compose([
-            CenterCrop(self.model['input_size']),
-            ToTensor()
-        ])
-
-        self.transform['test'] = A.Compose([
-            CenterCrop(self.model['input_size']),
-            ToTensor()
-        ])
+        self.transform['train'] = get_transform(self, 'train')
+        self.transform['val'] = get_transform(self, 'val')
 
         if not os.path.exists(self.train['save_dir']):
             os.makedirs(self.train['save_dir'], exist_ok=True)

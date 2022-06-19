@@ -1,29 +1,15 @@
-from inspect import istraceback
 import os
-import sys
 from tqdm import tqdm
-# from tensorboardX import SummaryWriter
 import shutil
-import argparse
 import logging
-import time
 import random
 import numpy as np
-
 import torch
 import torch.optim as optim
-from torchvision import transforms
-import torch.nn.functional as F
-import torch.backends.cudnn as cudnn
 from torch.utils.data import DataLoader
-from torchvision.utils import make_grid
-
-from networks.vnet import VNet
 from networks.unet import UNet3D
-from utils.losses import dice_loss, BCEDiceLoss, dice_loss_multiclass
 from utils.util import AverageMeter
-from dataloaders.data_kit import DataFolder, RandomCrop, SelectedCrop, CenterCrop, \
-                RandomRotFlip, RandomMirroring, RandomNoise, GammaAdjust, ToTensor
+from dataloaders.data_kit import DataFolder
 from options import Options
 from rich.logging import RichHandler
 
@@ -48,7 +34,6 @@ def train(net, trainloader, optimizer, epoch):
         volume_batch, label_batch = sampled_batch['image'], sampled_batch['label']
         volume_batch, label_batch = volume_batch.cuda(), label_batch.cuda()
         outputs = net(volume_batch)
-
         loss_ce = torch.nn.CrossEntropyLoss()(outputs, label_batch[:, 0, ...].long())
         loss = loss_ce
 
@@ -56,6 +41,8 @@ def train(net, trainloader, optimizer, epoch):
         loss.backward()
         optimizer.step()
         losses.update(loss.item(), outputs.size(0))
+        print(f'debug: {volume_batch.sum()}')
+        print(f'train epoch {epoch} batch {i_batch} loss {loss.item():.4f}')
     return losses.avg
 
 
@@ -80,11 +67,12 @@ def main():
     net = torch.nn.DataParallel(net)
     net = net.cuda()
 
-    optimizer = optim.Adam(net.parameters(), lr=opt.train['lr'], weight_decay=opt.train['weight_decay'])
+    # optimizer = optim.Adam(net.parameters(), lr=opt.train['lr'], weight_decay=opt.train['weight_decay'])
+    optimizer = optim.SGD(net.parameters(), lr=opt.train['lr'], momentum=0.9, weight_decay=opt.train['weight_decay'])
     scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, 'min')
     train_set = DataFolder(root_dir=opt.root_dir, phase='train', fold=opt.fold, data_transform=opt.transform['train'])
     train_loader = DataLoader(train_set, batch_size=opt.train['batch_size'], shuffle=True, num_workers=opt.train['workers'])
-    val_set = DataFolder(root_dir=opt.root_dir, phase='test', data_transform=opt.transform['val'], fold=opt.fold)
+    val_set = DataFolder(root_dir=opt.root_dir, phase='val', data_transform=opt.transform['val'], fold=opt.fold)
     val_loader = DataLoader(val_set, batch_size=opt.train['batch_size'], shuffle=False, drop_last=False, num_workers=opt.train['workers'])
 
     num_epoch = opt.train['train_epochs']
@@ -100,11 +88,12 @@ def main():
         train_loss = train(net, train_loader, optimizer, epoch)
         val_loss = val(net, val_loader)
         scheduler.step(val_loss)
-        logger_results.info('{:d}\t{:.4f}'.format(epoch+1, train_loss[0]))
+        logger_results.info('{:d}\t{:.4f}\t{:.4f}'.format(epoch+1, train_loss, val_loss))
 
         if val_loss<best_val_loss:
             best_val_loss = val_loss
             save_bestcheckpoint(state, opt.train['save_dir'])
+            print(f'save best checkpoint at epoch {epoch}')
         if epoch % opt.train['checkpoint_freq'] == 0:
             save_checkpoint(state, epoch, opt.train['save_dir'], True)
 

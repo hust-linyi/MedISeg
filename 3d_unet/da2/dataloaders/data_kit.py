@@ -234,8 +234,18 @@ class ToTensor(object):
 
 if __name__=='__main__':
     # test transform
-    x = np.random.rand(100, 100, 100)
-    y = np.random.rand(100, 100, 100)
-    smaple = {'image': x, 'label': y}
-    sample1 = RandomScale(scale_factor=[0.9, 1.1], p=0.5)(smaple)
+    from torchvision import transforms
+    data_dir = '/home/ylindq/Data/KIT-19/yeung/preprocess'
+    x = np.load(os.path.join(data_dir, 'case_00001_image.npy'))
+    y = np.load(os.path.join(data_dir, 'case_00001_label.npy'))
+    sample = {'image': x, 'label': y}
+
+    trans = transforms.Compose([
+            RandomScale([0.85, 1.25]),
+            RandomCrop(output_size=(96, 96, 96)),
+            RandomRotation(),
+            RandomMirroring(),
+            ToTensor()
+    ])
+    sample1 = trans(sample)
     print(sample1['image'].shape)

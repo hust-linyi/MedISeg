@@ -1,0 +1,19 @@
+# fold 0
+python train.py --fold 0 --train-gpus 0
+python test.py --fold 0 --test-gpus 0
+
+# fold 1
+python train.py --fold 1 --train-gpus 1
+python test.py --fold 1 --test-gpus 2
+
+# fold 2
+python train.py --fold 2 --train-gpus 2
+python test.py --fold 2 --test-gpus 2
+
+# fold 3
+python train.py --fold 3 --train-gpus 3
+python test.py --fold 3 --test-gpus 3
+
+# fold 4
+python train.py --fold 4 --train-gpus 4
+python test.py --fold 4 --test-gpus 4

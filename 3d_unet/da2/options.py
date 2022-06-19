@@ -43,7 +43,7 @@ class Options:
         self.dataset = args.dataset
         self.task = args.task
         self.fold = args.fold
-        self.root_dir = f'/home/ylindq/Data/KIT-19/preprocess'
+        self.root_dir = f'/home/ylindq/Data/KIT-19/yeung/preprocess'
         self.result_dir = f'/home/ylindq/Experiment/KIT19/{self.dataset}/'
         self.model['pretrained'] = args.pretrained
         self.model['in_c'] = args.in_c

@@ -5,36 +5,55 @@ from glob import glob
 from torch.utils.data import Dataset
 import itertools
 from torch.utils.data.sampler import Sampler
+from batchgenerators.augmentations.spatial_transformations import augment_resize
 
 
-class CADA(Dataset):
-    """ CADA Dataset """
-    def __init__(self, base_dir=None, split='train', transform=None,iterations = 12):
-        self.base_dir = base_dir
-        self.transform = transform
-        self.sample_list = []
-        self.iterations = iterations
-        if split=='train':
-            with open(self.base_dir+'/train.txt', 'r') as f:
-                self.image_list = f.readlines()
-        elif split == 'val':
-            with open(self.base_dir+'/val.txt', 'r') as f:
-                self.image_list = f.readlines()
-        self.image_list = [item.replace('\n','') for item in self.image_list]
-        print("total {} samples".format(len(self.image_list)))
+class DataFolder(Dataset):
+    """ Kit19 Dataset """
+    def __init__(self, root_dir, phase, fold, data_transform=None):
+        self.root_dir = root_dir
+        self.transform = data_transform
+        self.image_list = [item.replace('_image.npy','') for item in os.listdir(self.root_dir) if item.endswith('_image.npy')]
+        valnum = int(len(self.image_list) * 0.2)
+        valstart = fold * valnum
+        valend = (fold + 1) * valnum
+        self.image_list = np.concatenate([self.image_list[:valstart], self.image_list[valend:]], axis=0)
+        if phase == 'train':
+            valnum = int(len(self.image_list) * 0.1)
+            self.image_list = self.image_list[valnum:]
+        elif phase == 'val':
+            valnum = int(len(self.image_list) * 0.1)
+            self.image_list = self.image_list[:valnum]
+        print(f"total {len(self.image_list)} samples for {phase}")
 
     def __len__(self):
-        return len(self.image_list)*self.iterations 
+        return len(self.image_list)
 
     def __getitem__(self, idx):
-        image_name = self.image_list[idx % len(self.image_list)]
-        image = np.load(os.path.join(self.base_dir, image_name + "_image.npy"))
-        label = np.load(os.path.join(self.base_dir, image_name + "_label.npy"))
+        image_name = self.image_list[idx]
+        image = np.load(os.path.join(self.root_dir, image_name + "_image.npy"))
+        label = np.load(os.path.join(self.root_dir, image_name + "_label.npy"))
+        image = np.squeeze(image)
+        label = np.squeeze(label)
         sample = {'image': image, 'label': label}
         if self.transform:
             sample = self.transform(sample)
-
         return sample
+
+
+class RandomScale(object):
+    def __init__(self, scale_factor):
+        self.scale_factor = scale_factor
+    def __call__(self, sample):
+        image, label = sample['image'], sample['label']
+        scale = np.random.uniform(self.scale_factor[0], self.scale_factor[1])
+        new_shape = (int(image.shape[0] * scale), int(image.shape[1] * scale), int(image.shape[2] * scale))
+        image = np.expand_dims(image, axis=0)
+        label = np.expand_dims(label, axis=0)
+        image, label = augment_resize(image, label, new_shape)
+        image = np.squeeze(image)
+        label = np.squeeze(label)
+        return {'image': image, 'label': label}
 
 
 class SelectedCrop(object):
@@ -128,7 +147,7 @@ class RandomCrop(object):
         return {'image': image, 'label': label}
 
 
-class RandomRotFlip(object):
+class RandomRotation(object):
     """
     Crop randomly flip the dataset in a sample
     Args:
@@ -140,11 +159,9 @@ class RandomRotFlip(object):
         k = np.random.randint(0, 4)
         image = np.rot90(image, k)
         label = np.rot90(label, k)
-        axis = np.random.randint(0, 2)
-        image = np.flip(image, axis=axis).copy()
-        label = np.flip(label, axis=axis).copy()
-
         return {'image': image, 'label': label}
+
+
 class RandomMirroring(object):
     def __init__(self, axes=(0, 1, 2)):
         self.axes = axes
@@ -160,6 +177,7 @@ class RandomMirroring(object):
             image[:, :, :] = image[:, :, ::-1]
             label[:, :, :] = label[:, :, ::-1]
         return {'image': image, 'label': label}
+
 
 class RandomNoise(object):
     def __init__(self, mu=0, sigma=0.1):
@@ -212,48 +230,22 @@ class ToTensor(object):
         # label = self.to_onehot(label, 11)
         return {'image': torch.from_numpy(image), 'label': torch.from_numpy(label)}
 
-# class TwoStreamBatchSampler(Sampler):
-#     """Iterate two sets of indices
-
-#     An 'epoch' is one iteration through the primary indices.
-#     During the epoch, the secondary indices are iterated through
-#     as many times as needed.
-#     """
-#     def __init__(self, primary_indices, secondary_indices, batch_size, secondary_batch_size):
-#         self.primary_indices = primary_indices
-#         self.secondary_indices = secondary_indices
-#         self.secondary_batch_size = secondary_batch_size
-#         self.primary_batch_size = batch_size - secondary_batch_size
-
-#         assert len(self.primary_indices) >= self.primary_batch_size > 0
-#         assert len(self.secondary_indices) >= self.secondary_batch_size > 0
-
-#     def __iter__(self):
-#         primary_iter = iterate_once(self.primary_indices)
-#         secondary_iter = iterate_eternally(self.secondary_indices)
-#         return (
-#             primary_batch + secondary_batch
-#             for (primary_batch, secondary_batch)
-#             in zip(grouper(primary_iter, self.primary_batch_size),
-#                     grouper(secondary_iter, self.secondary_batch_size))
-#         )
-
-#     def __len__(self):
-#         return len(self.primary_indices) // self.primary_batch_size
-
-# def iterate_once(iterable):
-#     return np.random.permutation(iterable)
 
 
-# def iterate_eternally(indices):
-#     def infinite_shuffles():
-#         while True:
-#             yield np.random.permutation(indices)
-#     return itertools.chain.from_iterable(infinite_shuffles())
+if __name__=='__main__':
+    # test transform
+    from torchvision import transforms
+    data_dir = '/home/ylindq/Data/KIT-19/yeung/preprocess'
+    x = np.load(os.path.join(data_dir, 'case_00001_image.npy'))
+    y = np.load(os.path.join(data_dir, 'case_00001_label.npy'))
+    sample = {'image': x, 'label': y}
 
-
-# def grouper(iterable, n):
-#     "Collect data into fixed-length chunks or blocks"
-#     # grouper('ABCDEFG', 3) --> ABC DEF"
-#     args = [iter(iterable)] * n
-#     return zip(*args)
+    trans = transforms.Compose([
+            RandomScale([0.85, 1.25]),
+            RandomCrop(output_size=(96, 96, 96)),
+            RandomRotation(),
+            RandomMirroring(),
+            ToTensor()
+    ])
+    sample1 = trans(sample)
+    print(sample1['image'].shape)

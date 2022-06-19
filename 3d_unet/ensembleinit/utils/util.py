@@ -99,6 +99,27 @@ class AverageMeter(object):
         self.avg = self.sum / self.count
 
 
+class AverageMeterArray(object):
+    """ Computes and stores the average and current value """
+    def __init__(self, shape=1):
+        self.shape = shape
+        self.reset()
+
+    def reset(self):
+        self.val = np.zeros(self.shape)
+        self.avg = np.zeros(self.shape)
+        self.sum = np.zeros(self.shape)
+        self.count = 0
+
+    def update(self, val, n=1):
+        val = np.array(val)
+        assert val.shape == self.val.shape
+        self.val = val
+        self.sum += val * n
+        self.count += n
+        self.avg = self.sum / self.count
+
+
 def learning_rate_decay(optimizer, t, lr_0):
     for param_group in optimizer.param_groups:
         lr = lr_0 / np.sqrt(1 + lr_0 * param_group['weight_decay'] * t)
