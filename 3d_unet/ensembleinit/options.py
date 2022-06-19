@@ -33,7 +33,7 @@ class Options:
         parser.add_argument('--train-start-epoch', type=int, default=0, help='start epoch')
         parser.add_argument('--train-checkpoint', type=str, default='', help='checkpoint')
         parser.add_argument('--train-norm', type=str, default='bn', help='bn or in')
-        parser.add_argument('--train-seed', type=str, default=2019, help='bn or in')
+        parser.add_argument('--train-seed', type=int, default=2019, help='bn or in')
         parser.add_argument('--test-test-epoch', type=int, default=999, help='test epoch')
         parser.add_argument('--test-gpus', type=list, default=[0, ], help='select gpu devices')
         parser.add_argument('--test-save-flag', type=bool, default=True, help='True or False')
@@ -43,13 +43,14 @@ class Options:
         self.dataset = args.dataset
         self.task = args.task
         self.fold = args.fold
-        self.root_dir = f'/home/ylindq/Data/KIT-19/yeung/preprocess'
-        self.result_dir = f'/home/ylindq/Experiment/KIT19/{self.dataset}/'
+        self.root_dir = f'/newdata/ianlin/Data/KIT-19/yeung/preprocess'
+        self.result_dir = f'/newdata/ianlin/Experiment/KIT19/{self.dataset}/'
         self.model['pretrained'] = args.pretrained
         self.model['in_c'] = args.in_c
         self.model['input_size'] = args.patch_size
 
         # --- training params --- #
+        self.train['seed'] = args.train_seed
         self.train['save_dir'] = '{:s}/{:s}/fold_{:d}/{:d}'.format(self.result_dir, self.task, self.fold, self.train['seed'])  # path to save results
         self.train['train_epochs'] = args.train_train_epochs
         self.train['batch_size'] = args.train_batch_size
@@ -59,7 +60,6 @@ class Options:
         self.train['workers'] = args.train_workers
         self.train['gpus'] = args.train_gpus
         self.train['norm'] = args.train_norm
-        self.train['seed'] = args.train_seed
 
         # --- resume training --- #
         self.train['start_epoch'] = args.train_start_epoch

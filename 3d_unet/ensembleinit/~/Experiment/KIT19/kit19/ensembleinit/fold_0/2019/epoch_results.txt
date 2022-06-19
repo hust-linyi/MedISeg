@@ -1,0 +1,1 @@
+epoch	train_loss	train_loss_vor	train_loss_cluster	train_loss_repel

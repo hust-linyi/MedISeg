@@ -1,0 +1,24 @@
+# ---------- Options ---------- #
+dataset: kit19
+isTrain: True
+
+
+-------- model --------
+pretrained = False
+in_c = 1
+input_size = (96, 96, 96)
+
+
+-------- train --------
+seed = 2019
+save_dir = '~/Experiment/KIT19/kit19//ensembleinit/fold_0/2019'
+train_epochs = 100
+batch_size = 2
+checkpoint_freq = 20
+lr = 0.01
+weight_decay = 0.0001
+workers = 16
+gpus = [0]
+norm = 'bn'
+start_epoch = 0
+checkpoint = ''

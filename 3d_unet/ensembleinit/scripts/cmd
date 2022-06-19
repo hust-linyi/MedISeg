@@ -1,19 +1,14 @@
-# fold 0
-python train.py --fold 0 --train-gpus 0
-python test.py --fold 0 --test-gpus 0
+sc create --name 3densembleinit02023 --image "10.81.138.201:5000/xsemseg:v_det4" --gpu 1 --cmd "source /newdata/ianlin/.bashrc && conda activate cu11 && cd /newdata/ianlin/CODE/seg_trick/3d_unet/ensembleinit/scripts && bash train_test02023.sh" --arch ampere
+sc create --name 3densembleinit02024 --image "10.81.138.201:5000/xsemseg:v_det4" --gpu 1 --cmd "source /newdata/ianlin/.bashrc && conda activate cu11 && cd /newdata/ianlin/CODE/seg_trick/3d_unet/ensembleinit/scripts && bash train_test02024.sh" --arch ampere
+sc create --name 3densembleinit02025 --image "10.81.138.201:5000/xsemseg:v_det4" --gpu 1 --cmd "source /newdata/ianlin/.bashrc && conda activate cu11 && cd /newdata/ianlin/CODE/seg_trick/3d_unet/ensembleinit/scripts && bash train_test02025.sh" --arch ampere
+sc create --name 3densembleinit02026 --image "10.81.138.201:5000/xsemseg:v_det4" --gpu 1 --cmd "source /newdata/ianlin/.bashrc && conda activate cu11 && cd /newdata/ianlin/CODE/seg_trick/3d_unet/ensembleinit/scripts && bash train_test02026.sh" --arch ampere
 
-# fold 1
-python train.py --fold 1 --train-gpus 1
-python test.py --fold 1 --test-gpus 2
+sc create --name 3densembleinit12023 --image "10.81.138.201:5000/xsemseg:v_det4" --gpu 1 --cmd "source /newdata/ianlin/.bashrc && conda activate cu11 && cd /newdata/ianlin/CODE/seg_trick/3d_unet/ensembleinit/scripts && bash train_test12023.sh" --arch ampere
+sc create --name 3densembleinit12024 --image "10.81.138.201:5000/xsemseg:v_det4" --gpu 1 --cmd "source /newdata/ianlin/.bashrc && conda activate cu11 && cd /newdata/ianlin/CODE/seg_trick/3d_unet/ensembleinit/scripts && bash train_test12024.sh" --arch ampere
+sc create --name 3densembleinit12025 --image "10.81.138.201:5000/xsemseg:v_det4" --gpu 1 --cmd "source /newdata/ianlin/.bashrc && conda activate cu11 && cd /newdata/ianlin/CODE/seg_trick/3d_unet/ensembleinit/scripts && bash train_test12025.sh" --arch ampere
+sc create --name 3densembleinit12026 --image "10.81.138.201:5000/xsemseg:v_det4" --gpu 1 --cmd "source /newdata/ianlin/.bashrc && conda activate cu11 && cd /newdata/ianlin/CODE/seg_trick/3d_unet/ensembleinit/scripts && bash train_test12026.sh" --arch ampere
 
-# fold 2
-python train.py --fold 2 --train-gpus 2
-python test.py --fold 2 --test-gpus 2
-
-# fold 3
-python train.py --fold 3 --train-gpus 3
-python test.py --fold 3 --test-gpus 3
-
-# fold 4
-python train.py --fold 4 --train-gpus 4
-python test.py --fold 4 --test-gpus 4
+sc create --name 3densembleinit22023 --image "10.81.138.201:5000/xsemseg:v_det4" --gpu 1 --cmd "source /newdata/ianlin/.bashrc && conda activate cu11 && cd /newdata/ianlin/CODE/seg_trick/3d_unet/ensembleinit/scripts && bash train_test22023.sh" --arch ampere
+sc create --name 3densembleinit22024 --image "10.81.138.201:5000/xsemseg:v_det4" --gpu 1 --cmd "source /newdata/ianlin/.bashrc && conda activate cu11 && cd /newdata/ianlin/CODE/seg_trick/3d_unet/ensembleinit/scripts && bash train_test22024.sh" --arch ampere
+sc create --name 3densembleinit22025 --image "10.81.138.201:5000/xsemseg:v_det4" --gpu 1 --cmd "source /newdata/ianlin/.bashrc && conda activate cu11 && cd /newdata/ianlin/CODE/seg_trick/3d_unet/ensembleinit/scripts && bash train_test22025.sh" --arch ampere
+sc create --name 3densembleinit22026 --image "10.81.138.201:5000/xsemseg:v_det4" --gpu 1 --cmd "source /newdata/ianlin/.bashrc && conda activate cu11 && cd /newdata/ianlin/CODE/seg_trick/3d_unet/ensembleinit/scripts && bash train_test22026.sh" --arch ampere
