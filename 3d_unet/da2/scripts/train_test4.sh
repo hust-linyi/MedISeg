@@ -1,4 +1,4 @@
-cd ..
+cd /newdata/ianlin/CODE/seg_trick/3d_unet/da2
 
-python train.py --fold 4 --train-gpus 4
-python test.py --fold 4 --test-gpus 4
+python train.py --task da2 --fold 4 --train-gpus 0
+python test.py --task da2 --fold 4 --test-gpus 0 --test-test-epoch 0

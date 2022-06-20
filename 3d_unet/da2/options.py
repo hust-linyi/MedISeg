@@ -48,7 +48,7 @@ class Options:
         if not os.path.exists(home_dir):
             home_dir = '/newdata/ianlin/'
         self.root_dir = home_dir + '/Data/KIT-19/yeung/preprocess'
-        self.result_dir = home_dir + '/Experiment/KIT19/{self.dataset}/'
+        self.result_dir = home_dir + f'/Experiment/KIT19/{self.dataset}/'
         self.model['pretrained'] = args.pretrained
         self.model['in_c'] = args.in_c
         self.model['input_size'] = args.patch_size
