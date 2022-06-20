@@ -35,8 +35,8 @@ class DataFolder(Dataset):
             image = np.load(os.path.join(self.root_dir, image_name + "_image.npy"))
             label = np.load(os.path.join(self.root_dir, image_name + "_label.npy"))
         else:
-            image = np.load(os.path.join(self.root_dir.replace('yeung', 'aug'), image_name + "_image.npy"))
-            label = np.load(os.path.join(self.root_dir.replace('yeung', 'aug'), image_name + "_label.npy"))
+            image = np.load(os.path.join('/'.join(data_dir.split('/')[:-2]), 'aug', image_name + "_image.npy"))
+            label = np.load(os.path.join('/'.join(data_dir.split('/')[:-2]), 'aug', image_name + "_label.npy"))
         image = np.squeeze(image)
         label = np.squeeze(label)
         sample = {'image': image, 'label': label}
