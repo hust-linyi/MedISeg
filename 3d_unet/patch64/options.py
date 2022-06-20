@@ -22,7 +22,7 @@ class Options:
         parser.add_argument('--fold', type=int, default=0, help='0-4, five fold cross validation')
         parser.add_argument('--pretrained', type=bool, default=False, help='True or False')
         parser.add_argument('--in-c', type=int, default=1, help='input channel')
-        parser.add_argument('--patch-size', type=tuple, default=(96,96,96), help='input size of the image')
+        parser.add_argument('--patch-size', type=int, default=96, help='input size of the image')
         parser.add_argument('--train-train-epochs', type=int, default=100, help='number of training epochs')
         parser.add_argument('--train-batch-size', type=int, default=2, help='batch size')
         parser.add_argument('--train-checkpoint-freq', type=int, default=20, help='epoch to save checkpoints')
@@ -51,7 +51,7 @@ class Options:
         self.result_dir = home_dir + f'/Experiment/KIT19/{self.dataset}/'
         self.model['pretrained'] = args.pretrained
         self.model['in_c'] = args.in_c
-        self.model['input_size'] = args.patch_size
+        self.model['input_size'] = tuple([args.patch_size, args.patch_size, args.patch_size])
 
         # --- training params --- #
         self.train['save_dir'] = '{:s}/{:s}/fold_{:d}'.format(self.result_dir, self.task, self.fold)  # path to save results
