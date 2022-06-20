@@ -1,7 +1,5 @@
 import os
 from tqdm import tqdm
-import shutil
-import logging
 import random
 import numpy as np
 import torch
@@ -12,6 +10,8 @@ from utils.util import AverageMeter
 from dataloaders.data_kit import DataFolder
 from options import Options
 from rich.logging import RichHandler
+from utils.util import save_bestcheckpoint, save_checkpoint, setup_logging 
+import logging
 
 
 def val(net, valloader):
@@ -41,7 +41,6 @@ def train(net, trainloader, optimizer, epoch):
         loss.backward()
         optimizer.step()
         losses.update(loss.item(), outputs.size(0))
-        print(f'debug: {volume_batch.sum()}')
         print(f'train epoch {epoch} batch {i_batch} loss {loss.item():.4f}')
     return losses.avg
 
@@ -99,57 +98,6 @@ def main():
 
     logging.info("training finished")
 
-
-def setup_logging(opt):
-    mode = 'a' if opt.train['checkpoint'] else 'w'
-
-    # create logger for training information
-    logger = logging.getLogger('train_logger')
-    logger.setLevel(logging.DEBUG)
-    # create console handler and file handler
-    # console_handler = logging.StreamHandler()
-    console_handler = RichHandler(show_level=False, show_time=False, show_path=False)
-    console_handler.setLevel(logging.INFO)
-    file_handler = logging.FileHandler('{:s}/train_log.txt'.format(opt.train['save_dir']), mode=mode)
-    file_handler.setLevel(logging.DEBUG)
-    # create formatter
-    # formatter = logging.Formatter('%(asctime)s\t%(message)s', datefmt='%m-%d %I:%M')
-    formatter = logging.Formatter('%(message)s')
-    # add formatter to handlers
-    console_handler.setFormatter(formatter)
-    file_handler.setFormatter(formatter)
-    # add handlers to logger
-    logger.addHandler(console_handler)
-    logger.addHandler(file_handler)
-
-    # create logger for epoch results
-    logger_results = logging.getLogger('results')
-    logger_results.setLevel(logging.DEBUG)
-    file_handler2 = logging.FileHandler('{:s}/epoch_results.txt'.format(opt.train['save_dir']), mode=mode)
-    file_handler2.setFormatter(logging.Formatter('%(message)s'))
-    logger_results.addHandler(file_handler2)
-
-    logger.info('***** Training starts *****')
-    logger.info('save directory: {:s}'.format(opt.train['save_dir']))
-    if mode == 'w':
-        logger_results.info('epoch\ttrain_loss\ttrain_loss_vor\ttrain_loss_cluster\ttrain_loss_repel')
-
-    return logger, logger_results
-
-
-def save_checkpoint(state, epoch, save_dir, cp_flag):
-    cp_dir = '{:s}/checkpoints'.format(save_dir)
-    if not os.path.exists(cp_dir):
-        os.mkdir(cp_dir)
-    filename = '{:s}/checkpoint_999.pth.tar'.format(cp_dir)
-    torch.save(state, filename)
-    if cp_flag:
-        shutil.copyfile(filename, '{:s}/checkpoint_{:d}.pth.tar'.format(cp_dir, epoch+1))
-
-
-def save_bestcheckpoint(state, save_dir):
-    cp_dir = '{:s}/checkpoints'.format(save_dir)
-    torch.save(state, '{:s}/checkpoint_0.pth.tar'.format(cp_dir))
 
 
 if __name__ == "__main__":

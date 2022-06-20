@@ -1,2 +1,0 @@
-***** Training starts *****
-save directory: ~/Experiment/KIT19/kit19//ensembleinit/fold_0/2019

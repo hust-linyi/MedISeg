@@ -43,8 +43,12 @@ class Options:
         self.dataset = args.dataset
         self.task = args.task
         self.fold = args.fold
-        self.root_dir = f'/newdata/ianlin/Data/KIT-19/yeung/preprocess'
-        self.result_dir = f'/newdata/ianlin/Experiment/KIT19/{self.dataset}/'
+        # check if the root directory exists
+        home_dir = '/home/ylindq'
+        if not os.path.exists(home_dir):
+            home_dir = '/newdata/ianlin/'
+        self.root_dir = home_dir + '/Data/KIT-19/yeung/preprocess'
+        self.result_dir = home_dir + '/Experiment/KIT19/{self.dataset}/'
         self.model['pretrained'] = args.pretrained
         self.model['in_c'] = args.in_c
         self.model['input_size'] = args.patch_size

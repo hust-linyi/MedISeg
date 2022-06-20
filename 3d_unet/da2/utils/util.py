@@ -12,73 +12,9 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch.utils.data.sampler import Sampler
-
-import networks
-
-def load_model(path):
-    """Loads model and return it without DataParallel table."""
-    if os.path.isfile(path):
-        print("=> loading checkpoint '{}'".format(path))
-        checkpoint = torch.load(path)
-
-        # size of the top layer
-        N = checkpoint['state_dict']['top_layer.bias'].size()
-
-        # build skeleton of the model
-        sob = 'sobel.0.weight' in checkpoint['state_dict'].keys()
-        model = models.__dict__[checkpoint['arch']](sobel=sob, out=int(N[0]))
-
-        # deal with a dataparallel table
-        def rename_key(key):
-            if not 'module' in key:
-                return key
-            return ''.join(key.split('.module'))
-
-        checkpoint['state_dict'] = {rename_key(key): val
-                                    for key, val
-                                    in checkpoint['state_dict'].items()}
-
-        # load weights
-        model.load_state_dict(checkpoint['state_dict'])
-        print("Loaded")
-    else:
-        model = None
-        print("=> no checkpoint found at '{}'".format(path))
-    return model
-
-
-class UnifLabelSampler(Sampler):
-    """Samples elements uniformely accross pseudolabels.
-        Args:
-            N (int): size of returned iterator.
-            images_lists: dict of key (target), value (list of data with this target)
-    """
-
-    def __init__(self, N, images_lists):
-        self.N = N
-        self.images_lists = images_lists
-        self.indexes = self.generate_indexes_epoch()
-
-    def generate_indexes_epoch(self):
-        size_per_pseudolabel = int(self.N / len(self.images_lists)) + 1
-        res = np.zeros(size_per_pseudolabel * len(self.images_lists))
-
-        for i in range(len(self.images_lists)):
-            indexes = np.random.choice(
-                self.images_lists[i],
-                size_per_pseudolabel,
-                replace=(len(self.images_lists[i]) <= size_per_pseudolabel)
-            )
-            res[i * size_per_pseudolabel: (i + 1) * size_per_pseudolabel] = indexes
-
-        np.random.shuffle(res)
-        return res[:self.N].astype('int')
-
-    def __iter__(self):
-        return iter(self.indexes)
-
-    def __len__(self):
-        return self.N
+from rich.logging import RichHandler
+import shutil
+import logging
 
 
 class AverageMeter(object):
@@ -142,9 +78,6 @@ class Logger():
             pickle.dump(self.data, fp, -1)
 
 
-
-
-
 def norm_ip(img, min, max):
     out = torch.clamp(img, min=min, max=max)
     out = (out - min) / (max - min + 1e-5)
@@ -158,3 +91,53 @@ def norm_range(t, range=None):
         return norm_ip(t, float(t.min()), float(t.max()))
 
 
+def setup_logging(opt):
+    mode = 'a' if opt.train['checkpoint'] else 'w'
+
+    # create logger for training information
+    logger = logging.getLogger('train_logger')
+    logger.setLevel(logging.DEBUG)
+    # create console handler and file handler
+    # console_handler = logging.StreamHandler()
+    console_handler = RichHandler(show_level=False, show_time=False, show_path=False)
+    console_handler.setLevel(logging.INFO)
+    file_handler = logging.FileHandler('{:s}/train_log.txt'.format(opt.train['save_dir']), mode=mode)
+    file_handler.setLevel(logging.DEBUG)
+    # create formatter
+    # formatter = logging.Formatter('%(asctime)s\t%(message)s', datefmt='%m-%d %I:%M')
+    formatter = logging.Formatter('%(message)s')
+    # add formatter to handlers
+    console_handler.setFormatter(formatter)
+    file_handler.setFormatter(formatter)
+    # add handlers to logger
+    logger.addHandler(console_handler)
+    logger.addHandler(file_handler)
+
+    # create logger for epoch results
+    logger_results = logging.getLogger('results')
+    logger_results.setLevel(logging.DEBUG)
+    file_handler2 = logging.FileHandler('{:s}/epoch_results.txt'.format(opt.train['save_dir']), mode=mode)
+    file_handler2.setFormatter(logging.Formatter('%(message)s'))
+    logger_results.addHandler(file_handler2)
+
+    logger.info('***** Training starts *****')
+    logger.info('save directory: {:s}'.format(opt.train['save_dir']))
+    if mode == 'w':
+        logger_results.info('epoch\ttrain_loss\ttrain_loss_vor\ttrain_loss_cluster\ttrain_loss_repel')
+
+    return logger, logger_results
+
+
+def save_checkpoint(state, epoch, save_dir, cp_flag):
+    cp_dir = '{:s}/checkpoints'.format(save_dir)
+    if not os.path.exists(cp_dir):
+        os.mkdir(cp_dir)
+    filename = '{:s}/checkpoint_999.pth.tar'.format(cp_dir)
+    torch.save(state, filename)
+    if cp_flag:
+        shutil.copyfile(filename, '{:s}/checkpoint_{:d}.pth.tar'.format(cp_dir, epoch+1))
+
+
+def save_bestcheckpoint(state, save_dir):
+    cp_dir = '{:s}/checkpoints'.format(save_dir)
+    torch.save(state, '{:s}/checkpoint_0.pth.tar'.format(cp_dir))

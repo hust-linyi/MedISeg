@@ -1,4 +1,5 @@
 import torch
+import os
 from networks.unet import UNet3D
 from utils.test_util import test_all_case, get_imglist
 from options import Options
@@ -22,4 +23,5 @@ def test_calculate_metric(opt):
 if __name__ == '__main__':
     opt = Options(isTrain=False)
     opt.parse()
+    os.environ['CUDA_VISIBLE_DEVICES'] = ','.join(str(x) for x in opt.test['gpus'])
     metric = test_calculate_metric(opt)
