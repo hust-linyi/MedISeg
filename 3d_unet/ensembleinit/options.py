@@ -33,7 +33,7 @@ class Options:
         parser.add_argument('--train-start-epoch', type=int, default=0, help='start epoch')
         parser.add_argument('--train-checkpoint', type=str, default='', help='checkpoint')
         parser.add_argument('--train-norm', type=str, default='bn', help='bn or in')
-        parser.add_argument('--train-seed', type=int, default=2019, help='bn or in')
+        parser.add_argument('--train-seed', type=int, default=2022, help='bn or in')
         parser.add_argument('--test-test-epoch', type=int, default=999, help='test epoch')
         parser.add_argument('--test-gpus', type=list, default=[0, ], help='select gpu devices')
         parser.add_argument('--test-save-flag', type=bool, default=True, help='True or False')
