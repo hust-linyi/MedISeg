@@ -117,10 +117,10 @@ def cal_dice(prediction, label, num=2):
 def calculate_metric_percase(pred, gt):
     # measurement: recall, precision, dice, miou
     # for kidney 1, and tumor 2
-    pred1 = (pred > 0)
-    gt1 = (gt > 0)
-    pred2 = (pred == 2)
-    gt2 = (gt == 2)
+    pred1 = (pred > 0).astype(int).flatten()
+    gt1 = (gt > 0).astype(int).flatten()
+    pred2 = (pred == 2).astype(int).flatten()
+    gt2 = (gt == 2).astype(int).flatten()
 
     result = {}
     if pred1.sum() == 0:
