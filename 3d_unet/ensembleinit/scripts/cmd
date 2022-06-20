@@ -12,3 +12,16 @@ sc create --name 3densembleinit22023 --image "10.81.138.201:5000/xsemseg:v_det4"
 sc create --name 3densembleinit22024 --image "10.81.138.201:5000/xsemseg:v_det4" --gpu 1 --cmd "source /newdata/ianlin/.bashrc && conda activate cu11 && cd /newdata/ianlin/CODE/seg_trick/3d_unet/ensembleinit/scripts && bash train_test22024.sh" --arch ampere
 sc create --name 3densembleinit22025 --image "10.81.138.201:5000/xsemseg:v_det4" --gpu 1 --cmd "source /newdata/ianlin/.bashrc && conda activate cu11 && cd /newdata/ianlin/CODE/seg_trick/3d_unet/ensembleinit/scripts && bash train_test22025.sh" --arch ampere
 sc create --name 3densembleinit22026 --image "10.81.138.201:5000/xsemseg:v_det4" --gpu 1 --cmd "source /newdata/ianlin/.bashrc && conda activate cu11 && cd /newdata/ianlin/CODE/seg_trick/3d_unet/ensembleinit/scripts && bash train_test22026.sh" --arch ampere
+
+sc create --name 3densembleinit32023 --image "10.81.138.201:5000/xsemseg:v_det4" --gpu 1 --cmd "source /newdata/ianlin/.bashrc && conda activate cu11 && cd /newdata/ianlin/CODE/seg_trick/3d_unet/ensembleinit/scripts && bash train_test32023.sh" --arch ampere
+sc create --name 3densembleinit32024 --image "10.81.138.201:5000/xsemseg:v_det4" --gpu 1 --cmd "source /newdata/ianlin/.bashrc && conda activate cu11 && cd /newdata/ianlin/CODE/seg_trick/3d_unet/ensembleinit/scripts && bash train_test32024.sh" --arch ampere
+sc create --name 3densembleinit32025 --image "10.81.138.201:5000/xsemseg:v_det4" --gpu 1 --cmd "source /newdata/ianlin/.bashrc && conda activate cu11 && cd /newdata/ianlin/CODE/seg_trick/3d_unet/ensembleinit/scripts && bash train_test32025.sh" --arch ampere
+sc create --name 3densembleinit32026 --image "10.81.138.201:5000/xsemseg:v_det4" --gpu 1 --cmd "source /newdata/ianlin/.bashrc && conda activate cu11 && cd /newdata/ianlin/CODE/seg_trick/3d_unet/ensembleinit/scripts && bash train_test32026.sh" --arch ampere
+
+sc create --name 3densembleinit42023 --image "10.81.138.201:5000/xsemseg:v_det4" --gpu 1 --cmd "source /newdata/ianlin/.bashrc && conda activate cu11 && cd /newdata/ianlin/CODE/seg_trick/3d_unet/ensembleinit/scripts && bash train_test42023.sh" --arch ampere
+sc create --name 3densembleinit42024 --image "10.81.138.201:5000/xsemseg:v_det4" --gpu 1 --cmd "source /newdata/ianlin/.bashrc && conda activate cu11 && cd /newdata/ianlin/CODE/seg_trick/3d_unet/ensembleinit/scripts && bash train_test42024.sh" --arch ampere
+sc create --name 3densembleinit42025 --image "10.81.138.201:5000/xsemseg:v_det4" --gpu 1 --cmd "source /newdata/ianlin/.bashrc && conda activate cu11 && cd /newdata/ianlin/CODE/seg_trick/3d_unet/ensembleinit/scripts && bash train_test42025.sh" --arch ampere
+sc create --name 3densembleinit42026 --image "10.81.138.201:5000/xsemseg:v_det4" --gpu 1 --cmd "source /newdata/ianlin/.bashrc && conda activate cu11 && cd /newdata/ianlin/CODE/seg_trick/3d_unet/ensembleinit/scripts && bash train_test42026.sh" --arch ampere
+
+#### TEST ####
+sc create --name 3densembleinittest --image "10.81.138.201:5000/xsemseg:v_det4" --gpu 1 --cmd "source /newdata/ianlin/.bashrc && conda activate cu11 && cd /newdata/ianlin/CODE/seg_trick/3d_unet/ensembleinit/scripts && bash test.sh" --arch ampere

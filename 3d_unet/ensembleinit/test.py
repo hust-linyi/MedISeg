@@ -9,9 +9,10 @@ def test_calculate_metric(opt):
     net = torch.nn.DataParallel(net)
     net = net.cuda()
 
-    print(f"=> loading trained model in {opt.test['model_path']}")
     checkpoint = torch.load(opt.test['model_path'])
     net.load_state_dict(checkpoint['state_dict'])
+    print(f"=> loading trained model in {opt.test['model_path']}")
+    print(f"=> testing on {checkpoint['epoch']} epoch")
     net.eval()
     image_list = get_imglist(opt.root_dir, opt.fold)
     test_all_case(net, image_list, num_classes=3,

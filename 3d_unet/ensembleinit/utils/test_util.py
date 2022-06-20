@@ -35,7 +35,6 @@ def test_all_case(net, image_list, num_classes, patch_size=(112, 112, 80), strid
             # nib.save(nib.Nifti1Image(score_map.astype(np.float32), np.eye(4)), os.path.join(test_save_path, 'img', case_name+'_prob.nii.gz'))
             nib.save(nib.Nifti1Image(image[:].astype(np.float32), np.eye(4)), os.path.join(test_save_path, 'img', case_name+'_img.nii.gz'))
             nib.save(nib.Nifti1Image(label[:].astype(np.float32), np.eye(4)), os.path.join(test_save_path, 'img', case_name+'_gt.nii.gz'))
-        print(case_name, single_metric)
     result_avg = [[total_metric.avg[i]*100 for i in range(len(metric_names))]]
     result_avg = pd.DataFrame(result_avg, columns=metric_names)
     result_avg.to_csv(os.path.join(test_save_path, 'test_results.csv'), index=False)
@@ -72,7 +71,6 @@ def test_single_case(net, image, stride_xy, stride_z, patch_size, num_classes=1)
     sx = math.ceil((ww - patch_size[0]) / stride_xy) + 1
     sy = math.ceil((hh - patch_size[1]) / stride_xy) + 1
     sz = math.ceil((dd - patch_size[2]) / stride_z) + 1
-    # print("{}, {}, {}".format(sx, sy, sz))
     score_map = np.zeros((num_classes, ) + image.shape).astype(np.float32)
     cnt = np.zeros(image.shape).astype(np.float32)
 
@@ -117,10 +115,10 @@ def cal_dice(prediction, label, num=2):
 def calculate_metric_percase(pred, gt):
     # measurement: recall, precision, dice, miou
     # for kidney 1, and tumor 2
-    pred1 = (pred > 0)
-    gt1 = (gt > 0)
-    pred2 = (pred == 2)
-    gt2 = (gt == 2)
+    pred1 = (pred > 0).astype(int).flatten()
+    gt1 = (gt > 0).astype(int).flatten()
+    pred2 = (pred == 2).astype(int).flatten()
+    gt2 = (gt == 2).astype(int).flatten()
 
     result = {}
     if pred1.sum() == 0:
@@ -144,12 +142,6 @@ def calculate_metric_percase(pred, gt):
         result['dice2'] = metric.binary.dc(pred2, gt2)
         result['miou2'] = jaccard_score(gt2, pred2)
 
-    # precision = metric.binary.precision(pred, gt)
-    # dice = metric.binary.dc(pred, gt)
-    # jc = metric.binary.jc(pred, gt)
-    # hd = metric.binary.hd95(pred, gt)
-    # asd = metric.binary.asd(pred, gt)
-    # return dice, jc, hd, asd
     return result
 
 
