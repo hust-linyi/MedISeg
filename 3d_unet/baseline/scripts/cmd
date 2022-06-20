@@ -1,19 +1,5 @@
-# fold 0
-python train.py --fold 0 --train-gpus 0
-python test.py --fold 0 --test-gpus 0
-
-# fold 1
-python train.py --fold 1 --train-gpus 1
-python test.py --fold 1 --test-gpus 2
-
-# fold 2
-python train.py --fold 2 --train-gpus 2
-python test.py --fold 2 --test-gpus 2
-
-# fold 3
-python train.py --fold 3 --train-gpus 3
-python test.py --fold 3 --test-gpus 3
-
-# fold 4
-python train.py --fold 4 --train-gpus 4
-python test.py --fold 4 --test-gpus 4
+sc create --name 3dda20 --image "10.81.138.201:5000/xsemseg:v_det4" --gpu 1 --cmd "source /newdata/ianlin/.bashrc && conda activate cu11 && cd /newdata/ianlin/CODE/seg_trick/3d_unet/da2/scripts && bash train_test0.sh" --arch ampere
+sc create --name 3dda21 --image "10.81.138.201:5000/xsemseg:v_det4" --gpu 1 --cmd "source /newdata/ianlin/.bashrc && conda activate cu11 && cd /newdata/ianlin/CODE/seg_trick/3d_unet/da2/scripts && bash train_test1.sh" --arch ampere
+sc create --name 3dda22 --image "10.81.138.201:5000/xsemseg:v_det4" --gpu 1 --cmd "source /newdata/ianlin/.bashrc && conda activate cu11 && cd /newdata/ianlin/CODE/seg_trick/3d_unet/da2/scripts && bash train_test2.sh" --arch ampere
+sc create --name 3dda23 --image "10.81.138.201:5000/xsemseg:v_det4" --gpu 1 --cmd "source /newdata/ianlin/.bashrc && conda activate cu11 && cd /newdata/ianlin/CODE/seg_trick/3d_unet/da2/scripts && bash train_test3.sh" --arch ampere
+sc create --name 3dda24 --image "10.81.138.201:5000/xsemseg:v_det4" --gpu 1 --cmd "source /newdata/ianlin/.bashrc && conda activate cu11 && cd /newdata/ianlin/CODE/seg_trick/3d_unet/da2/scripts && bash train_test4.sh" --arch ampere

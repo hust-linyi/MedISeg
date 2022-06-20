@@ -18,7 +18,7 @@ class Options:
         """ Parse the options, replace the default value if there is a new input """
         parser = argparse.ArgumentParser(description='')
         parser.add_argument('--dataset', type=str, default='kit19', help='dataset name')
-        parser.add_argument('--task', type=str, default='baseline', help='')
+        parser.add_argument('--task', type=str, default='tta', help='')
         parser.add_argument('--fold', type=int, default=0, help='0-4, five fold cross validation')
         parser.add_argument('--pretrained', type=bool, default=False, help='True or False')
         parser.add_argument('--in-c', type=int, default=1, help='input channel')
@@ -37,6 +37,7 @@ class Options:
         parser.add_argument('--test-test-epoch', type=int, default=999, help='test epoch')
         parser.add_argument('--test-gpus', type=list, default=[0, ], help='select gpu devices')
         parser.add_argument('--test-save-flag', type=bool, default=True, help='True or False')
+        parser.add_argument('--test-tta', type=bool, default=True, help='True or False')
         parser.add_argument('--test-patch-size', type=int, default=224, help='input size of the image')
         args = parser.parse_args()
 
@@ -77,6 +78,7 @@ class Options:
         self.test['save_dir'] = '{:s}/test_results'.format(self.train['save_dir'])
         self.test['checkpoint_dir'] = '{:s}/checkpoints/'.format(self.train['save_dir'])
         self.test['model_path'] = '{:s}/checkpoint_{:d}.pth.tar'.format(self.test['checkpoint_dir'], self.test['test_epoch'])
+        self.test['tta'] = args.test_tta
 
         # --- post processing --- #
         self.post['min_area'] = 20  # minimum area for an object

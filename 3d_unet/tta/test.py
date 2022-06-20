@@ -17,7 +17,7 @@ def test_calculate_metric(opt):
     image_list = get_imglist(opt.root_dir, opt.fold)
     test_all_case(net, image_list, num_classes=3,
                                patch_size=opt.model['input_size'], stride_xy=opt.model['input_size'][0]//2, stride_z=opt.model['input_size'][0]//2,
-                               save_result=True, test_save_path=opt.test['save_dir'])
+                               save_result=True, test_save_path=opt.test['save_dir'], if_tta=opt.test['tta'])
 
 
 if __name__ == '__main__':

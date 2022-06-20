@@ -11,9 +11,10 @@ from collections import OrderedDict
 import glob
 from utils.util import AverageMeterArray
 from sklearn.metrics import recall_score, precision_score, f1_score, jaccard_score
+from utils.tta import TTA
 
 
-def test_all_case(net, image_list, num_classes, patch_size=(112, 112, 80), stride_xy=18, stride_z=4, save_result=True, test_save_path=None):
+def test_all_case(net, image_list, num_classes, patch_size=(112, 112, 80), stride_xy=18, stride_z=4, save_result=True, test_save_path=None, if_tta=False):
     metric_names = ['recall1', 'precision1', 'dice1', 'miou1', 'recall2', 'precision2', 'dice2', 'miou2']
     total_metric = AverageMeterArray(len(metric_names))
     if save_result:
@@ -25,7 +26,7 @@ def test_all_case(net, image_list, num_classes, patch_size=(112, 112, 80), strid
         label = np.load(image_path.replace('image', 'label'))
         image = np.squeeze(image)
         label = np.squeeze(label)
-        prediction, score_map = test_single_case(net, image, stride_xy, stride_z, patch_size, num_classes=num_classes)
+        prediction, score_map = test_single_case(net, image, stride_xy, stride_z, patch_size, num_classes=num_classes, if_tta=if_tta)
 
         single_metric = calculate_metric_percase(prediction, label)
         total_metric.update([single_metric[metric_name] for metric_name in metric_names])
@@ -42,9 +43,9 @@ def test_all_case(net, image_list, num_classes, patch_size=(112, 112, 80), strid
     return
 
 
-def test_single_case(net, image, stride_xy, stride_z, patch_size, num_classes=1):
+def test_single_case(net, image, stride_xy, stride_z, patch_size, num_classes=1, if_tta=False):
     w, h, d = image.shape
-
+    tta = TTA(if_tta)
     # if the size of image is less than patch_size, then padding it
     add_pad = False
     if w < patch_size[0]:
@@ -72,7 +73,6 @@ def test_single_case(net, image, stride_xy, stride_z, patch_size, num_classes=1)
     sx = math.ceil((ww - patch_size[0]) / stride_xy) + 1
     sy = math.ceil((hh - patch_size[1]) / stride_xy) + 1
     sz = math.ceil((dd - patch_size[2]) / stride_z) + 1
-    # print("{}, {}, {}".format(sx, sy, sz))
     score_map = np.zeros((num_classes, ) + image.shape).astype(np.float32)
     cnt = np.zeros(image.shape).astype(np.float32)
 
@@ -83,12 +83,19 @@ def test_single_case(net, image, stride_xy, stride_z, patch_size, num_classes=1)
             for z in range(0, sz):
                 zs = min(stride_z * z, dd-patch_size[2])
                 test_patch = image[xs:xs+patch_size[0], ys:ys+patch_size[1], zs:zs+patch_size[2]]
-                test_patch = np.expand_dims(np.expand_dims(test_patch,axis=0),axis=0).astype(np.float32)
-                test_patch = torch.from_numpy(test_patch).cuda()
-                y1 = net(test_patch)
-                y = F.softmax(y1, dim=1)
-                y = y.cpu().data.numpy()
-                y = y[0,:,:,:,:]
+                # apply tta
+                test_patch_list = tta.img_list(test_patch)
+                y_list = []
+                for img in test_patch_list:
+                    img = np.expand_dims(np.expand_dims(img,axis=0),axis=0).astype(np.float32)
+                    img = torch.from_numpy(img).cuda()
+                    y = net(img)
+                    y = F.softmax(y, dim=1)
+                    y = y.cpu().detach().numpy()
+                    y = np.squeeze(y)
+                    y_list.append(y)
+                y_list = tta.img_list_inverse(y_list)
+                y = np.mean(y_list, axis=0)
                 score_map[:, xs:xs+patch_size[0], ys:ys+patch_size[1], zs:zs+patch_size[2]] \
                   = score_map[:, xs:xs+patch_size[0], ys:ys+patch_size[1], zs:zs+patch_size[2]] + y
                 cnt[xs:xs+patch_size[0], ys:ys+patch_size[1], zs:zs+patch_size[2]] \
@@ -100,27 +107,14 @@ def test_single_case(net, image, stride_xy, stride_z, patch_size, num_classes=1)
         score_map = score_map[:,wl_pad:wl_pad+w,hl_pad:hl_pad+h,dl_pad:dl_pad+d]
     return label_map, score_map
 
-def cal_dice(prediction, label, num=2):
-    total_dice = np.zeros(num-1)
-    for i in range(1, num):
-        prediction_tmp = (prediction==i)
-        label_tmp = (label==i)
-        prediction_tmp = prediction_tmp.astype(np.float)
-        label_tmp = label_tmp.astype(np.float)
-
-        dice = 2 * np.sum(prediction_tmp * label_tmp) / (np.sum(prediction_tmp) + np.sum(label_tmp))
-        total_dice[i - 1] += dice
-
-    return total_dice
-
 
 def calculate_metric_percase(pred, gt):
     # measurement: recall, precision, dice, miou
     # for kidney 1, and tumor 2
-    pred1 = (pred > 0)
-    gt1 = (gt > 0)
-    pred2 = (pred == 2)
-    gt2 = (gt == 2)
+    pred1 = (pred > 0).astype(int).flatten()
+    gt1 = (gt > 0).astype(int).flatten()
+    pred2 = (pred == 2).astype(int).flatten()
+    gt2 = (gt == 2).astype(int).flatten()
 
     result = {}
     if pred1.sum() == 0:
@@ -144,12 +138,6 @@ def calculate_metric_percase(pred, gt):
         result['dice2'] = metric.binary.dc(pred2, gt2)
         result['miou2'] = jaccard_score(gt2, pred2)
 
-    # precision = metric.binary.precision(pred, gt)
-    # dice = metric.binary.dc(pred, gt)
-    # jc = metric.binary.jc(pred, gt)
-    # hd = metric.binary.hd95(pred, gt)
-    # asd = metric.binary.asd(pred, gt)
-    # return dice, jc, hd, asd
     return result
 
 
