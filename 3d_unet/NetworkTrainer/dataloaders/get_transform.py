@@ -1,4 +1,4 @@
-from dataloaders.data_kit import *
+from NetworkTrainer.dataloaders.data_kit import *
 from torchvision import transforms
 
 def get_transform(opt, phase='train'):
