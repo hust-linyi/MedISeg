@@ -26,6 +26,11 @@ def get_transform(opt, phase='train'):
                 RandomMirroring(),
                 ToTensor()
             ]
+        elif opt.task == 'oversample':
+            transform = [
+                SelectedCrop(opt.model['input_size']),
+                ToTensor()
+            ]
         else:
             transform = [
                 RandomCrop(opt.model['input_size']),
