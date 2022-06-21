@@ -41,10 +41,10 @@ class NetworkTrainer:
         self.scheduler = optim.lr_scheduler.ReduceLROnPlateau(self.optimizer, 'min')
 
     def set_dataloader(self):
-        train_set = DataFolder(root_dir=self.opt.root_dir, phase='train', fold=self.opt.fold, data_transform=self.opt.transform['train'])
-        self.train_loader = DataLoader(train_set, batch_size=self.opt.train['batch_size'], shuffle=True, num_workers=self.opt.train['workers'])
-        val_set = DataFolder(root_dir=self.opt.root_dir, phase='val', data_transform=self.opt.transform['val'], fold=self.opt.fold)
-        self.val_loader = DataLoader(val_set, batch_size=self.opt.train['batch_size'], shuffle=False, drop_last=False, num_workers=self.opt.train['workers'])
+        self.train_set = DataFolder(root_dir=self.opt.root_dir, phase='train', fold=self.opt.fold, data_transform=self.opt.transform['train'])
+        self.train_loader = DataLoader(self.train_set, batch_size=self.opt.train['batch_size'], shuffle=True, num_workers=self.opt.train['workers'])
+        self.val_set = DataFolder(root_dir=self.opt.root_dir, phase='val', data_transform=self.opt.transform['val'], fold=self.opt.fold)
+        self.val_loader = DataLoader(self.val_set, batch_size=self.opt.train['batch_size'], shuffle=False, drop_last=False, num_workers=self.opt.train['workers'])
 
 
     def train(self, epoch):

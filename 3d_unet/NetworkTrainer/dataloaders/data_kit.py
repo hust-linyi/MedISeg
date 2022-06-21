@@ -8,22 +8,28 @@ from torch.utils.data.sampler import Sampler
 from batchgenerators.augmentations.spatial_transformations import augment_resize
 
 
+def get_imglist(root_dir, fold, phase):
+    image_list = [item.replace('_image.npy','') for item in os.listdir(root_dir) if item.endswith('_image.npy')]
+    testnum = int(len(image_list) * 0.2)
+    teststart = fold * testnum
+    testend = (fold + 1) * testnum
+    if phase == 'test':
+        image_list = image_list[teststart:testend]
+    else:
+        image_list = np.concatenate([image_list[:teststart], image_list[testend:]], axis=0)
+        valnum = int(len(image_list) * 0.1)
+    if phase == 'train':
+        image_list = image_list[valnum:]
+    elif phase == 'val':
+        valnum = int(len(image_list) * 0.1)
+        image_list = image_list[:valnum]
+    return image_list
+
 class DataFolder(Dataset):
     """ Kit19 Dataset """
     def __init__(self, root_dir, phase, fold, data_transform=None):
-        self.root_dir = root_dir
         self.transform = data_transform
-        self.image_list = [item.replace('_image.npy','') for item in os.listdir(self.root_dir) if item.endswith('_image.npy')]
-        valnum = int(len(self.image_list) * 0.2)
-        valstart = fold * valnum
-        valend = (fold + 1) * valnum
-        self.image_list = np.concatenate([self.image_list[:valstart], self.image_list[valend:]], axis=0)
-        if phase == 'train':
-            valnum = int(len(self.image_list) * 0.1)
-            self.image_list = self.image_list[valnum:]
-        elif phase == 'val':
-            valnum = int(len(self.image_list) * 0.1)
-            self.image_list = self.image_list[:valnum]
+        self.image_list = get_imglist(root_dir, fold, phase)
         print(f"total {len(self.image_list)} samples for {phase}")
 
     def __len__(self):

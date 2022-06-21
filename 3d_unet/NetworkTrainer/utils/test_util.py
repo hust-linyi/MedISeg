@@ -20,9 +20,9 @@ def test_all_case(net, image_list, num_classes, patch_size=(112, 112, 80), strid
         if not os.path.exists(test_save_path + '/img'):
             os.makedirs(test_save_path + '/img')
     for image_path in tqdm(image_list):
-        case_name = os.path.basename(image_path).replace('_image.npy', '')
-        image = np.load(image_path)
-        label = np.load(image_path.replace('image', 'label'))
+        case_name = os.path.basename(image_path)
+        image = np.load(image_path+'_image.npy')
+        label = np.load(image_path+'_label.npy')
         image = np.squeeze(image)
         label = np.squeeze(label)
         prediction, score_map = test_single_case(net, image, stride_xy, stride_z, patch_size, num_classes=num_classes)
