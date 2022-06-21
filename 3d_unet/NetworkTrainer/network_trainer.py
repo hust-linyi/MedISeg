@@ -10,10 +10,8 @@ from NetworkTrainer.networks.unet import UNet3D
 from NetworkTrainer.dataloaders.data_kit import DataFolder
 from NetworkTrainer.utils.util import save_bestcheckpoint, save_checkpoint, setup_logging, AverageMeter
 import logging
-<<<<<<< HEAD
 from rich import print
-=======
->>>>>>> dd8a97bc373ea7c2f4e7f77d2e8f27660c200c35
+from torchvision import transforms
 
 
 class NetworkTrainer:
