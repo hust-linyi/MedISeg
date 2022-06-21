@@ -13,6 +13,7 @@ import logging
 from rich import print
 from torchvision import transforms
 
+
 class NetworkTrainer:
     def __init__(self, opt):
         self.opt = opt
