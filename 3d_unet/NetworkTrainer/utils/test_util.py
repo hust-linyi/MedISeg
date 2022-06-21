@@ -9,7 +9,7 @@ import os
 import pandas as pd
 from collections import OrderedDict
 import glob
-from utils.util import AverageMeterArray
+from NetworkTrainer.utils.util import AverageMeterArray
 from sklearn.metrics import recall_score, precision_score, f1_score, jaccard_score
 
 
@@ -31,10 +31,10 @@ def test_all_case(net, image_list, num_classes, patch_size=(112, 112, 80), strid
         total_metric.update([single_metric[metric_name] for metric_name in metric_names])
 
         if save_result:
-            nib.save(nib.Nifti1Image(prediction.astype(np.float32), np.eye(4)), os.path.join(test_save_path, 'img', case_name+'_pred.nii.gz'))
-            # nib.save(nib.Nifti1Image(score_map.astype(np.float32), np.eye(4)), os.path.join(test_save_path, 'img', case_name+'_prob.nii.gz'))
-            nib.save(nib.Nifti1Image(image[:].astype(np.float32), np.eye(4)), os.path.join(test_save_path, 'img', case_name+'_img.nii.gz'))
-            nib.save(nib.Nifti1Image(label[:].astype(np.float32), np.eye(4)), os.path.join(test_save_path, 'img', case_name+'_gt.nii.gz'))
+            np.save(os.path.join(test_save_path, 'img', case_name+'_pred.npy'), prediction)
+            np.save(os.path.join(test_save_path, 'img', case_name+'_gt.npy'), label)
+            np.save(os.path.join(test_save_path, 'img', case_name+'_prob.npy'), score_map)
+            np.save(os.path.join(test_save_path, 'img', case_name+'_img.npy'), image)
         print(case_name, single_metric)
     result_avg = [[total_metric.avg[i]*100 for i in range(len(metric_names))]]
     result_avg = pd.DataFrame(result_avg, columns=metric_names)

@@ -12,66 +12,6 @@ from NetworkTrainer.utils.util import save_bestcheckpoint, save_checkpoint, setu
 import logging
 
 
-class TrainerSetting:
-    def __init__(self):
-        self.project_name = None
-        # Path for saving model and training log
-        self.output_dir = None
-
-        # Generally only use one of them
-        self.max_iter = 99999999
-        self.max_epoch = 99999999
-
-        # Default not use this,
-        # because the models of "best_train_loss", "best_val_evaluation_index", "latest" have been saved.
-        self.save_per_epoch = 99999999
-        self.eps_train_loss = 0.01
-
-        self.network = None
-        self.device = None
-        self.list_GPU_ids = None
-
-        self.train_loader = None
-        self.val_loader = None
-
-        self.optimizer = None
-        self.lr_scheduler = None
-        self.lr_scheduler_type = None
-
-        # Default update learning rate after each epoch
-        self.lr_scheduler_update_on_iter = False
-
-        self.loss_function = None
-
-        # If do online evaluation during validation
-        self.online_evaluation_function_val = None
-
-
-class TrainerLog:
-    def __init__(self):
-        self.iter = -1
-        self.epoch = -1
-
-        # Moving average loss, loss is the smaller the better
-        self.moving_train_loss = None
-        # Average train loss of a epoch
-        self.average_train_loss = 99999999.
-        self.best_average_train_loss = 99999999.
-        # Evaluation index is the higher the better
-        self.average_val_index = -99999999.
-        self.best_average_val_index = -99999999.
-
-        # Record changes in training loss
-        self.list_average_train_loss_associate_iter = []
-        # Record changes in validation evaluation index
-        self.list_average_val_index_associate_iter = []
-        # Record changes in learning rate
-        self.list_lr_associate_iter = []
-
-        # Save status of the trainer, eg. best_train_loss, latest, best_val_evaluation_index
-        self.save_status = []
-
-
 class NetworkTrainer:
     def __init__(self, opt):
         self.opt = opt
