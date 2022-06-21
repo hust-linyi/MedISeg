@@ -13,7 +13,6 @@ import logging
 <<<<<<< HEAD
 from rich import print
 =======
-from torchvision import transforms
 >>>>>>> dd8a97bc373ea7c2f4e7f77d2e8f27660c200c35
 
 
