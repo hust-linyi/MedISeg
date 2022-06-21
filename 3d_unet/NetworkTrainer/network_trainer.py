@@ -10,7 +10,11 @@ from NetworkTrainer.networks.unet import UNet3D
 from NetworkTrainer.dataloaders.data_kit import DataFolder
 from NetworkTrainer.utils.util import save_bestcheckpoint, save_checkpoint, setup_logging, AverageMeter
 import logging
+<<<<<<< HEAD
 from rich import print
+=======
+from torchvision import transforms
+>>>>>>> dd8a97bc373ea7c2f4e7f77d2e8f27660c200c35
 
 
 class NetworkTrainer:
@@ -52,9 +56,11 @@ class NetworkTrainer:
         self.scheduler = optim.lr_scheduler.ReduceLROnPlateau(self.optimizer, 'min')
 
     def set_dataloader(self):
-        self.train_set = DataFolder(root_dir=self.opt.root_dir, phase='train', fold=self.opt.fold, data_transform=self.opt.transform['train'])
+        # self.train_set = DataFolder(root_dir=self.opt.root_dir, phase='train', fold=self.opt.fold, data_transform=self.opt.transform['train'])
+        # self.val_set = DataFolder(root_dir=self.opt.root_dir, phase='val', data_transform=self.opt.transform['val'], fold=self.opt.fold)
+        self.train_set = DataFolder(root_dir=self.opt.root_dir, phase='train', fold=self.opt.fold, data_transform=transforms.Compose(self.opt.transform['train']))
+        self.val_set = DataFolder(root_dir=self.opt.root_dir, phase='val', data_transform=transforms.Compose(self.opt.transform['val']), fold=self.opt.fold)
         self.train_loader = DataLoader(self.train_set, batch_size=self.opt.train['batch_size'], shuffle=True, num_workers=self.opt.train['workers'])
-        self.val_set = DataFolder(root_dir=self.opt.root_dir, phase='val', data_transform=self.opt.transform['val'], fold=self.opt.fold)
         self.val_loader = DataLoader(self.val_set, batch_size=self.opt.train['batch_size'], shuffle=False, drop_last=False, num_workers=self.opt.train['workers'])
 
 

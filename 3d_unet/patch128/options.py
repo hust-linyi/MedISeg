@@ -97,8 +97,8 @@ class Options:
         else:
             filename = '{:s}/test_options.txt'.format(self.test['save_dir'])
         file = open(filename, 'w')
-        # groups = ['model', 'train', 'transform'] if self.isTrain else ['model', 'test', 'post', 'transform']
-        groups = ['model', 'train', ] if self.isTrain else ['model', 'test', 'post', ]
+        groups = ['model', 'train', 'transform'] if self.isTrain else ['model', 'test', 'post', 'transform']
+        # groups = ['model', 'train', ] if self.isTrain else ['model', 'test', 'post', ]
 
         file.write("# ---------- Options ---------- #")
         file.write('\ndataset: {:s}\n'.format(self.dataset))
@@ -111,12 +111,12 @@ class Options:
                 for name, val in options.items():
                     if (self.isTrain and name != 'test') or (not self.isTrain and name == 'test'):
                         file.write("{:s}:\n".format(name))
-                        for t_name, t_val in val.items():
-                            file.write("\t{:s}: {:s}\n".format(t_name, repr(t_val)))
+                        for t_val in val:
+                            file.write("\t{:s}\n".format(t_val.__class__.__name__))
             else:
                 for name, val in options.items():
                     file.write("{:s} = {:s}\n".format(name, repr(val)))
-        file.close()
+        file.close() 
 
 
 
