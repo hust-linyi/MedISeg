@@ -1,6 +1,7 @@
 # -*- encoding: utf-8 -*-
 import random
 import os
+from tkinter.tix import CELL
 from tqdm import tqdm
 import numpy as np
 import torch
@@ -12,11 +13,13 @@ from NetworkTrainer.utils.util import save_bestcheckpoint, save_checkpoint, setu
 import logging
 from rich import print
 from torchvision import transforms
+from NetworkTrainer.utils.losses_imbalance import DiceLoss, FocalLoss, TverskyLoss, OHEMLoss, CELoss
 
 
 class NetworkTrainer:
     def __init__(self, opt):
         self.opt = opt
+        self.criterion = CELoss()
 
     def set_GPU_device(self):
         os.environ['CUDA_VISIBLE_DEVICES'] = ','.join(str(x) for x in self.opt.train['gpus'])
@@ -48,13 +51,26 @@ class NetworkTrainer:
             model_dict.update(pretrained_dict)
             self.net.load_state_dict(model_dict)
 
+    def set_loss(self):
+        # set loss function
+        if self.opt.train['loss'] == 'ce':
+            self.criterion = CELoss()
+        elif self.opt.train['loss'] == 'dice':
+            self.criterion = DiceLoss()
+        elif self.opt.train['loss'] == 'focal':
+            self.criterion = FocalLoss()
+        elif self.opt.train['loss'] == 'tversky':
+            self.criterion = TverskyLoss()
+        elif self.opt.train['loss'] == 'ohem':
+            self.criterion = OHEMLoss()
+        elif self.opt.train['loss'] == 'wce':
+            self.criterion = CELoss(weight=torch.tensor([0.1, 0.5, 1.0]))
+
     def set_optimizer(self):
         self.optimizer = optim.SGD(self.net.parameters(), lr=self.opt.train['lr'], momentum=0.9, weight_decay=self.opt.train['weight_decay'])
         self.scheduler = optim.lr_scheduler.ReduceLROnPlateau(self.optimizer, 'min')
 
     def set_dataloader(self):
-        # self.train_set = DataFolder(root_dir=self.opt.root_dir, phase='train', fold=self.opt.fold, data_transform=self.opt.transform['train'])
-        # self.val_set = DataFolder(root_dir=self.opt.root_dir, phase='val', data_transform=self.opt.transform['val'], fold=self.opt.fold)
         self.train_set = DataFolder(root_dir=self.opt.root_dir, phase='train', fold=self.opt.fold, data_transform=transforms.Compose(self.opt.transform['train']))
         self.val_set = DataFolder(root_dir=self.opt.root_dir, phase='val', data_transform=transforms.Compose(self.opt.transform['val']), fold=self.opt.fold)
         self.train_loader = DataLoader(self.train_set, batch_size=self.opt.train['batch_size'], shuffle=True, num_workers=self.opt.train['workers'])
@@ -68,8 +84,7 @@ class NetworkTrainer:
             volume_batch, label_batch = sampled_batch['image'], sampled_batch['label']
             volume_batch, label_batch = volume_batch.cuda(), label_batch.cuda()
             outputs = self.net(volume_batch)
-            loss_ce = torch.nn.CrossEntropyLoss()(outputs, label_batch[:, 0, ...].long())
-            loss = loss_ce
+            loss = self.criterion(outputs, label_batch)
 
             self.optimizer.zero_grad()
             loss.backward()
@@ -87,7 +102,6 @@ class NetworkTrainer:
                 volume_batch, label_batch = sampled_batch['image'], sampled_batch['label']
                 volume_batch, label_batch = volume_batch.cuda(), label_batch.cuda()
                 outputs = self.net(volume_batch)
-
                 val_loss = torch.nn.CrossEntropyLoss()(outputs, label_batch[:, 0, ...].long())
                 val_losses.update(val_loss.item(), outputs.size(0))
         return val_losses.avg
