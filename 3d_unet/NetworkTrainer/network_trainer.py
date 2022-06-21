@@ -10,6 +10,7 @@ from NetworkTrainer.networks.unet import UNet3D
 from NetworkTrainer.dataloaders.data_kit import DataFolder
 from NetworkTrainer.utils.util import save_bestcheckpoint, save_checkpoint, setup_logging, AverageMeter
 import logging
+from rich import print
 
 
 class NetworkTrainer:
@@ -35,6 +36,16 @@ class NetworkTrainer:
         self.net = UNet3D(num_classes=3, input_channels=1, act='relu', norm=self.opt.train['norm'])
         self.net = torch.nn.DataParallel(self.net)
         self.net = self.net.cuda()
+        if self.opt.model['pretrained']:
+            ckpt_path = '/'.join(self.opt.root_dir.split('/')[:-2]) + '/pretrained_weights/' + 'Genesis_Chest_CT.pt'
+            print(f'Loading pretrained weights from {ckpt_path}')
+
+            # loading partital weights
+            pretrained_dict = torch.load(ckpt_path)
+            model_dict = self.net.state_dict()
+            pretrained_dict = {k: v for k, v in pretrained_dict.items() if k in model_dict}
+            model_dict.update(pretrained_dict)
+            self.net.load_state_dict(model_dict)
 
     def set_optimizer(self):
         self.optimizer = optim.SGD(self.net.parameters(), lr=self.opt.train['lr'], momentum=0.9, weight_decay=self.opt.train['weight_decay'])

@@ -28,6 +28,7 @@ def get_imglist(root_dir, fold, phase):
 class DataFolder(Dataset):
     """ Kit19 Dataset """
     def __init__(self, root_dir, phase, fold, data_transform=None):
+        self.root_dir = root_dir
         self.transform = data_transform
         self.image_list = get_imglist(root_dir, fold, phase)
         print(f"total {len(self.image_list)} samples for {phase}")

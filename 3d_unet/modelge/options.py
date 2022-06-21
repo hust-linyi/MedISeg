@@ -19,6 +19,7 @@ class Options:
         parser.add_argument('--task', type=str, default='patch64', help='')
         parser.add_argument('--fold', type=int, default=0, help='0-4, five fold cross validation')
         parser.add_argument('--pretrained', type=bool, default=False, help='True or False')
+        parser.add_argument('--in-c', type=int, default=1, help='input channel')
         parser.add_argument('--patch-size', type=int, default=96, help='input size of the image')
         parser.add_argument('--train-train-epochs', type=int, default=100, help='number of training epochs')
         parser.add_argument('--train-batch-size', type=int, default=2, help='batch size')
@@ -30,10 +31,11 @@ class Options:
         parser.add_argument('--train-start-epoch', type=int, default=0, help='start epoch')
         parser.add_argument('--train-checkpoint', type=str, default='', help='checkpoint')
         parser.add_argument('--train-norm', type=str, default='bn', help='bn or in')
-        parser.add_argument('--train-seed', type=int, default=2022, help='bn or in')
+        parser.add_argument('--train-seed', type=str, default=2022, help='bn or in')
         parser.add_argument('--test-test-epoch', type=int, default=999, help='test epoch')
         parser.add_argument('--test-gpus', type=list, default=[0, ], help='select gpu devices')
         parser.add_argument('--test-save-flag', type=bool, default=True, help='True or False')
+        parser.add_argument('--test-patch-size', type=int, default=224, help='input size of the image')
         args = parser.parse_args()
 
         self.dataset = args.dataset
@@ -46,6 +48,7 @@ class Options:
         self.root_dir = home_dir + '/Data/KIT-19/yeung/preprocess'
         self.result_dir = home_dir + f'/Experiment/KIT19/{self.dataset}/'
         self.model['pretrained'] = args.pretrained
+        self.model['in_c'] = args.in_c
         self.model['input_size'] = tuple([args.patch_size, args.patch_size, args.patch_size])
 
         # --- training params --- #
@@ -68,6 +71,7 @@ class Options:
         self.test['test_epoch'] = args.test_test_epoch
         self.test['gpus'] = args.test_gpus
         self.test['save_flag'] = args.test_save_flag
+        self.test['patch_size'] = args.test_patch_size
         self.test['save_dir'] = '{:s}/test_results'.format(self.train['save_dir'])
         self.test['checkpoint_dir'] = '{:s}/checkpoints/'.format(self.train['save_dir'])
         self.test['model_path'] = '{:s}/checkpoint_{:d}.pth.tar'.format(self.test['checkpoint_dir'], self.test['test_epoch'])
