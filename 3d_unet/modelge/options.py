@@ -35,7 +35,6 @@ class Options:
         parser.add_argument('--test-test-epoch', type=int, default=999, help='test epoch')
         parser.add_argument('--test-gpus', type=list, default=[0, ], help='select gpu devices')
         parser.add_argument('--test-save-flag', type=bool, default=True, help='True or False')
-        parser.add_argument('--test-patch-size', type=int, default=224, help='input size of the image')
         args = parser.parse_args()
 
         self.dataset = args.dataset
@@ -71,7 +70,6 @@ class Options:
         self.test['test_epoch'] = args.test_test_epoch
         self.test['gpus'] = args.test_gpus
         self.test['save_flag'] = args.test_save_flag
-        self.test['patch_size'] = args.test_patch_size
         self.test['save_dir'] = '{:s}/test_results'.format(self.train['save_dir'])
         self.test['checkpoint_dir'] = '{:s}/checkpoints/'.format(self.train['save_dir'])
         self.test['model_path'] = '{:s}/checkpoint_{:d}.pth.tar'.format(self.test['checkpoint_dir'], self.test['test_epoch'])
