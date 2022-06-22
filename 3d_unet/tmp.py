@@ -16,10 +16,10 @@ def compress_npy(path):
     size_before = check_size(path)
     for root, dirs, files in os.walk(path):
         for file in files:
-            if file.endswith('.gz') or file.endswith('gt.npy') or file.endswith('img.npy'):
+            if file.endswith('.gz') or file.endswith('gt.npy') or file.endswith('img.npy') or file.endswith('prob.npy'):
                 os.remove(os.path.join(root, file))
             elif file.endswith('.npy'):
-                print(f'{file}')
+                print(f'{os.path.join(root, file)}')
                 data = np.load(os.path.join(root, file))
                 np.savez_compressed(os.path.join(root, file.replace('.npy', '.npz')), data)
                 os.remove(os.path.join(root, file))
@@ -29,6 +29,6 @@ def compress_npy(path):
 
 
 if __name__ == '__main__':
-    data_dir = '/newdata/ianlin/Experiment/KIT19/kit19/patch32'
+    data_dir = '/newdata/ianlin/Experiment/KIT19/kit19/patch128'
     compress_npy(data_dir)
 
