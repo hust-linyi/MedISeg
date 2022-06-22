@@ -90,7 +90,7 @@ class NetworkTrainer:
             loss.backward()
             self.optimizer.step()
             losses.update(loss.item(), outputs.size(0))
-            print(f'train epoch {epoch} batch {i_batch} loss {loss.item():.4f}')
+            # print(f'train epoch {epoch} batch {i_batch} loss {loss.item():.4f}')
         return losses.avg
 
 
@@ -103,6 +103,7 @@ class NetworkTrainer:
                 volume_batch, label_batch = volume_batch.cuda(), label_batch.cuda()
                 outputs = self.net(volume_batch)
                 val_loss = torch.nn.CrossEntropyLoss()(outputs, label_batch[:, 0, ...].long())
+                print(torch.max(label_batch))
                 val_losses.update(val_loss.item(), outputs.size(0))
         return val_losses.avg
 

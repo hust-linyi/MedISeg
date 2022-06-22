@@ -28,7 +28,7 @@ class DiceLoss(nn.Module):
     def forward(self, y_pred, y_true):
         # first convert y_true to one-hot format
         axis = identify_axis(y_pred.shape)
-
+        y_pred = nn.Softmax(dim=1)(y_pred)
         tp, fp, fn, _ = get_tp_fp_fn_tn(y_pred, y_true, axis)
         intersection = 2 * tp + self.smooth
         union = 2 * tp + fp + fn + self.smooth
