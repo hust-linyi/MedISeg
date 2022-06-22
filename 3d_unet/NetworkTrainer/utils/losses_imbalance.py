@@ -44,6 +44,7 @@ class FocalLoss(nn.Module):
         self.eps = eps
     def forward(self, y_pred, y_true):
         axis = identify_axis(y_pred.shape)
+        y_pred = nn.Softmax(dim=1)(y_pred)
         y_true = to_onehot(y_pred, y_true)
         y_pred = torch.clamp(y_pred, self.eps, 1. - self.eps)
         cross_entropy = -y_true * torch.log(y_pred)
@@ -60,6 +61,7 @@ class TverskyLoss(nn.Module):
 
     def forward(self, y_pred, y_true):
         axis = identify_axis(y_pred.shape)
+        y_pred = nn.Softmax(dim=1)(y_pred)
         y_true = to_onehot(y_pred, y_true)
         y_pred = torch.clamp(y_pred, self.beta, 1. - self.beta)
         tp, fp, fn, _ = get_tp_fp_fn_tn(y_pred, y_true, axis)

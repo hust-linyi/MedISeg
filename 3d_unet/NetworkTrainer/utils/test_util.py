@@ -33,7 +33,7 @@ def test_all_case(net, image_list, num_classes, patch_size=(112, 112, 80), strid
         if save_result:
             np.save(os.path.join(test_save_path, 'img', case_name+'_pred.npy'), prediction)
             # np.save(os.path.join(test_save_path, 'img', case_name+'_gt.npy'), label)
-            np.save(os.path.join(test_save_path, 'img', case_name+'_prob.npy'), score_map)
+            # np.save(os.path.join(test_save_path, 'img', case_name+'_prob.npy'), score_map)
             # np.save(os.path.join(test_save_path, 'img', case_name+'_img.npy'), image)
         print(case_name, single_metric)
     result_avg = [[total_metric.avg[i]*100 for i in range(len(metric_names))]]
