@@ -11,7 +11,8 @@ class CELoss(nn.Module):
 
     def __call__(self, y_pred, y_true):
         y_true = y_true.long()
-        self.weight = self.weight.to(y_pred.device)
+        if self.weight:
+            self.weight = self.weight.to(y_pred.device)
         if len(y_true.shape) == 5:
             y_true = y_true[:, 0, ...]
         loss = nn.CrossEntropyLoss(weight=self.weight, reduction=self.reduction)

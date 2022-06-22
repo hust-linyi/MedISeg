@@ -1,7 +1,7 @@
 from fileinput import filename
 import os
 import numpy as np
-import utils.utils as utils
+import utils.util as utils
 from utils.accuracy import compute_metrics
 from options import Options
 import cv2
