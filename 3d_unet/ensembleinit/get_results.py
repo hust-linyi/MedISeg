@@ -16,13 +16,12 @@ def get_ensemble(mode='vote'):
     metric_names = ['recall1', 'precision1', 'dice1', 'miou1', 'recall2', 'precision2', 'dice2', 'miou2']
     all_result = utils.AverageMeterArray(len(metric_names))
     results_all = list()
-  
 
     for fold in fold_list:
         result_dir = os.path.join(save_dir, f'fold_{fold}', 'all')
-        image_list = [f.replace('_img.npy', '') for f in os.listdir(result_dir) if f.endswith('_img.npy')]
+        image_list = [f.replace('_pred.npy', '') for f in os.listdir(result_dir) if f.endswith('_pred.npy')]
         for image_path in tqdm(image_list):
-            gt = np.load(os.path.join(result_dir, image_path + '_gt.npy'))
+            gt = np.load(os.path.join(opt.root_dir, image_path + '_label.npy'))
             if mode == 'vote':
                 pred = np.load(os.path.join(result_dir, image_path + '_pred.npy'))
             else:
@@ -49,15 +48,11 @@ def get_ensemble_pred():
             os.makedirs(out_dir)
 
         image_list = os.listdir(os.path.join(save_dir, f'fold_{fold}', f'{seed_list[0]}', 'test_results', 'img'))
-        image_list = [f.replace('_img.npy', '') for f in image_list if f.endswith('_img.npy')]
+        image_list = [f.replace('_pred.npy', '') for f in image_list if f.endswith('_pred.npy')]
 
         for image_name in image_list:
             pred, prob = [], []
             for i, seed in enumerate(seed_list):
-                result_dir = os.path.join(save_dir, f'fold_{fold}', f'{seed}', 'test_results', 'img')
-                if i == 0:
-                    img = np.load(os.path.join(result_dir, image_name + '_img.npy'))
-                    gt = np.load(os.path.join(result_dir, image_name + '_gt.npy'))
                 result_dir = os.path.join(save_dir, f'fold_{fold}', f'{seed}', 'test_results', 'img')
                 _pred = np.load(os.path.join(result_dir, image_name + '_pred.npy'))
                 _pred_onehot = np.eye(3)[_pred]
@@ -68,14 +63,12 @@ def get_ensemble_pred():
             prob = np.mean(prob, axis=0)
             pred = pred.argmax(axis=0)
             prob = prob.argmax(axis=0)
-            np.save(os.path.join(out_dir, image_name + '_img.npy'), img)
-            np.save(os.path.join(out_dir, image_name + '_gt.npy'), gt)
             np.save(os.path.join(out_dir, image_name + '_pred.npy'), pred)
             np.save(os.path.join(out_dir, image_name + '_prob.npy'), prob)
     print('finished')
 
 
 if __name__=='__main__':
-    get_ensemble_pred()
+    # get_ensemble_pred()
     get_ensemble('avg')
     get_ensemble('vote')
