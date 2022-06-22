@@ -3,38 +3,32 @@ check the npy data size
 """
 import os
 import numpy as np
+from rich import print
 
-def get_size(path):
+def check_size(path):
     size = 0
     for root, dirs, files in os.walk(path):
         for file in files:
-            size = os.path.getsize(os.path.join(root, file))
-            print(f'{file}, {size/1024/1024} MB')
+            size += os.path.getsize(os.path.join(root, file))
+    return size
+
+def compress_npy(path):
+    size_before = check_size(path)
+    for root, dirs, files in os.walk(path):
+        for file in files:
+            if file.endswith('.gz') or file.endswith('gt.npy') or file.endswith('img.npy'):
+                os.remove(os.path.join(root, file))
+            elif file.endswith('.npy'):
+                print(f'{file}')
+                data = np.load(os.path.join(root, file))
+                np.savez_compressed(os.path.join(root, file.replace('.npy', '.npz')), data)
+                os.remove(os.path.join(root, file))
+
+    size_after = check_size(path)
+    print(f'{path}, BEFORE: {size_before/1024/1024/1024:.2f} GB, AFTER: {size_after/1024/1024/1024:.2f} GB')
 
 
-root_dir = '/newdata/ianlin/Experiment/KIT19/kit19/baseline/fold_0/test_results/img'
-out_dir = '/newdata/ianlin/Experiment/tmp'
-case_name = 'case_00025'
-
-img = np.load(os.path.join(root_dir, case_name + '_img.npy'))
-gt = np.load(os.path.join(root_dir, case_name + '_gt.npy'))
-pred = np.load(os.path.join(root_dir, case_name + '_pred.npy'))
-prob = np.load(os.path.join(root_dir, case_name + '_prob.npy'))
-
-img_int = img.astype(int)
-gt_int = gt.astype(int)
-pred_int = pred.astype(int)
-prob_int = prob.astype(int)
-
-np.save(os.path.join(out_dir, case_name + '_img_int.npy'), img_int)
-np.save(os.path.join(out_dir, case_name + '_gt_int.npy'), gt_int)
-np.save(os.path.join(out_dir, case_name + '_pred_int.npy'), pred_int)
-np.save(os.path.join(out_dir, case_name + '_prob_int.npy'), prob_int)
-
-np.save(os.path.join(out_dir, case_name + '_img.npy'), img)
-np.save(os.path.join(out_dir, case_name + '_gt.npy'), gt)
-np.save(os.path.join(out_dir, case_name + '_pred.npy'), pred)
-np.save(os.path.join(out_dir, case_name + '_prob.npy'), prob)
-
-get_size(out_dir)
+if __name__ == '__main__':
+    data_dir = '/newdata/ianlin/Experiment/KIT19/kit19/patch32'
+    compress_npy(data_dir)
 
