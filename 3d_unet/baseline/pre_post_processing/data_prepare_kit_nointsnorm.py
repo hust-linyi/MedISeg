@@ -44,9 +44,6 @@ class GenericPreprocessor(object):
         if not os.path.exists(self.out_base_raw):
             os.makedirs(self.out_base_raw)
 
-        self.images = []
-        self.labels = []
-
 
     def get_raw_training_data(self):
         imagestr = join(self.out_base_raw, "imagesTr")
@@ -69,8 +66,8 @@ class GenericPreprocessor(object):
 
             if True:
                 self.train_patient_names.append(patient_id)
-                self.images.append(volume)
-                self.labels.append(label)
+                # self.images.append(volume)
+                # self.labels.append(label)
                 self.data_info['dataset_properties'][patient_id] = OrderedDict()  
                 self.data_info['dataset_properties'][patient_id]['origin'] = ori1
                 self.data_info['dataset_properties'][patient_id]['spacing'] = spacing1
@@ -124,18 +121,17 @@ class GenericPreprocessor(object):
         return out_img, out_seg
 
     def do_preprocessing(self,minimun=0, maxmun=0, new_spacing=(3.22,1.62,1.62)):
-        maybe_mkdir_p(self.out_base_preprocess)
-
+        maybe_mkdir_p(self.out_base_preprocess) 
         for i in range(len(self.train_patient_names)):
             print(f'Preprocessing {i}/{len(self.train_patient_names)}')
-            voxels = self.images[i]
-            label = self.labels[i]
+            voxels = np.load(join(self.out_base_raw, "imagesTr", self.train_patient_names[i] + "_image.npy"))
+            label = np.load(join(self.out_base_raw, "imagesTr", self.train_patient_names[i] + "_label.npy"))
             # if minimun:
             #     lower_bound = minimun
             #     upper_bound = maxmun 
             # else:
             #     upper_bound,lower_bound,median,mean_before,sd_before = self._get_voxels_in_foreground(voxels,label)
-            # # mask = (voxels > lower_bound) & (voxels < upper_bound)
+            # mask = (voxels > lower_bound) & (voxels < upper_bound)
             # voxels = np.clip(voxels, lower_bound, upper_bound)
             # mn = voxels[mask].mean()
             # sd = voxels[mask].std()
@@ -154,7 +150,7 @@ class GenericPreprocessor(object):
 if __name__ == "__main__":
     cada = GenericPreprocessor(downloaded_data_dir= "/newdata/ianlin/CODE/REF/kits19/data",
                                out_data_dir='/newdata/ianlin/Data/KIT-19',
-                               task_name="nointsnorm")
+                               task_name="noresample")
     cada.get_raw_training_data()
     cada.do_preprocessing(minimun=-79, maxmun=304, new_spacing=(3.22, 1.62, 1.62))
 
