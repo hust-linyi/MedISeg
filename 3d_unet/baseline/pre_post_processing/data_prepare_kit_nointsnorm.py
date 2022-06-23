@@ -133,9 +133,9 @@ class GenericPreprocessor(object):
             #     upper_bound,lower_bound,median,mean_before,sd_before = self._get_voxels_in_foreground(voxels,label)
             # mask = (voxels > lower_bound) & (voxels < upper_bound)
             # voxels = np.clip(voxels, lower_bound, upper_bound)
-            # mn = voxels[mask].mean()
-            # sd = voxels[mask].std()
-            # voxels = (voxels - mn) / sd
+            mn = voxels.mean()
+            sd = voxels.std()
+            voxels = (voxels - mn) / sd
             # resample to isotropic voxel size
             spacing = self.data_info['dataset_properties'][self.train_patient_names[i]]['spacing']
             voxels, label = self.resample(voxels, label, spacing, new_spacing)

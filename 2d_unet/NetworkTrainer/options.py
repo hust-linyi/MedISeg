@@ -63,7 +63,6 @@ class Options:
         self.train['weight_decay'] = args.train_weight_decay
         self.train['workers'] = args.train_workers
         self.train['gpus'] = args.train_gpus
-        self.train['norm'] = args.train_norm
         self.train['seed'] = args.train_seed
         self.train['loss'] = args.train_loss
 

@@ -15,7 +15,7 @@ class Options:
     def parse(self):
         """ Parse the options, replace the default value if there is a new input """
         parser = argparse.ArgumentParser(description='')
-        parser.add_argument('--dataset', type=str, default='kit19', help='dataset name')
+        parser.add_argument('--dataset', type=str, default='yeung', help='dataset name')
         parser.add_argument('--task', type=str, default='baseline', help='')
         parser.add_argument('--fold', type=int, default=0, help='0-4, five fold cross validation')
         parser.add_argument('--pretrained', type=bool, default=False, help='True or False')
@@ -45,8 +45,8 @@ class Options:
         home_dir = '/home/ylindq'
         if not os.path.exists(home_dir):
             home_dir = '/newdata/ianlin/'
-        self.root_dir = home_dir + '/Data/KIT-19/yeung/preprocess'
-        self.result_dir = home_dir + f'/Experiment/KIT19/{self.dataset}/'
+        self.root_dir = home_dir + f'/Data/KIT-19/{self.dataset}/preprocess'
+        self.result_dir = home_dir + f'/Experiment/KIT19/kit19/'
         self.model['pretrained'] = args.pretrained
         self.model['in_c'] = args.in_c
         self.model['input_size'] = tuple([args.patch_size, args.patch_size, args.patch_size])
