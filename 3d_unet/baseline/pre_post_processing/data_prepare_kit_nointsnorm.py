@@ -150,7 +150,7 @@ class GenericPreprocessor(object):
 if __name__ == "__main__":
     cada = GenericPreprocessor(downloaded_data_dir= "/newdata/ianlin/CODE/REF/kits19/data",
                                out_data_dir='/newdata/ianlin/Data/KIT-19',
-                               task_name="noresample")
+                               task_name="nointsnorm")
     cada.get_raw_training_data()
     cada.do_preprocessing(minimun=-79, maxmun=304, new_spacing=(3.22, 1.62, 1.62))
 

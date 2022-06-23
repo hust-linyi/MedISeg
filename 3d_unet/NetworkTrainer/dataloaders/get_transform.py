@@ -18,12 +18,22 @@ def get_transform(opt, phase='train'):
                 ToTensor()
             ]
 
-        elif opt.task == 'da2' or opt.task == 'da4':
+        elif opt.task == 'da2':
             transform = [
                 RandomScale([0.85, 1.25]),
                 RandomCrop(opt.model['input_size']),
                 RandomRotation(),
                 RandomMirroring(),
+                ToTensor()
+            ]
+        elif opt.task == 'da4':
+            transform = [
+                RandomScale([0.85, 1.25]),
+                RandomCrop(opt.model['input_size']),
+                RandomRotation(),
+                RandomMirroring(),
+                RandomNoise(),
+                GammaAdjust(),
                 ToTensor()
             ]
         elif opt.task == 'oversample':
