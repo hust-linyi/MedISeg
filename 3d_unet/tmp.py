@@ -5,6 +5,7 @@ import os
 import numpy as np
 from rich import print
 import time
+import shutil
 
 def check_size(path):
     size = 0
@@ -28,15 +29,22 @@ def compress_npy(path):
     print(f'{path}, BEFORE: {size_before/1024/1024/1024:.2f} GB, AFTER: {size_after/1024/1024/1024:.2f} GB')
 
 
-if __name__ == '__main__':
-    data_dir = '/newdata/ianlin/Experiment/KIT19/kit19/'
-    # fold_list = os.listdir(data_dir)
-    # fold_list.remove('ensembleinit')
-    fold_list = ['ensembleinit']
+def rm_pycache(path):
+    for root, dirs, files in os.walk(path):
+        for dir in dirs:
+            if dir == '__pycache__':
+                shutil.rmtree(os.path.join(root, dir))
 
-    for fold in fold_list:
-        time1 = time.time()
-        com_dir = os.path.join(data_dir, fold)
-        compress_npy(com_dir)
-        time2 = time.time()
-        print(f'{fold} done, time: {time2-time1:.2f} s')
+if __name__ == '__main__':
+    # data_dir = '/newdata/ianlin/Experiment/KIT19/kit19/'
+    # fold_list = os.listdir(data_dir)
+
+    # for fold in fold_list:
+    #     time1 = time.time()
+    #     com_dir = os.path.join(data_dir, fold)
+    #     compress_npy(com_dir)
+    #     time2 = time.time()
+    #     print(f'{fold} done, time: {time2-time1:.2f} s')
+
+    data_dir = '/newdata/ianlin/CODE/seg_trick/3d_unet/da1'
+    rm_pycache(data_dir)
