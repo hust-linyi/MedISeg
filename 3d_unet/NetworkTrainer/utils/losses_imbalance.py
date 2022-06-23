@@ -133,10 +133,11 @@ class TverskyLoss(nn.Module):
         axis = identify_axis(y_pred.shape)
         y_pred = nn.Softmax(dim=1)(y_pred)
         y_true = to_onehot(y_pred, y_true)
-        y_pred = torch.clamp(y_pred, self.beta, 1. - self.beta)
+        y_pred = torch.clamp(y_pred, self.eps, 1. - self.eps)
         tp, fp, fn, _ = get_tp_fp_fn_tn(y_pred, y_true, axis)
         tversky = (tp + self.eps) / (tp + self.eps + self.alpha * fn + self.beta * fp)
         return (y_pred.shape[1] - tversky.sum()) / y_pred.shape[1]
+
 
 class OHEMLoss(nn.CrossEntropyLoss):
     """
