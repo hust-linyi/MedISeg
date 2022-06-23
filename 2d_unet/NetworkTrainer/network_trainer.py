@@ -6,13 +6,12 @@ import numpy as np
 import logging
 from torch.utils.data import DataLoader
 from rich import print
-from torchvision import transforms
-from utils.losses_imbalance import DiceLoss, FocalLoss, TverskyLoss, OHEMLoss, CELoss
-from networks.unet import UNet
-from networks.resunet import ResUNet
-from dataloaders.dataset import DataFolder
-from utils.util import save_bestcheckpoint, save_checkpoint, setup_logging, AverageMeter
-
+import albumentations as A
+from NetworkTrainer.utils.losses_imbalance import DiceLoss, FocalLoss, TverskyLoss, OHEMLoss, CELoss
+from NetworkTrainer.networks.unet import UNet
+from NetworkTrainer.networks.resunet import ResUNet
+from NetworkTrainer.dataloaders.dataset import DataFolder
+from NetworkTrainer.utils.util import save_bestcheckpoint, save_checkpoint, setup_logging, AverageMeter
 
 
 class NetworkTrainer:
@@ -37,11 +36,11 @@ class NetworkTrainer:
     
     def set_network(self):
         if 'res' in self.opt.model['name']:
-            self.model = ResUNet(net=self.model['name'], seg_classes=2, colour_classes=3, pretrained=self.opt.model['pretrained'])
+            self.net = ResUNet(net=self.opt.model['name'], seg_classes=2, colour_classes=3, pretrained=self.opt.model['pretrained'])
         else:
-            self.model = UNet(3, 2, 2)
-        self.model = torch.nn.DataParallel(self.model)
-        self.model = self.model.cuda()
+            self.net = UNet(3, 2, 2)
+        self.net = torch.nn.DataParallel(self.net)
+        self.net = self.net.cuda()
 
     def set_loss(self):
         # set loss function
@@ -59,12 +58,12 @@ class NetworkTrainer:
             self.criterion = CELoss(weight=torch.tensor([0.1, 0.5, 1.0]))
 
     def set_optimizer(self):
-        self.optimizer = torch.optim.Adam(self.model.parameters(), self.opt.train['lr'], betas=(0.9, 0.99), weight_decay=self.opt.train['weight_decay'])
+        self.optimizer = torch.optim.Adam(self.net.parameters(), self.opt.train['lr'], betas=(0.9, 0.99), weight_decay=self.opt.train['weight_decay'])
         self.scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(self.optimizer, T_max=self.opt.train['train_epochs'])
 
     def set_dataloader(self):
-        self.train_set = DataFolder(root_dir=self.opt.root_dir, phase='train', fold=self.opt.fold, data_transform=transforms.Compose(self.opt.transform['train']))
-        self.val_set = DataFolder(root_dir=self.opt.root_dir, phase='val', data_transform=transforms.Compose(self.opt.transform['val']), fold=self.opt.fold)
+        self.train_set = DataFolder(root_dir=self.opt.root_dir, phase='train', fold=self.opt.fold, data_transform=A.Compose(self.opt.transform['train']))
+        self.val_set = DataFolder(root_dir=self.opt.root_dir, phase='val', data_transform=A.Compose(self.opt.transform['val']), fold=self.opt.fold)
         self.train_loader = DataLoader(self.train_set, batch_size=self.opt.train['batch_size'], shuffle=True, num_workers=self.opt.train['workers'])
         self.val_loader = DataLoader(self.val_set, batch_size=self.opt.train['batch_size'], shuffle=False, drop_last=False, num_workers=self.opt.train['workers'])
 

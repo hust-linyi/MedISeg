@@ -1,0 +1,6 @@
+sc create --name 2dlosswce --image "10.81.138.201:5000/xsemseg:v_det4" --gpu 1 --cmd "source /newdata/ianlin/.bashrc && conda activate cu11 && cd /newdata/ianlin/CODE/seg_trick/2d_unet/losswce/scripts && bash train_test_cv.sh" --arch ampere
+
+##### TEST #####
+sc create --name 3dlosswcetest --image "10.81.138.201:5000/xsemseg:v_det4" --gpu 1 --cmd "source /newdata/ianlin/.bashrc && conda activate cu11 && cd /newdata/ianlin/CODE/seg_trick/3d_unet/losswce/scripts && bash test.sh" --arch ampere
+
+

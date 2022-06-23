@@ -1,41 +1,44 @@
 import torch
-from NetworkTrainer.networks.unet import UNet
-from NetworkTrainer.networks.resunet import ResUNet
 import os
-from dataloaders.dataset import DataFolder
-from torch.utils.data import DataLoader
-from utils.util import AverageMeterArray
-from tqdm import tqdm
-from utils.accuracy import compute_metrics
 import imageio
 import pandas as pd
 import numpy as np
+from tqdm import tqdm
+from torch.utils.data import DataLoader
+import albumentations as A
+
+from NetworkTrainer.networks.unet import UNet
+from NetworkTrainer.networks.resunet import ResUNet
+from NetworkTrainer.dataloaders.dataset import DataFolder
+from NetworkTrainer.utils.util import AverageMeterArray
+from NetworkTrainer.utils.accuracy import compute_metrics
+
 
 
 class NetworkInference:
     def __init__(self, opt):
-        opt = opt
+        self.opt = opt
 
     def set_GPU_device(self):
-        os.environ['CUDA_VISIBLE_DEVICES'] = ','.join(str(x) for x in self.opt.train['gpus'])
+        os.environ['CUDA_VISIBLE_DEVICES'] = ','.join(str(x) for x in self.opt.test['gpus'])
 
     def set_network(self):
         if 'res' in self.opt.model['name']:
-            self.model = ResUNet(net=self.model['name'], seg_classes=2, colour_classes=3, pretrained=self.opt.model['pretrained'])
+            self.net = ResUNet(net=self.opt.model['name'], seg_classes=2, colour_classes=3, pretrained=self.opt.model['pretrained'])
         else:
-            self.model = UNet(3, 2, 2)
-        self.model = torch.nn.DataParallel(self.model)
-        self.model = self.model.cuda()
+            self.net = UNet(3, 2, 2)
+        self.net = torch.nn.DataParallel(self.net)
+        self.net = self.net.cuda()
         # ----- load trained model ----- #
         print(f"=> loading trained model in {self.opt.test['model_path']}")
         checkpoint = torch.load(self.opt.test['model_path'])
-        self.model.load_state_dict(checkpoint['state_dict'])
+        self.net.load_state_dict(checkpoint['state_dict'])
         print("=> loaded model at epoch {}".format(checkpoint['epoch']))
-        self.model = self.model.module
-        self.model.eval()
+        self.net = self.net.module
+        self.net.eval()
         
     def set_dataloader(self):
-        test_set = DataFolder(root_dir=self.opt.root_dir, phase='test', data_transform=self.opt.transform['test'], fold=self.opt.fold)
+        test_set = DataFolder(root_dir=self.opt.root_dir, phase='test', data_transform=A.Compose(self.opt.transform['test']), fold=self.opt.fold)
         self.test_loader = DataLoader(test_set, batch_size=self.opt.test['batch_size'], shuffle=False, drop_last=False)
 
     def set_save_dir(self):
@@ -46,10 +49,10 @@ class NetworkInference:
     def run(self):
         metric_names = ['p_recall', 'p_precision', 'dice', 'miou']
         all_result = AverageMeterArray(len(metric_names))
-        for i, (input, gt, name) in enumerate(tqdm(self.test_loader)):
-            input = input.cuda()
+        for i, data in enumerate(tqdm(self.test_loader)):
+            input, gt, name = data['image'].cuda(), data['label'], data['name']
 
-            output = self.model(input)
+            output = self.net(input)
             pred = output.data.max(1)[1].cpu().numpy()
 
             for j in range(pred.shape[0]):

@@ -5,7 +5,7 @@ from unittest import result
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from models.resnet import resnet34, resnet101, resnet50
+from NetworkTrainer.networks.resnet import resnet34, resnet101, resnet50
 
 
 class dilated_conv(nn.Module):
