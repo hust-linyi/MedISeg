@@ -1,6 +1,6 @@
 import sys
 sys.path.append('../')
-from NetworkTrainer.network_trainer import NetworkTrainer
+from network_trainer import NetworkTrainer_da3
 from NetworkTrainer.options import Options
 
 def main():
@@ -8,7 +8,7 @@ def main():
     opt.parse()
     opt.save_options()
 
-    trainer = NetworkTrainer(opt)
+    trainer = NetworkTrainer_da3(opt)
     trainer.set_GPU_device()
     trainer.set_logging()
     trainer.set_randomseed()
