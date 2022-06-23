@@ -7,11 +7,13 @@ import logging
 from torch.utils.data import DataLoader
 from rich import print
 import albumentations as A
+import torch.nn.functional as F
 from NetworkTrainer.utils.losses_imbalance import DiceLoss, FocalLoss, TverskyLoss, OHEMLoss, CELoss
 from NetworkTrainer.networks.unet import UNet
 from NetworkTrainer.networks.resunet import ResUNet
+from NetworkTrainer.networks.resunet_ds import ResUNet_ds
 from NetworkTrainer.dataloaders.dataset import DataFolder
-from NetworkTrainer.utils.util import save_bestcheckpoint, save_checkpoint, setup_logging, AverageMeter
+from NetworkTrainer.utils.util import save_bestcheckpoint, save_checkpoint, setup_logging, compute_loss_list, AverageMeter
 
 
 class NetworkTrainer:
@@ -37,6 +39,8 @@ class NetworkTrainer:
     def set_network(self):
         if 'res' in self.opt.model['name']:
             self.net = ResUNet(net=self.opt.model['name'], seg_classes=2, colour_classes=3, pretrained=self.opt.model['pretrained'])
+            if self.opt.train['deeps']:
+                self.net = ResUNet_ds(net=self.opt.model['name'], seg_classes=2, colour_classes=3, pretrained=self.opt.model['pretrained'])
         else:
             self.net = UNet(3, 2, 2)
         self.net = torch.nn.DataParallel(self.net)
@@ -75,12 +79,26 @@ class NetworkTrainer:
             volume_batch, label_batch = sampled_batch['image'], sampled_batch['label']
             volume_batch, label_batch = volume_batch.cuda(), label_batch.cuda()
             outputs = self.net(volume_batch)
-            loss = self.criterion(outputs, label_batch)
+            if not self.opt.train['deeps']:
+                loss = self.criterion(outputs, label_batch)
+            else:
+                # compute loss for each deep layer, i.e., x0, x1, x2, x3
+                gts = []
+                loss = 0.
+                for i in range(4):
+                    gt = label_batch.float().cuda().view(label_batch.shape[0], 1, label_batch.shape[1], label_batch.shape[2])
+                    h, w = gt.shape[2] // (2 ** i), gt.shape[3] // (2 ** i)
+                    gt = F.interpolate(gt, size=[h, w], mode='bilinear', align_corners=True)
+                    gt = gt.long().squeeze(1)
+                    gts.append(gt)
+                loss_list = compute_loss_list(self.criterion, outputs, gts)
+                for iloss in loss_list:
+                    loss += iloss
 
             self.optimizer.zero_grad()
             loss.backward()
             self.optimizer.step()
-            losses.update(loss.item(), outputs.size(0))
+            losses.update(loss.item(), volume_batch.size(0))
         return losses.avg
 
 
@@ -92,6 +110,8 @@ class NetworkTrainer:
                 volume_batch, label_batch = sampled_batch['image'], sampled_batch['label']
                 volume_batch, label_batch = volume_batch.cuda(), label_batch.cuda()
                 outputs = self.net(volume_batch)
+                if self.opt.train['deeps']:
+                    outputs = outputs[0]
                 val_loss = DiceLoss()(outputs, label_batch)
                 val_losses.update(val_loss.item(), outputs.size(0))
         return val_losses.avg

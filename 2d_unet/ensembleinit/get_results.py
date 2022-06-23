@@ -1,8 +1,10 @@
+import sys
+sys.path.append('../')
 import os
 import numpy as np
 import utils.utils as utils
 from utils.accuracy import compute_metrics
-from options import Options
+from NetworkTrainer.options import Options
 import cv2
 import pandas as pd
 
@@ -53,5 +55,5 @@ def get_ensemble(mode='vote'):
 
 
 if __name__=='__main__':
-    # get_ensemble('avg')
-    get_ensemble('vote')
+    get_ensemble('avg')
+    # get_ensemble('vote')

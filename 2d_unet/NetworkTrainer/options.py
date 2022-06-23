@@ -33,6 +33,7 @@ class Options:
         parser.add_argument('--train-checkpoint', type=str, default='', help='checkpoint')
         parser.add_argument('--train-seed', type=str, default=2022, help='bn or in')
         parser.add_argument('--train-loss', type=str, default='ce', help='save directory')
+        parser.add_argument('--train-deeps', type=bool, default=False, help='save directory')
         parser.add_argument('--test-test-epoch', type=int, default=0, help='test epoch')
         parser.add_argument('--test-gpus', type=list, default=[0, ], help='select gpu devices')
         parser.add_argument('--test-save-flag', type=bool, default=False, help='True or False')
@@ -65,6 +66,7 @@ class Options:
         self.train['gpus'] = args.train_gpus
         self.train['seed'] = args.train_seed
         self.train['loss'] = args.train_loss
+        self.train['deeps'] = args.train_deeps
 
         # --- resume training --- #
         self.train['start_epoch'] = args.train_start_epoch

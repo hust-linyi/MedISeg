@@ -1,9 +1,11 @@
+import sys
+sys.path.append('../')
 import time
+from unittest import result
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from models.resnet import resnet34, resnet101
-from models.resnet1 import resnet34 as Resnet34
+from NetworkTrainer.networks.resnet import resnet34, resnet101, resnet50
 
 
 class dilated_conv(nn.Module):
@@ -57,14 +59,17 @@ class ConvUpBlock(nn.Module):
 
 
 # Transfer Learning ResNet as Encoder part of UNet
-class ResUNet34(nn.Module):
-    def __init__(self, net='res34', seg_classes = 2, colour_classes = 3, fixed_feature=False, pretrained=False):
+class ResUNet_ds(nn.Module):
+    def __init__(self, net='res50', seg_classes = 2, colour_classes = 3, fixed_feature=False, pretrained=False):
         super().__init__()
         # load weight of pre-trained resnet
         self.resnet = resnet34(pretrained=pretrained)
         l = [64, 64, 128, 256, 512]
         if net == 'res101':
             self.resnet = resnet101(pretrained=pretrained)
+            l = [64, 256, 512, 1024, 2048]
+        if net == 'res50':
+            self.resnet = resnet50(pretrained=pretrained)
             l = [64, 256, 512, 1024, 2048]
         # self.resnet1 = Resnet34(pretrained=False)
         if fixed_feature:
@@ -104,5 +109,11 @@ class ResUNet34(nn.Module):
         x2 = self.u7(x3, s2)
         x1 = self.u8(x2, s1)
         out = self.seg(x1)
-        # return out
-        return out, x1, x2, x3
+        return [out, x1, x2, x3]
+
+
+if __name__=='__main__':
+    x = torch.randn((2, 3, 256, 256))
+    net = ResUNet()
+    pred = net(x)
+    print(pred.shape)
