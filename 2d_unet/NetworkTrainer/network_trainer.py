@@ -55,7 +55,7 @@ class NetworkTrainer:
         elif self.opt.train['loss'] == 'ohem':
             self.criterion = OHEMLoss()
         elif self.opt.train['loss'] == 'wce':
-            self.criterion = CELoss(weight=torch.tensor([0.1, 0.5, 1.0]))
+            self.criterion = CELoss(weight=torch.tensor([0.2, 0.8]))
 
     def set_optimizer(self):
         self.optimizer = torch.optim.Adam(self.net.parameters(), self.opt.train['lr'], betas=(0.9, 0.99), weight_decay=self.opt.train['weight_decay'])

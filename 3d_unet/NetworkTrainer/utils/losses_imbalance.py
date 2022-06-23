@@ -53,7 +53,7 @@ class FocalLoss(nn.Module):
     """
 
     def __init__(self, apply_nonlin=None, alpha=0.25, gamma=2, balance_index=0, smooth=1e-5, size_average=True):
-        super(FocalLossV2, self).__init__()
+        super(FocalLoss, self).__init__()
         self.apply_nonlin = apply_nonlin
         self.alpha = alpha
         self.gamma = gamma

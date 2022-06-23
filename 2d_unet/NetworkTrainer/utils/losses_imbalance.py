@@ -11,7 +11,7 @@ class CELoss(nn.Module):
 
     def __call__(self, y_pred, y_true):
         y_true = y_true.long()
-        if self.weight:
+        if self.weight is not None:
             self.weight = self.weight.to(y_pred.device)
         if len(y_true.shape) == 5:
             y_true = y_true[:, 0, ...]
@@ -36,24 +36,94 @@ class DiceLoss(nn.Module):
         return dice.mean()
 
 
+# taken from https://github.com/JunMa11/SegLoss/blob/master/test/nnUNetV2/loss_functions/focal_loss.py
 class FocalLoss(nn.Module):
-    def __init__(self, alpha=0.7, gamma=2., eps=1e-7):
+    """
+    copy from: https://github.com/Hsuxu/Loss_ToolBox-PyTorch/blob/master/FocalLoss/FocalLoss.py
+    This is a implementation of Focal Loss with smooth label cross entropy supported which is proposed in
+    'Focal Loss for Dense Object Detection. (https://arxiv.org/abs/1708.02002)'
+        Focal_Loss= -1*alpha*(1-pt)*log(pt)
+    :param num_class:
+    :param alpha: (tensor) 3D or 4D the scalar factor for this criterion
+    :param gamma: (float,double) gamma > 0 reduces the relative loss for well-classified examples (p>0.5) putting more
+                    focus on hard misclassified example
+    :param smooth: (float,double) smooth value when cross entropy
+    :param balance_index: (int) balance class index, should be specific when alpha is float
+    :param size_average: (bool, optional) By default, the losses are averaged over each loss element in the batch.
+    """
+
+    def __init__(self, apply_nonlin=None, alpha=0.25, gamma=2, balance_index=0, smooth=1e-5, size_average=True):
         super(FocalLoss, self).__init__()
+        self.apply_nonlin = apply_nonlin
         self.alpha = alpha
         self.gamma = gamma
-        self.eps = eps
-    def forward(self, y_pred, y_true):
-        axis = identify_axis(y_pred.shape)
-        y_pred = nn.Softmax(dim=1)(y_pred)
-        y_true = to_onehot(y_pred, y_true)
-        y_pred = torch.clamp(y_pred, self.eps, 1. - self.eps)
-        cross_entropy = -y_true * torch.log(y_pred)
-        loss = self.alpha * torch.pow(1 - y_pred, self.gamma) * cross_entropy
-        return loss.mean()
+        self.balance_index = balance_index
+        self.smooth = smooth
+        self.size_average = size_average
+
+        if self.smooth is not None:
+            if self.smooth < 0 or self.smooth > 1.0:
+                raise ValueError('smooth value should be in [0,1]')
+
+    def forward(self, logit, target):
+        if self.apply_nonlin is not None:
+            logit = self.apply_nonlin(logit)
+        num_class = logit.shape[1]
+
+        if logit.dim() > 2:
+            # N,C,d1,d2 -> N,C,m (m=d1*d2*...)
+            logit = logit.view(logit.size(0), logit.size(1), -1)
+            logit = logit.permute(0, 2, 1).contiguous()
+            logit = logit.view(-1, logit.size(-1))
+        target = torch.squeeze(target, 1)
+        target = target.view(-1, 1)
+        alpha = self.alpha
+
+        if alpha is None:
+            alpha = torch.ones(num_class, 1)
+        elif isinstance(alpha, (list, np.ndarray)):
+            assert len(alpha) == num_class
+            alpha = torch.FloatTensor(alpha).view(num_class, 1)
+            alpha = alpha / alpha.sum()
+        elif isinstance(alpha, float):
+            alpha = torch.ones(num_class, 1)
+            alpha = alpha * (1 - self.alpha)
+            alpha[self.balance_index] = self.alpha
+
+        else:
+            raise TypeError('Not support alpha type')
+
+        if alpha.device != logit.device:
+            alpha = alpha.to(logit.device)
+
+        idx = target.cpu().long()
+
+        one_hot_key = torch.FloatTensor(target.size(0), num_class).zero_()
+        one_hot_key = one_hot_key.scatter_(1, idx, 1)
+        if one_hot_key.device != logit.device:
+            one_hot_key = one_hot_key.to(logit.device)
+
+        if self.smooth:
+            one_hot_key = torch.clamp(
+                one_hot_key, self.smooth / (num_class - 1), 1.0 - self.smooth)
+        pt = (one_hot_key * logit).sum(1) + self.smooth
+        logpt = pt.log()
+
+        gamma = self.gamma
+
+        alpha = alpha[idx]
+        alpha = torch.squeeze(alpha)
+        loss = -1 * alpha * torch.pow((1 - pt), gamma) * logpt
+
+        if self.size_average:
+            loss = loss.mean()
+        else:
+            loss = loss.sum()
+        return loss
 
 
 class TverskyLoss(nn.Module):
-    def __init__(self, alpha=0.5, beta=1e-8, eps=1e-7):
+    def __init__(self, alpha=0.3, beta=0.7, eps=1e-7):
         super(TverskyLoss, self).__init__()
         self.alpha = alpha
         self.beta = beta
@@ -66,7 +136,7 @@ class TverskyLoss(nn.Module):
         y_pred = torch.clamp(y_pred, self.beta, 1. - self.beta)
         tp, fp, fn, _ = get_tp_fp_fn_tn(y_pred, y_true, axis)
         tversky = (tp + self.eps) / (tp + self.eps + self.alpha * fn + self.beta * fp)
-        return y_pred.shape[1] - tversky.sum()
+        return (y_pred.shape[1] - tversky.sum()) / y_pred.shape[1]
 
 class OHEMLoss(nn.CrossEntropyLoss):
     """
@@ -79,7 +149,7 @@ class OHEMLoss(nn.CrossEntropyLoss):
         self.ignore_index = ignore_index
 
     def forward(self, y_pred, y_true):
-        res = CELoss()(y_pred, y_true)
+        res = CELoss(reduction='none')(y_pred, y_true)
         num_voxels = np.prod(res.shape, dtype=np.int64)
         res, _ = torch.topk(res.view((-1, )), int(num_voxels * self.k), sorted=False)
         return res.mean()
@@ -166,6 +236,6 @@ if __name__=='__main__':
     y_true = torch.randint(0, 3, (1, 5, 5, 5))
     # loss = DiceLoss()
     # loss = FocalLoss()
-    # loss = TverskyLoss()
-    loss = OHEMLoss()
+    loss = TverskyLoss()
+    # loss = OHEMLoss()
     print(loss(y_pred, y_true))
