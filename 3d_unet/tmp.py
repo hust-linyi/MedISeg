@@ -46,5 +46,5 @@ if __name__ == '__main__':
     #     time2 = time.time()
     #     print(f'{fold} done, time: {time2-time1:.2f} s')
 
-    data_dir = '/newdata/ianlin/CODE/seg_trick/3d_unet/da1'
+    data_dir = '/newdata/ianlin/CODE/seg_trick/'
     rm_pycache(data_dir)
