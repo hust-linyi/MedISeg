@@ -68,8 +68,8 @@ class ResUNet(nn.Module):
         if net == 'res101':
             self.resnet = resnet101(pretrained=pretrained)
             l = [64, 256, 512, 1024, 2048]
-        if net == 'res50':
-            self.resnet = resnet50(pretrained=pretrained)
+        if 'res50' in net:
+            self.resnet = resnet50(pretrained=pretrained, arch=net)
             l = [64, 256, 512, 1024, 2048]
         # self.resnet1 = Resnet34(pretrained=False)
         if fixed_feature:

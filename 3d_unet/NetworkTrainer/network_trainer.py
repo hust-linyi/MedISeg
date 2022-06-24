@@ -1,7 +1,6 @@
 # -*- encoding: utf-8 -*-
 import random
 import os
-from tkinter.tix import CELL
 from tqdm import tqdm
 import numpy as np
 import torch
@@ -119,7 +118,7 @@ class NetworkTrainer:
             state = {'epoch': epoch + 1, 'state_dict': self.net.state_dict(), 'optimizer': self.optimizer.state_dict()}
             train_loss = self.train(epoch)
             val_loss = self.val()
-            self.scheduler.step(val_loss)
+            self.scheduler.step()
             self.logger_results.info('{:d}\t{:.4f}\t{:.4f}'.format(epoch+1, train_loss, val_loss))
 
             if val_loss<best_val_loss:
