@@ -5,10 +5,13 @@ from tqdm import tqdm
 import numpy as np
 import torch
 import torch.optim as optim
+import torch.nn.functional as F
+
 from torch.utils.data import DataLoader
 from NetworkTrainer.networks.unet import UNet3D
+from NetworkTrainer.networks.unet_ds import UNet3D_ds
 from NetworkTrainer.dataloaders.data_kit import DataFolder
-from NetworkTrainer.utils.util import save_bestcheckpoint, save_checkpoint, setup_logging, AverageMeter
+from NetworkTrainer.utils.util import save_bestcheckpoint, save_checkpoint, setup_logging, compute_loss_list, AverageMeter
 import logging
 from rich import print
 from torchvision import transforms
@@ -37,6 +40,9 @@ class NetworkTrainer:
     
     def set_network(self):
         self.net = UNet3D(num_classes=3, input_channels=1, act='relu', norm=self.opt.train['norm'])
+        if self.opt.train['deeps']:
+            self.net = UNet3D_ds(num_classes=3, input_channels=1, act='relu', norm=self.opt.train['norm'])
+                
         self.net = torch.nn.DataParallel(self.net)
         self.net = self.net.cuda()
         if self.opt.model['pretrained']:
@@ -57,7 +63,7 @@ class NetworkTrainer:
         elif self.opt.train['loss'] == 'dice':
             self.criterion = DiceLoss()
         elif self.opt.train['loss'] == 'focal':
-            self.criterion = FocalLoss()
+            self.criterion = FocalLoss(apply_nonlin=torch.nn.Softmax(dim=1))
         elif self.opt.train['loss'] == 'tversky':
             self.criterion = TverskyLoss()
         elif self.opt.train['loss'] == 'ohem':
@@ -76,19 +82,33 @@ class NetworkTrainer:
         self.val_loader = DataLoader(self.val_set, batch_size=self.opt.train['batch_size'], shuffle=False, drop_last=False, num_workers=self.opt.train['workers'])
 
 
-    def train(self, epoch):
+    def train(self):
         self.net.train()
         losses = AverageMeter()
         for i_batch, sampled_batch in enumerate(self.train_loader):
             volume_batch, label_batch = sampled_batch['image'], sampled_batch['label']
             volume_batch, label_batch = volume_batch.cuda(), label_batch.cuda()
             outputs = self.net(volume_batch)
-            loss = self.criterion(outputs, label_batch)
+            if not self.opt.train['deeps']:
+                loss = self.criterion(outputs, label_batch)
+            else:
+                # compute loss for each deep layer, i.e., x0, x1, x2, x3
+                gts = [label_batch]
+                loss = 0.
+                for i in range(3):
+                    gt = label_batch
+                    h, w, d = gt.shape[2] // (2 ** i), gt.shape[3] // (2 ** i), gt.shape[4] // (2 ** i)
+                    gt = F.interpolate(gt, size=[h, w, d], mode='trilinear', align_corners=True)
+                    gt = gt.long().squeeze(1)
+                    gts.append(gt)
+                loss_list = compute_loss_list(self.criterion, outputs, gts)
+                for iloss in loss_list:
+                    loss += iloss               
 
             self.optimizer.zero_grad()
             loss.backward()
             self.optimizer.step()
-            losses.update(loss.item(), outputs.size(0))
+            losses.update(loss.item(), volume_batch.size(0))
         return losses.avg
 
 
@@ -100,6 +120,8 @@ class NetworkTrainer:
                 volume_batch, label_batch = sampled_batch['image'], sampled_batch['label']
                 volume_batch, label_batch = volume_batch.cuda(), label_batch.cuda()
                 outputs = self.net(volume_batch)
+                if self.opt.train['deeps']:
+                    outputs = outputs[0]                
                 val_loss = torch.nn.CrossEntropyLoss()(outputs, label_batch[:, 0, ...].long())
                 val_losses.update(val_loss.item(), outputs.size(0))
         return val_losses.avg
@@ -116,9 +138,9 @@ class NetworkTrainer:
         best_val_loss = 100.0    
         for epoch in dataprocess:
             state = {'epoch': epoch + 1, 'state_dict': self.net.state_dict(), 'optimizer': self.optimizer.state_dict()}
-            train_loss = self.train(epoch)
+            train_loss = self.train()
             val_loss = self.val()
-            self.scheduler.step()
+            self.scheduler.step(val_loss)
             self.logger_results.info('{:d}\t{:.4f}\t{:.4f}'.format(epoch+1, train_loss, val_loss))
 
             if val_loss<best_val_loss:

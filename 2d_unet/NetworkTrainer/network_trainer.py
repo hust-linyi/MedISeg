@@ -53,7 +53,7 @@ class NetworkTrainer:
         elif self.opt.train['loss'] == 'dice':
             self.criterion = DiceLoss()
         elif self.opt.train['loss'] == 'focal':
-            self.criterion = FocalLoss()
+            self.criterion = FocalLoss(apply_nonlin=torch.nn.Softmax(dim=1))
         elif self.opt.train['loss'] == 'tversky':
             self.criterion = TverskyLoss()
         elif self.opt.train['loss'] == 'ohem':

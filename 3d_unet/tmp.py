@@ -35,6 +35,13 @@ def rm_pycache(path):
             if dir == '__pycache__':
                 shutil.rmtree(os.path.join(root, dir))
 
+
+def rm_checkpoint(path):
+    for root, dirs, files in os.walk(path):
+        for file in files:
+            if file.endswith('1.pth.tar'):
+                os.remove(os.path.join(root, file))
+
 if __name__ == '__main__':
     # data_dir = '/newdata/ianlin/Experiment/KIT19/kit19/'
     # fold_list = os.listdir(data_dir)
@@ -46,5 +53,8 @@ if __name__ == '__main__':
     #     time2 = time.time()
     #     print(f'{fold} done, time: {time2-time1:.2f} s')
 
-    data_dir = '/newdata/ianlin/CODE/seg_trick/'
-    rm_pycache(data_dir)
+    # data_dir = '/newdata/ianlin/CODE/seg_trick/'
+    # rm_pycache(data_dir)
+
+    data_dir = '/newdata/ianlin/Experiment/ISIC-2018/isic2018'
+    rm_checkpoint(data_dir)

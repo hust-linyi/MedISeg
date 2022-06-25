@@ -12,7 +12,7 @@ from NetworkTrainer.networks.resunet import ResUNet
 from NetworkTrainer.dataloaders.dataset import DataFolder
 from NetworkTrainer.utils.util import AverageMeterArray
 from NetworkTrainer.utils.accuracy import compute_metrics
-
+from NetworkTrainer.utils.post_process import *
 
 
 class NetworkInference:
@@ -46,16 +46,33 @@ class NetworkInference:
             if not os.path.exists(os.path.join(self.opt.test['save_dir'], 'img')):
                 os.mkdir(os.path.join(self.opt.test['save_dir'], 'img'))
     
+    def post_process(self, pred):
+        if self.opt.post['abl']:
+            pred = abl(pred, for_which_classes=[1])
+        if self.opt.post['rsa']:
+            pred = rsa(pred, for_which_classes=[1], minimum_valid_object_size={1: 120})
+        return pred
+
     def run(self):
         metric_names = ['p_recall', 'p_precision', 'dice', 'miou']
         all_result = AverageMeterArray(len(metric_names))
         for i, data in enumerate(tqdm(self.test_loader)):
             input, gt, name = data['image'].cuda(), data['label'], data['name']
-
-            output = self.net(input)
-            pred = output.data.max(1)[1].cpu().numpy()
+            tta = TTA_2d(self.opt.test['if_tta'])
+            input_list = tta.img_list(input)
+            y_list = []
+            for x in input_list:
+                x = torch.from_numpy(x.copy()).cuda()
+                y = self.net(x)
+                y = torch.nn.Softmax(dim=1)(y)[:, 1]
+                y = y.cpu().detach().numpy()
+                y_list.append(y)
+            y_list = tta.img_list_inverse(y_list)
+            output = np.mean(y_list, axis=0)
+            pred = (output > 0.5).astype(np.uint8)
 
             for j in range(pred.shape[0]):
+                pred[j] = self.post_process(pred[j])
                 metrics = compute_metrics(pred[j], gt[j], metric_names)
                 all_result.update([metrics[metric_name] for metric_name in metric_names])
                 if self.opt.test['save_flag']:

@@ -1,0 +1,7 @@
+sc create --name 2dbaseline --image "10.81.138.201:5000/xsemseg:v_det4" --gpu 1 --cmd "source /newdata/ianlin/.bashrc && conda activate cu11 && cd /newdata/ianlin/CODE/seg_trick/2d_unet/baseline/scripts/ && bash train_test.sh" --arch ampere
+
+sc create --name 2dbaseline0 --image "10.81.138.201:5000/xsemseg:v_det4" --gpu 1 --cmd "source /newdata/ianlin/.bashrc && conda activate cu11 && cd /newdata/ianlin/CODE/seg_trick/2d_unet/baseline/ && python train.py --task baseline --fold 0" --arch ampere
+sc create --name 2dbaseline1 --image "10.81.138.201:5000/xsemseg:v_det4" --gpu 1 --cmd "source /newdata/ianlin/.bashrc && conda activate cu11 && cd /newdata/ianlin/CODE/seg_trick/2d_unet/baseline/ && python train.py --task baseline --fold 1" --arch ampere
+sc create --name 2dbaseline2 --image "10.81.138.201:5000/xsemseg:v_det4" --gpu 1 --cmd "source /newdata/ianlin/.bashrc && conda activate cu11 && cd /newdata/ianlin/CODE/seg_trick/2d_unet/baseline/ && python train.py --task baseline --fold 2" --arch ampere
+sc create --name 2dbaseline3 --image "10.81.138.201:5000/xsemseg:v_det4" --gpu 1 --cmd "source /newdata/ianlin/.bashrc && conda activate cu11 && cd /newdata/ianlin/CODE/seg_trick/2d_unet/baseline/ && python train.py --task baseline --fold 3" --arch ampere
+sc create --name 2dbaseline4 --image "10.81.138.201:5000/xsemseg:v_det4" --gpu 1 --cmd "source /newdata/ianlin/.bashrc && conda activate cu11 && cd /newdata/ianlin/CODE/seg_trick/2d_unet/baseline/ && python train.py --task baseline --fold 4" --arch ampere

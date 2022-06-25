@@ -141,3 +141,10 @@ def save_checkpoint(state, epoch, save_dir, cp_flag):
 def save_bestcheckpoint(state, save_dir):
     cp_dir = '{:s}/checkpoints'.format(save_dir)
     torch.save(state, '{:s}/checkpoint_0.pth.tar'.format(cp_dir))
+
+
+def compute_loss_list(loss_func, pred=[], target=[], **kwargs):
+    losses = []
+    for ipred, itarget in zip(pred, target):
+        losses.append(loss_func(ipred, itarget, **kwargs))
+    return losses

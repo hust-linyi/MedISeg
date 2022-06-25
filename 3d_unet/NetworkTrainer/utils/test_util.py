@@ -100,19 +100,6 @@ def test_single_case(net, image, stride_xy, stride_z, patch_size, num_classes=1)
         score_map = score_map[:,wl_pad:wl_pad+w,hl_pad:hl_pad+h,dl_pad:dl_pad+d]
     return label_map, score_map
 
-def cal_dice(prediction, label, num=2):
-    total_dice = np.zeros(num-1)
-    for i in range(1, num):
-        prediction_tmp = (prediction==i)
-        label_tmp = (label==i)
-        prediction_tmp = prediction_tmp.astype(np.float)
-        label_tmp = label_tmp.astype(np.float)
-
-        dice = 2 * np.sum(prediction_tmp * label_tmp) / (np.sum(prediction_tmp) + np.sum(label_tmp))
-        total_dice[i - 1] += dice
-
-    return total_dice
-
 
 def calculate_metric_percase(pred, gt):
     # measurement: recall, precision, dice, miou
@@ -144,12 +131,6 @@ def calculate_metric_percase(pred, gt):
         result['dice2'] = metric.binary.dc(pred2, gt2)
         result['miou2'] = jaccard_score(gt2, pred2)
 
-    # precision = metric.binary.precision(pred, gt)
-    # dice = metric.binary.dc(pred, gt)
-    # jc = metric.binary.jc(pred, gt)
-    # hd = metric.binary.hd95(pred, gt)
-    # asd = metric.binary.asd(pred, gt)
-    # return dice, jc, hd, asd
     return result
 
 

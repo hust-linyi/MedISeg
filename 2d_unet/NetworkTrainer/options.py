@@ -21,7 +21,7 @@ class Options:
         parser.add_argument('--name', type=str, default='res50', help='res34, res50, res101, res152')
         parser.add_argument('--pretrained', type=bool, default=False, help='True or False')
         parser.add_argument('--in-c', type=int, default=3, help='input channel')
-        parser.add_argument('--input-size', type=list, default=[256,192], help='input size of the image')
+        parser.add_argument('--input-size', type=list, default=[256,256], help='input size of the image')
         parser.add_argument('--train-train-epochs', type=int, default=200, help='number of training epochs')
         parser.add_argument('--train-batch-size', type=int, default=32, help='batch size')
         parser.add_argument('--train-checkpoint-freq', type=int, default=30, help='epoch to save checkpoints')
@@ -38,6 +38,10 @@ class Options:
         parser.add_argument('--test-gpus', type=list, default=[0, ], help='select gpu devices')
         parser.add_argument('--test-save-flag', type=bool, default=False, help='True or False')
         parser.add_argument('--test-batch-size', type=int, default=4, help='batch size')
+        parser.add_argument('--test-if_tta', type=bool, default=False, help='True or False')       
+        parser.add_argument('--post-abl', type=bool, default=False, help='True or False, post processing')
+        parser.add_argument('--post-rsa', type=bool, default=False, help='True or False, post processing')
+
 
         args = parser.parse_args()
 
@@ -77,13 +81,14 @@ class Options:
         self.test['gpus'] = args.test_gpus
         self.test['save_flag'] = args.test_save_flag
         self.test['batch_size'] = args.test_batch_size
+        self.test['if_tta'] = args.test_if_tta
         self.test['save_dir'] = '{:s}/test_results'.format(self.train['save_dir'])
         self.test['checkpoint_dir'] = '{:s}/checkpoints/'.format(self.train['save_dir'])
         self.test['model_path'] = '{:s}/checkpoint_{:d}.pth.tar'.format(self.test['checkpoint_dir'], self.test['test_epoch'])
 
-
         # --- post processing --- #
-        self.post['min_area'] = 20  # minimum area for an object
+        self.post['abl'] = args.post_abl
+        self.post['rsa'] = args.post_rsa
 
         # define data transforms for training
         self.transform['train'] = get_transform(self, 'train')

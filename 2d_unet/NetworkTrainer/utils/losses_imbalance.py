@@ -1,4 +1,7 @@
-from secrets import token_hex
+"""
+In ISIC dataset, the label shape is (b, x, y)
+In Kitti dataset, the label shape is (b, 1, x, y, z)
+"""
 import torch
 import torch.nn as nn
 import numpy as np

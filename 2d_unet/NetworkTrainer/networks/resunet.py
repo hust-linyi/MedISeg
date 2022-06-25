@@ -63,14 +63,15 @@ class ResUNet(nn.Module):
     def __init__(self, net='res50', seg_classes = 2, colour_classes = 3, fixed_feature=False, pretrained=False):
         super().__init__()
         # load weight of pre-trained resnet
-        self.resnet = resnet34(pretrained=pretrained)
         l = [64, 64, 128, 256, 512]
-        if net == 'res101':
+        if 'res101' in net:
             self.resnet = resnet101(pretrained=pretrained)
             l = [64, 256, 512, 1024, 2048]
-        if 'res50' in net:
+        elif 'res50' in net:
             self.resnet = resnet50(pretrained=pretrained, arch=net)
             l = [64, 256, 512, 1024, 2048]
+        else:
+            raise ValueError('Unknown network architecture: {}'.format(net))
         # self.resnet1 = Resnet34(pretrained=False)
         if fixed_feature:
             for param in self.resnet.parameters():

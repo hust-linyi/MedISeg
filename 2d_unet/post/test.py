@@ -8,6 +8,9 @@ def main():
     opt.parse()
     opt.save_options()
 
+    # DEBUG
+    opt.test['model_path'] = opt.test['model_path'].replace(opt.task, 'baseline')
+    
     inferencer = NetworkInference(opt)
     inferencer.set_GPU_device()
     inferencer.set_network()
