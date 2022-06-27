@@ -24,7 +24,7 @@ class Options:
         parser.add_argument('--input-size', type=list, default=[256,256], help='input size of the image')
         parser.add_argument('--train-train-epochs', type=int, default=200, help='number of training epochs')
         parser.add_argument('--train-batch-size', type=int, default=32, help='batch size')
-        parser.add_argument('--train-checkpoint-freq', type=int, default=30, help='epoch to save checkpoints')
+        parser.add_argument('--train-checkpoint-freq', type=int, default=500, help='epoch to save checkpoints')
         parser.add_argument('--train-lr', type=float, default=3e-4, help='initial learning rate')
         parser.add_argument('--train-weight-decay', type=float, default=1e-5, help='weight decay')
         parser.add_argument('--train-workers', type=int, default=16, help='number of workers to load images')

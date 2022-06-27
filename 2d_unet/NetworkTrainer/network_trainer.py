@@ -138,7 +138,7 @@ class NetworkTrainer:
                 save_bestcheckpoint(state, self.opt.train['save_dir'])
 
                 print(f'save best checkpoint at epoch {epoch}')
-            if epoch % self.opt.train['checkpoint_freq'] == 0:
+            if (epoch > self.opt.train['train_epochs'] / 2.) (epoch % self.opt.train['checkpoint_freq'] == 0):
                 save_checkpoint(state, epoch, self.opt.train['save_dir'], True)
 
         logging.info("training finished")

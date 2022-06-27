@@ -142,3 +142,4 @@ def get_imglist(root_path, fold):
     img_list = img_list[valstart:valend]
     img_list = [os.path.join(root_path, f) for f in img_list]
     return img_list
+
