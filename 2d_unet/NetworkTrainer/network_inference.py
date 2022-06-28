@@ -58,7 +58,7 @@ class NetworkInference:
         all_result = AverageMeterArray(len(metric_names))
         for i, data in enumerate(tqdm(self.test_loader)):
             input, gt, name = data['image'].cuda(), data['label'], data['name']
-            tta = TTA_2d(self.opt.test['if_tta'])
+            tta = TTA_2d(flip=self.opt.test['flip'], rotate=self.opt.test['rotate'])
             input_list = tta.img_list(input)
             y_list = []
             for x in input_list:
@@ -78,6 +78,7 @@ class NetworkInference:
                 if self.opt.test['save_flag']:
                     imageio.imwrite(os.path.join(self.opt.test['save_dir'], 'img', f'{name[j]}_pred.png'), (pred[j] * 255).astype(np.uint8))
                     imageio.imwrite(os.path.join(self.opt.test['save_dir'], 'img', f'{name[j]}_gt.png'), (gt[j].numpy() * 255).astype(np.uint8))
+                    np.save(os.path.join(self.opt.test['save_dir'], 'img', f'{name[j]}_prob.npy'), output[j])
 
         for i in range(len(metric_names)):
             print(f"{metric_names[i]}: {all_result.avg[i]:.4f}", end='\t')

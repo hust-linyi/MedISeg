@@ -136,7 +136,7 @@ class NetworkInfer:
             if self.opt.test['save_flag']:
                 np.save(os.path.join(self.opt.test['save_dir'], 'img', case_name+'_pred.npy'), prediction)
                 # np.save(os.path.join(self.opt.test['save_dir'], 'img', case_name+'_gt.npy'), label)
-                # np.save(os.path.join(self.opt.test['save_dir'], 'img', case_name+'_prob.npy'), score_map)
+                np.save(os.path.join(self.opt.test['save_dir'], 'img', case_name+'_prob.npy'), score_map)
                 # np.save(os.path.join(self.opt.test['save_dir'], 'img', case_name+'_img.npy'), image)
             print(case_name, single_metric)
         result_avg = [[total_metric.avg[i]*100 for i in range(len(metric_names))]]

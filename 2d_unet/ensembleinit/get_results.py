@@ -2,8 +2,8 @@ import sys
 sys.path.append('../')
 import os
 import numpy as np
-import utils.utils as utils
-from utils.accuracy import compute_metrics
+from NetworkTrainer.utils import utils
+from NetworkTrainer.utils.accuracy import compute_metrics
 from NetworkTrainer.options import Options
 import cv2
 import pandas as pd

@@ -148,33 +148,33 @@ class TTA():
 
 
 class TTA_2d():
-    def __init__(self, if_tta):
-        self.if_tta = if_tta
+    def __init__(self, flip=False, rotate=False):
+        self.flip = flip
+        self.rotate = rotate
 
     def img_list(self, img):
         # for ISIC, the shape is torch.size(b, c, h, w)
         img = img.detach().cpu().numpy()
         out = []
         out.append(img)
-        if not self.if_tta:
-            return out
-        # apply flip
-        for i in range(2,4):
-            out.append(np.flip(img, axis=i))
-        # apply rotation
-        for i in range(1, 4):
-            out.append(np.rot90(img, k=i, axes=(2,3)))
+        if self.flip:
+            # apply flip
+            for i in range(2,4):
+                out.append(np.flip(img, axis=i))
+        if self.rotate:
+            # apply rotation
+            for i in range(1, 4):
+                out.append(np.rot90(img, k=i, axes=(2,3)))
         return out
     
     def img_list_inverse(self, img_list):
         # for ISIC, the shape is numpy(b, h, w)
         out = [img_list[0]]
-        if not self.if_tta:
-            return img_list
-        # apply flip
-        for i in range(2):
-            out.append(np.flip(img_list[i+1], axis=i+1))
-        if len(img_list) > 4:
+        if self.flip:
+            # apply flip
+            for i in range(2):
+                out.append(np.flip(img_list[i+1], axis=i+1))
+        if self.rotate:
             # apply rotation
             for i in range(3):
                 out.append(np.rot90(img_list[i+3], k=-(i+1), axes=(1,2)))

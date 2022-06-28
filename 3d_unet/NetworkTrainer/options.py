@@ -95,15 +95,15 @@ class Options:
         self.transform['train'] = get_transform(self, 'train')
         self.transform['val'] = get_transform(self, 'val')
 
+    def save_options(self):
+
         if not os.path.exists(self.train['save_dir']):
             os.makedirs(self.train['save_dir'], exist_ok=True)
         if not os.path.exists(self.test['checkpoint_dir']):
             os.makedirs(self.test['checkpoint_dir'], exist_ok=True)
         if not os.path.exists(self.test['save_dir']):
             os.makedirs(self.test['save_dir'], exist_ok=True)
-
-
-    def save_options(self):
+        
         if self.isTrain:
             filename = '{:s}/train_options.txt'.format(self.train['save_dir'])
         else:

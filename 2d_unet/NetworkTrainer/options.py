@@ -31,14 +31,15 @@ class Options:
         parser.add_argument('--train-gpus', type=list, default=[0, ], help='select gpu devices')
         parser.add_argument('--train-start-epoch', type=int, default=0, help='start epoch')
         parser.add_argument('--train-checkpoint', type=str, default='', help='checkpoint')
-        parser.add_argument('--train-seed', type=str, default=2022, help='bn or in')
+        parser.add_argument('--train-seed', type=int, default=2022, help='bn or in')
         parser.add_argument('--train-loss', type=str, default='ce', help='save directory')
         parser.add_argument('--train-deeps', type=bool, default=False, help='save directory')
         parser.add_argument('--test-test-epoch', type=int, default=0, help='test epoch')
         parser.add_argument('--test-gpus', type=list, default=[0, ], help='select gpu devices')
         parser.add_argument('--test-save-flag', type=bool, default=False, help='True or False')
         parser.add_argument('--test-batch-size', type=int, default=4, help='batch size')
-        parser.add_argument('--test-if_tta', type=bool, default=False, help='True or False')       
+        parser.add_argument('--test-flip', type=bool, default=False, help='True or False')       
+        parser.add_argument('--test-rotate', type=bool, default=False, help='True or False')       
         parser.add_argument('--post-abl', type=bool, default=False, help='True or False, post processing')
         parser.add_argument('--post-rsa', type=bool, default=False, help='True or False, post processing')
 
@@ -81,7 +82,8 @@ class Options:
         self.test['gpus'] = args.test_gpus
         self.test['save_flag'] = args.test_save_flag
         self.test['batch_size'] = args.test_batch_size
-        self.test['if_tta'] = args.test_if_tta
+        self.test['flip'] = args.test_flip
+        self.test['rotate'] = args.test_rotate
         self.test['save_dir'] = '{:s}/test_results'.format(self.train['save_dir'])
         self.test['checkpoint_dir'] = '{:s}/checkpoints/'.format(self.train['save_dir'])
         self.test['model_path'] = '{:s}/checkpoint_{:d}.pth.tar'.format(self.test['checkpoint_dir'], self.test['test_epoch'])
@@ -95,6 +97,9 @@ class Options:
         self.transform['val'] = get_transform(self, 'val')
         self.transform['test'] = get_transform(self, 'test')
 
+
+
+    def save_options(self):
         if not os.path.exists(self.train['save_dir']):
             os.makedirs(self.train['save_dir'], exist_ok=True)
         if not os.path.exists(self.test['checkpoint_dir']):
@@ -102,8 +107,6 @@ class Options:
         if not os.path.exists(self.test['save_dir']):
             os.makedirs(self.test['save_dir'], exist_ok=True)
 
-
-    def save_options(self):
         if self.isTrain:
             filename = '{:s}/train_options.txt'.format(self.train['save_dir'])
         else:

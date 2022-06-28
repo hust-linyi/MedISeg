@@ -1,3 +1,4 @@
 sc create --name 3dtta --image "10.81.138.201:5000/xsemseg:v_det4" --gpu 1 --cmd "source /newdata/ianlin/.bashrc && conda activate cu11 && cd /newdata/ianlin/CODE/seg_trick/3d_unet/tta/scripts && bash test_tta.sh" --arch ampere
-sc create --name 3dttada2 --image "10.81.138.201:5000/xsemseg:v_det4" --gpu 1 --cmd "source /newdata/ianlin/.bashrc && conda activate cu11 && cd /newdata/ianlin/CODE/seg_trick/3d_unet/tta/scripts && bash test_tta_da2.sh" --arch ampere
+sc create --name 3dttada1 --image "10.81.138.201:5000/xsemseg:v_det4" --gpu 1 --cmd "source /newdata/ianlin/.bashrc && conda activate cu11 && cd /newdata/ianlin/CODE/seg_trick/3d_unet/tta/scripts && bash test_tta_da1.sh" --arch ampere
 sc create --name 3dttaflip --image "10.81.138.201:5000/xsemseg:v_det4" --gpu 1 --cmd "source /newdata/ianlin/.bashrc && conda activate cu11 && cd /newdata/ianlin/CODE/seg_trick/3d_unet/tta/scripts && bash test_flip.sh" --arch ampere
+sc create --name 3dttada2 --image "10.81.138.201:5000/xsemseg:v_det4" --gpu 1 --cmd "source /newdata/ianlin/.bashrc && conda activate cu11 && cd /newdata/ianlin/CODE/seg_trick/3d_unet/tta/scripts && bash test_tta_da2.sh" --arch ampere
