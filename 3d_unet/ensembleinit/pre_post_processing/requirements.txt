@@ -1,9 +1,0 @@
-batchgenerators
-rich
-nibabel
-medpy
-tqdm
-pandas
-torch >= 1.8.1
-torchvision
-torchaudio

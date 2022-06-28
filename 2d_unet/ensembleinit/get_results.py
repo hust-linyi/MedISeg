@@ -2,7 +2,7 @@ import sys
 sys.path.append('../')
 import os
 import numpy as np
-from NetworkTrainer.utils import utils
+from NetworkTrainer.utils import util
 from NetworkTrainer.utils.accuracy import compute_metrics
 from NetworkTrainer.options import Options
 import cv2
@@ -28,7 +28,7 @@ def get_ensemble(mode='vote'):
     fold_list = [0, 1, 2, 3, 4]
     seed_list = [2022, 2023, 2024, 2025, 2026]
     metric_names = ['p_recall', 'p_precision', 'dice', 'miou']
-    all_result = utils.AverageMeter(len(metric_names))
+    all_result = util.AverageMeterArray(len(metric_names))
     results_all = list()
 
     for fold in fold_list:

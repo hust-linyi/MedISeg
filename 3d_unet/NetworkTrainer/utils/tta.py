@@ -15,8 +15,8 @@ class TTA():
                 out.append(np.flip(img, axis=i))
         if self.if_rot:
             # apply rotation
-            for i in range(1, 4):
-                out.append(np.rot90(img, k=i))
+            for i in range(3):
+                out.append(np.rot90(img, k=(i+1)))
         return out
     
     def img_list_inverse(self, img_list):
