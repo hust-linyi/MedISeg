@@ -71,5 +71,5 @@ def get_ensemble_pred():
 
 if __name__=='__main__':
     get_ensemble_pred()
-    # get_ensemble('avg')
-    # get_ensemble('vote')
+    get_ensemble('avg')
+    get_ensemble('vote')
