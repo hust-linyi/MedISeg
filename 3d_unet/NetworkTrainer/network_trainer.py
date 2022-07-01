@@ -95,7 +95,7 @@ class NetworkTrainer:
                 # compute loss for each deep layer, i.e., x0, x1, x2, x3
                 gts = [label_batch]
                 loss = 0.
-                for i in range(3):
+                for i in range(1, 4):
                     gt = label_batch
                     h, w, d = gt.shape[2] // (2 ** i), gt.shape[3] // (2 ** i), gt.shape[4] // (2 ** i)
                     gt = F.interpolate(gt, size=[h, w, d], mode='trilinear', align_corners=True)

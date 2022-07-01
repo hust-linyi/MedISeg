@@ -99,6 +99,9 @@ class UNet3D_ds(nn.Module):
         self.up_tr128 = UpTransition(256,256, 1,act,norm)
         self.up_tr64 = UpTransition(128,128,0,act,norm)
         self.final = nn.Conv3d(64, num_classes, kernel_size=1)
+        self.seg1 = nn.Conv3d(128, num_classes, kernel_size=1)
+        self.seg2 = nn.Conv3d(256, num_classes, kernel_size=1)
+        self.seg3 = nn.Conv3d(512, num_classes, kernel_size=1)
 
     def forward(self, x):
         skip_out64 = self.down_tr64(x)
@@ -110,6 +113,9 @@ class UNet3D_ds(nn.Module):
         out_up_128 = self.up_tr128(out_up_256,skip_out128)
         out_up_64 = self.up_tr64(out_up_128, skip_out64)
         out = self.final(out_up_64)
+        out1 = self.seg1(out_up_128)
+        out2 = self.seg2(out_up_256)
+        out3 = self.seg3(out512)
         # return torch.sigmoid(out)
         # return out
-        return [out, out_up_64, out_up_128, out_up_256]
+        return [out, out1, out2, out3]
