@@ -34,6 +34,33 @@ class TTA():
         return out
 
 
+if __name__=='__main__':
+    # test TTA
+    import os
+    import nibabel as nib
+    data_dir = '/newdata/ianlin/Data/KIT-19/yeung/preprocess'
+    case_id = 67
+    img = np.load(os.path.join(data_dir, f'case_000{case_id}_image.npy'))
+    mask = np.load(os.path.join(data_dir, f'case_000{case_id}_label.npy'))
+
+    tta = TTA(if_flip=True, if_rot=True)
+    img_list = tta.img_list(img)
+    mask_list = tta.img_list(mask)
+    img_list = [f[np.newaxis, ...] for f in img_list]
+    mask_list = [f[np.newaxis, ...] for f in mask_list]
+    img_list_inverse = tta.img_list_inverse(img_list)
+    mask_list_inverse = tta.img_list_inverse(mask_list)
+    for i in range(len(img_list_inverse)):
+        _img = img_list_inverse[i]
+        _mask = mask_list_inverse[i].squeeze()
+        if (_img != img).any():
+            print('bug, img')
+        if (_mask != mask).any():
+            print('bug, mask')
+        # nib.save(nib.Nifti1Image(_img, np.eye(4)), f'img_{i}.nii.gz')
+        # nib.save(nib.Nifti1Image(_mask, np.eye(4)), f'mask_{i}.nii.gz')
+    
+
 
     
 

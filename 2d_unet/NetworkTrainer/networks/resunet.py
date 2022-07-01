@@ -65,7 +65,7 @@ class ResUNet(nn.Module):
         # load weight of pre-trained resnet
         l = [64, 64, 128, 256, 512]
         if 'res101' in net:
-            self.resnet = resnet101(pretrained=pretrained)
+            self.resnet = resnet101(pretrained=pretrained, arch=net)
             l = [64, 256, 512, 1024, 2048]
         elif 'res50' in net:
             self.resnet = resnet50(pretrained=pretrained, arch=net)

@@ -17,19 +17,30 @@ def get_results(save_dir):
     results_all = pd.DataFrame(results_all, columns=metric_names)
     results_all.to_csv(os.path.join('/'.join(result_dir.split('/')[:-2]), 'test_results_all.csv'), index=False)
 
+def if_complete_train(path):
+    flag = True
+    if not os.path.exists(path):
+        flag = False
+    else:
+        for i in range(5):
+            if not os.path.exists(os.path.join(path.replace('fold_0', f'fold_{i}'), 'test_results.csv')):
+                flag = False
+    return flag
 
 if __name__ == '__main__':
     data_dir = '/newdata/ianlin/Experiment/ISIC-2018/isic2018'
     black_list = ['DEBUG']
     folds = [f for f in os.listdir(data_dir) if f not in black_list]
+    folds.sort()
     for fold in folds:
-        save_dir = os.path.join(data_dir, fold, 'res50', 'fold_0', 'test_results')
+        save_dir = os.path.join(data_dir, fold, 'res101', 'fold_0', 'test_results')
         if fold == 'pt1k':
-            save_dir = os.path.join(data_dir, fold, 'res50_1k', 'fold_0', 'test_results')
+            save_dir = os.path.join(data_dir, fold, 'res101_1k', 'fold_0', 'test_results')
         elif fold == 'pt21k':
-            save_dir = os.path.join(data_dir, fold, 'res50_21k', 'fold_0', 'test_results')
-        get_results(save_dir)
-        print(f'{fold}')
-        final_results_path = '/'.join(save_dir.split('/')[:-2]) + '/test_results_all.csv'
-        final_results = pd.read_csv(final_results_path, index_col=0)
-        print(final_results)
+            save_dir = os.path.join(data_dir, fold, 'res101_21k', 'fold_0', 'test_results')
+        if if_complete_train(save_dir):
+            get_results(save_dir)
+            print(f'{fold}')
+            final_results_path = '/'.join(save_dir.split('/')[:-2]) + '/test_results_all.csv'
+            final_results = pd.read_csv(final_results_path, index_col=0)
+            print(final_results)

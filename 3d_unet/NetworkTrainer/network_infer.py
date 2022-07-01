@@ -96,7 +96,8 @@ class NetworkInfer:
                         y = np.squeeze(y)
                         y_list.append(y)
                     y_list = tta.img_list_inverse(y_list)
-                    y = np.mean(y_list, axis=0)                    
+                    y = np.mean(y_list, axis=0)
+                    import ipdb;ipdb.set_trace()                    
                     score_map[:, xs:xs+patch_size[0], ys:ys+patch_size[1], zs:zs+patch_size[2]] \
                     = score_map[:, xs:xs+patch_size[0], ys:ys+patch_size[1], zs:zs+patch_size[2]] + y
                     cnt[xs:xs+patch_size[0], ys:ys+patch_size[1], zs:zs+patch_size[2]] \

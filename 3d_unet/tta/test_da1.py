@@ -9,7 +9,7 @@ def main():
     opt.save_options()
 
     # DEBUG
-    opt.test['model_path'] = opt.test['model_path'].replace(opt.task, 'da2')
+    opt.test['model_path'] = opt.test['model_path'].replace(opt.task, 'da1')
     
     inferencer = NetworkInfer(opt)
     inferencer.set_GPU_device()
