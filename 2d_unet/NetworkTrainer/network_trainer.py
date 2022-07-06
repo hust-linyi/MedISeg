@@ -11,10 +11,13 @@ import torch.nn.functional as F
 from NetworkTrainer.utils.losses_imbalance import DiceLoss, FocalLoss, TverskyLoss, OHEMLoss, CELoss
 from NetworkTrainer.networks.unet import UNet
 from NetworkTrainer.networks.resunet import ResUNet
+from NetworkTrainer.networks.denseunet import DenseUNet
 from NetworkTrainer.networks.resunet_ds import ResUNet_ds
+from NetworkTrainer.networks.vit_seg_modeling import VisionTransformer as ViT_seg
+from NetworkTrainer.networks.vit_seg_modeling import CONFIGS as CONFIGS_ViT_seg
 from NetworkTrainer.dataloaders.dataset import DataFolder
 from NetworkTrainer.utils.util import save_bestcheckpoint, save_checkpoint, setup_logging, compute_loss_list, AverageMeter
-
+from thop import profile
 
 class NetworkTrainer:
     def __init__(self, opt):
@@ -41,6 +44,15 @@ class NetworkTrainer:
             self.net = ResUNet(net=self.opt.model['name'], seg_classes=2, colour_classes=3, pretrained=self.opt.model['pretrained'])
             if self.opt.train['deeps']:
                 self.net = ResUNet_ds(net=self.opt.model['name'], seg_classes=2, colour_classes=3, pretrained=self.opt.model['pretrained'])
+        elif 'dense' in self.opt.model['name']:
+            self.net = DenseUNet(net=self.opt.model['name'], seg_classes=2)
+        elif 'trans' in self.opt.model['name']:
+            config_vit = CONFIGS_ViT_seg[self.opt.model['name']]
+            config_vit.n_classes = 2
+            config_vit.n_skip = 4
+            if self.opt.model['name'].find('R50') != -1:
+                config_vit.patches.grid = (int(self.opt.model['input_size'][0] / 16), int(self.opt.model['input_size'][1] / 16))
+            self.net = ViT_seg(config_vit, img_size=self.opt.model['input_size'][0], num_classes=config_vit.n_classes).cuda()
         else:
             self.net = UNet(3, 2, 2)
         self.net = torch.nn.DataParallel(self.net)
@@ -88,7 +100,7 @@ class NetworkTrainer:
                 for i in range(4):
                     gt = label_batch.float().cuda().view(label_batch.shape[0], 1, label_batch.shape[1], label_batch.shape[2])
                     h, w = gt.shape[2] // (2 ** i), gt.shape[3] // (2 ** i)
-                    gt = F.interpolate(gt, size=[h, w], mode='bilinear', align_corners=True)
+                    gt = F.interpolate(gt, size=[h, w], mode='bilinear', align_corners=False)
                     gt = gt.long().squeeze(1)
                     gts.append(gt)
                 loss_list = compute_loss_list(self.criterion, outputs, gts)

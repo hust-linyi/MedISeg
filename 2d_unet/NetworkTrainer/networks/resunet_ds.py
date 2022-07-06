@@ -82,10 +82,10 @@ class ResUNet_ds(nn.Module):
         self.u7 = ConvUpBlock(l[2], l[1], dropout_rate=0.1)
         self.u8 = ConvUpBlock(l[1], l[0], dropout_rate=0.1)
         # final conv
-        self.seg = nn.ConvTranspose2d(l[0], seg_classes, 1, stride=2)
-        self.seg1 = nn.Conv2d(l[1], seg_classes, 1, stride=1)
-        self.seg2 = nn.Conv2d(l[2], seg_classes, 1, stride=1)
-        self.seg3 = nn.Conv2d(l[3], seg_classes, 1, stride=2)
+        self.seg = nn.ConvTranspose2d(l[0], seg_classes, 2, stride=2)
+        self.seg1 = nn.Conv2d(l[0], seg_classes, 1, stride=1)
+        self.seg2 = nn.Conv2d(l[1], seg_classes, 1, stride=1)
+        self.seg3 = nn.Conv2d(l[2], seg_classes, 1, stride=1)
 
         self.sigmoid = nn.Sigmoid()
         self.softmax = nn.Softmax(dim = 1)

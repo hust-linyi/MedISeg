@@ -56,4 +56,4 @@ def get_ensemble(mode='vote'):
 
 if __name__=='__main__':
     get_ensemble('avg')
-    # get_ensemble('vote')
+    get_ensemble('vote')

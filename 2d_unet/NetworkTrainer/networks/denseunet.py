@@ -5,7 +5,7 @@ from unittest import result
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from NetworkTrainer.networks.resnet import resnet18, resnet34, resnet101, resnet50, resnet152
+from NetworkTrainer.networks.densenet import densenet121, densenet161, densenet169, densenet201
 
 class dilated_conv(nn.Module):
     """ same as original conv if dilation equals to 1 """
@@ -58,32 +58,24 @@ class ConvUpBlock(nn.Module):
 
 
 # Transfer Learning ResNet as Encoder part of UNet
-class ResUNet(nn.Module):
-    def __init__(self, net='res50', seg_classes = 2, colour_classes = 3, fixed_feature=False, pretrained=False):
+class DenseUNet(nn.Module):
+    def __init__(self, net='dense121', seg_classes=2):
         super().__init__()
         # load weight of pre-trained resnet
-        l = [64, 64, 128, 256, 512]
-        if 'res101' in net:
-            self.resnet = resnet101(pretrained=pretrained, arch=net)
-            l = [64, 256, 512, 1024, 2048]
-        elif 'res50' in net:
-            self.resnet = resnet50(pretrained=pretrained, arch=net)
-            l = [64, 256, 512, 1024, 2048]
-        elif 'res18' in net:
-            self.resnet = resnet18(pretrained=pretrained)
-            l = [64, 64, 128, 256, 512]
-        elif 'res34' in net:
-            self.resnet = resnet34(pretrained=pretrained)
-            l = [64, 64, 128, 256, 512]
-        elif 'res152' in net:
-            self.resnet = resnet152(pretrained=pretrained)
-            l = [64, 256, 512, 1024, 2048]
+        if net == 'dense121':
+            self.backbone = densenet121()
+            l = [64, 256, 512, 1024, 1024]
+        elif net == 'dense161':
+            self.backbone = densenet161()
+            l = [96, 384, 768, 2112, 2208]
+        elif net == 'dense169':
+            self.backbone = densenet169()
+            l = [64, 256, 512, 1280, 1664]
+        elif net == 'dense201':
+            self.backbone = densenet201()
+            l = [64, 256, 512, 1792, 1920]
         else:
             raise ValueError('Unknown network architecture: {}'.format(net))
-        # self.resnet1 = Resnet34(pretrained=False)
-        if fixed_feature:
-            for param in self.resnet.parameters():
-                param.requires_grad = False
 
         # up conv
         self.u5 = ConvUpBlock(l[4], l[3], dropout_rate=0.1)
@@ -92,26 +84,10 @@ class ResUNet(nn.Module):
         self.u8 = ConvUpBlock(l[1], l[0], dropout_rate=0.1)
         # final conv
         self.seg = nn.ConvTranspose2d(l[0], seg_classes, 2, stride=2)
-        self.bnd = nn.ConvTranspose2d(l[0], seg_classes, 2, stride=2)
 
-        self.colour = nn.ConvTranspose2d(l[0], colour_classes, 2, stride=2)
-        self.sigmoid = nn.Sigmoid()
-        self.softmax = nn.Softmax(dim = 1)
     def forward(self, x):
-        # refer https://github.com/pytorch/vision/blob/master/torchvision/models/resnet.py
-        x = self.resnet.conv1(x)
-        x = self.resnet.bn1(x)
-        x = s1 = self.resnet.relu(x)
-        x = self.resnet.maxpool(x)
-        # print(x.shape)
-        x = s2 = self.resnet.layer1(x)
-        # print(x.shape)
-        x = s3 = self.resnet.layer2(x)
-        # print(x.shape)
-        x = s4 = self.resnet.layer3(x)
-        # print(x.shape)
-        x = self.resnet.layer4(x)
-        # print(x.shape)
+        # refer https://github.com/pytorch/vision/blob/main/torchvision/models/densenet.py
+        s1, s2, s3, s4, x = self.backbone(x)
         x1 = self.u5(x, s4)
         x1 = self.u6(x1, s3)
         x1 = self.u7(x1, s2)
@@ -122,6 +98,6 @@ class ResUNet(nn.Module):
 
 if __name__=='__main__':
     x = torch.randn((2, 3, 256, 256))
-    net = ResUNet()
+    net = DenseUNet(net='dense201')
     pred = net(x)
     print(pred.shape)

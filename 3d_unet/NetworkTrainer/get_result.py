@@ -22,7 +22,8 @@ def get_results():
     results_all = np.concatenate([results_all, results_mean.reshape(1,8)], axis=0)
     results_all = pd.DataFrame(results_all, columns=metric_names)
     results_all.to_csv(os.path.join('/'.join(result_dir.split('/')[:-2]), 'test_results_all.csv'), index=False)
-
+    final_results = pd.read_csv(os.path.join('/'.join(result_dir.split('/')[:-2]), 'test_results_all.csv'), index_col=0)
+    print(final_results)
 
 if __name__ == '__main__':
     get_results()

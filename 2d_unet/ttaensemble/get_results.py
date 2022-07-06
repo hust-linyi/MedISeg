@@ -24,8 +24,8 @@ def load_data(data_dir):
 def get_ensemble(mode='vote'):
     opt = Options(isTrain=False)
     opt.parse()
-    # save_dir = os.path.join(opt.result_dir, opt.task, opt.model['name'])
-    save_dir = os.path.join(opt.result_dir, opt.task)
+    save_dir = os.path.join(opt.result_dir, opt.task, opt.model['name'])
+    # save_dir = os.path.join(opt.result_dir, opt.task)
     fold_list = [0, 1, 2, 3, 4]
     seed_list = [2022, 2023, 2024, 2025, 2026]
     metric_names = ['p_recall', 'p_precision', 'dice', 'miou']

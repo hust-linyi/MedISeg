@@ -148,3 +148,5 @@ def compute_loss_list(loss_func, pred=[], target=[], **kwargs):
     for ipred, itarget in zip(pred, target):
         losses.append(loss_func(ipred, itarget, **kwargs))
     return losses
+
+

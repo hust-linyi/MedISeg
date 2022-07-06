@@ -14,6 +14,7 @@ import glob
 from NetworkTrainer.utils.util import AverageMeterArray
 from sklearn.metrics import recall_score, precision_score, f1_score, jaccard_score
 from NetworkTrainer.networks.unet import UNet3D
+from NetworkTrainer.networks.unet_ds import UNet3D_ds
 from NetworkTrainer.utils.test_util import test_all_case, calculate_metric_percase
 from NetworkTrainer.dataloaders.data_kit import get_imglist
 from NetworkTrainer.utils.post_process import *
@@ -29,6 +30,9 @@ class NetworkInfer:
  
     def set_network(self):
         self.net = UNet3D(num_classes=3, input_channels=1, act='relu', norm=self.opt.train['norm'])
+        if self.opt.train['deeps']:
+            self.net = UNet3D_ds(num_classes=3, input_channels=1, act='relu', norm=self.opt.train['norm'])
+             
         self.net = torch.nn.DataParallel(self.net)
         self.net = self.net.cuda()
         print(f"=> loading trained model in {self.opt.test['model_path']}")
@@ -90,14 +94,16 @@ class NetworkInfer:
                     for img in test_patch_list:
                         img = np.expand_dims(np.expand_dims(img,axis=0),axis=0).astype(np.float32)
                         img = torch.from_numpy(img).cuda()
-                        y = self.net(img)
+                        if not self.opt.train['deeps']:
+                            y = self.net(img)
+                        else:
+                            y = self.net(img)[0]
                         y = F.softmax(y, dim=1)
                         y = y.cpu().detach().numpy()
                         y = np.squeeze(y)
                         y_list.append(y)
                     y_list = tta.img_list_inverse(y_list)
                     y = np.mean(y_list, axis=0)
-                    import ipdb;ipdb.set_trace()                    
                     score_map[:, xs:xs+patch_size[0], ys:ys+patch_size[1], zs:zs+patch_size[2]] \
                     = score_map[:, xs:xs+patch_size[0], ys:ys+patch_size[1], zs:zs+patch_size[2]] + y
                     cnt[xs:xs+patch_size[0], ys:ys+patch_size[1], zs:zs+patch_size[2]] \

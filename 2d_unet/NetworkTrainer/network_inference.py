@@ -9,6 +9,11 @@ import albumentations as A
 
 from NetworkTrainer.networks.unet import UNet
 from NetworkTrainer.networks.resunet import ResUNet
+from NetworkTrainer.networks.denseunet import DenseUNet
+from NetworkTrainer.networks.resunet_ds import ResUNet_ds
+from NetworkTrainer.networks.vit_seg_modeling import VisionTransformer as ViT_seg
+from NetworkTrainer.networks.vit_seg_modeling import CONFIGS as CONFIGS_ViT_seg
+
 from NetworkTrainer.dataloaders.dataset import DataFolder
 from NetworkTrainer.utils.util import AverageMeterArray
 from NetworkTrainer.utils.accuracy import compute_metrics
@@ -25,10 +30,22 @@ class NetworkInference:
     def set_network(self):
         if 'res' in self.opt.model['name']:
             self.net = ResUNet(net=self.opt.model['name'], seg_classes=2, colour_classes=3, pretrained=self.opt.model['pretrained'])
+            if self.opt.train['deeps']:
+                self.net = ResUNet_ds(net=self.opt.model['name'], seg_classes=2, colour_classes=3, pretrained=self.opt.model['pretrained'])
+        elif 'dense' in self.opt.model['name']:
+            self.net = DenseUNet(net=self.opt.model['name'], seg_classes=2)
+        elif 'trans' in self.opt.model['name']:
+            config_vit = CONFIGS_ViT_seg[self.opt.model['name']]
+            config_vit.n_classes = 2
+            config_vit.n_skip = 4
+            if self.opt.model['name'].find('R50') != -1:
+                config_vit.patches.grid = (int(self.opt.model['input_size'][0] / 16), int(self.opt.model['input_size'][1] / 16))
+            self.net = ViT_seg(config_vit, img_size=self.opt.model['input_size'][0], num_classes=config_vit.n_classes).cuda()
         else:
             self.net = UNet(3, 2, 2)
         self.net = torch.nn.DataParallel(self.net)
         self.net = self.net.cuda()
+
         # ----- load trained model ----- #
         print(f"=> loading trained model in {self.opt.test['model_path']}")
         checkpoint = torch.load(self.opt.test['model_path'])
@@ -63,7 +80,10 @@ class NetworkInference:
             y_list = []
             for x in input_list:
                 x = torch.from_numpy(x.copy()).cuda()
-                y = self.net(x)
+                if not self.opt.train['deeps']:
+                    y = self.net(x)
+                else:
+                    y = self.net(x)[0]
                 y = torch.nn.Softmax(dim=1)(y)[:, 1]
                 y = y.cpu().detach().numpy()
                 y_list.append(y)
