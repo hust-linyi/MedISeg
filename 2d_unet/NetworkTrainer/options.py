@@ -15,7 +15,7 @@ class Options:
     def parse(self):
         """ Parse the options, replace the default value if there is a new input """
         parser = argparse.ArgumentParser(description='')
-        parser.add_argument('--dataset', type=str, default='isic2018', help='dataset name')
+        parser.add_argument('--dataset', type=str, default='isic2018', help='isic2018 or conic')
         parser.add_argument('--task', type=str, default='baseline', help='')
         parser.add_argument('--fold', type=int, default=0, help='0-4, five fold cross validation')
         parser.add_argument('--name', type=str, default='res50', help='res34, res50, res101, res152')
@@ -55,6 +55,9 @@ class Options:
             home_dir = '/newdata/ianlin/'
         self.root_dir = home_dir + '/Data/ISIC-2018'
         self.result_dir = home_dir + f'/Experiment/ISIC-2018/{self.dataset}/'
+        if 'conic' in self.dataset:
+            self.root_dir = home_dir + '/Data/CoNIC_Challenge'
+            self.result_dir = home_dir + f'/Experiment/CoNIC_Challenge/{self.dataset}/'
         self.model['name'] = args.name
         self.model['pretrained'] = args.pretrained
         self.model['in_c'] = args.in_c
