@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 from torch.hub import load_state_dict_from_url
-
+from rich import print
 
 __all__ = ['ResNet', 'resnet18', 'resnet34', 'resnet50', 'resnet101',
            'resnet152', 'resnext50_32x4d', 'resnext101_32x8d',
@@ -12,6 +12,8 @@ model_urls = {
     'res50': 'https://download.pytorch.org/models/resnet50-19c8e357.pth',
     'res50_1k': 'https://dl.fbaipublicfiles.com/semiweaksupervision/model_files/semi_weakly_supervised_resnet50-16a12f1b.pth',    
     'res50_21k': 'https://miil-public-eu.oss-eu-central-1.aliyuncs.com/model-zoo/ImageNet_21K_P/models/resnet50_miil_21k.pth',
+    'res50_moco': 'moco_v2_800ep_pretrain.pth.tar',
+    'res50_simclr': 'checkpoint_0040.pth.tar',
     'res101': 'https://download.pytorch.org/models/resnet101-5d3b4d8f.pth',
     'resnet152': 'https://download.pytorch.org/models/resnet152-b121ed2d.pth',
     'resnext50_32x4d': 'https://download.pytorch.org/models/resnext50_32x4d-7cdf4587.pth',
@@ -223,6 +225,7 @@ class ResNet(nn.Module):
 def _resnet(arch, block, layers, pretrained, progress, **kwargs):
     model = ResNet(block, layers, **kwargs)
     if pretrained:
+        print(f"Loading pretrained model {model_urls[arch]}")
         state_dict = load_state_dict_from_url(model_urls[arch],
                                               progress=progress)
         if 'state_dict' in state_dict:
