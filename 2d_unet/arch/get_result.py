@@ -20,12 +20,24 @@ def get_results(result_dir):
     print(result_dir.split('/')[-1])
     print(results_all)
 
+def if_complete_train(path):
+    flag = True
+    if not os.path.exists(path):
+        flag = False
+    else:
+        for i in range(5):
+            if not os.path.exists(os.path.join(path, f'fold_{i}', 'test_results', 'test_results.csv')):
+                flag = False
+    return flag
+
 
 if __name__ == '__main__':
-    data_dir = '/newdata/ianlin/Experiment/ISIC-2018/isic2018/arch'
+    # data_dir = '/newdata/ianlin/Experiment/ISIC-2018/isic2018/arch'
+    data_dir = '/newdata/ianlin/Experiment/CoNIC_Challenge/conic/arch'
     folds = os.listdir(data_dir)
     folds.sort()
     for fold in folds:
         result_dir = os.path.join(data_dir, fold)
-        get_results(result_dir)
+        if if_complete_train(result_dir):
+            get_results(result_dir)
 

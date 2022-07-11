@@ -65,8 +65,8 @@ class DataFolder(data.Dataset):
         # Load CoNIC dataset from numpy files
         imgs = np.load(os.path.join(self.root_dir, 'images.npy'))
         mask = np.load(os.path.join(self.root_dir, 'labels.npy'))
-        imgs = imgs.astype(np.float32)
-        mask = (mask[..., 1] > 0).astype(np.uint8)
+        imgs = imgs.astype(np.uint8)
+        mask = (mask[..., 1] > 0).astype(np.float32)
         filenames = pd.read_csv(os.path.join(self.root_dir, 'patch_info.csv')).values
         filenames = filenames[:, 0]
         # patients = [x.split('-')[0] for x in filenames]

@@ -28,16 +28,17 @@ def if_complete_train(path):
     return flag
 
 if __name__ == '__main__':
-    data_dir = '/newdata/ianlin/Experiment/ISIC-2018/isic2018'
+    # data_dir = '/newdata/ianlin/Experiment/ISIC-2018/isic2018'
+    data_dir = '/newdata/ianlin/Experiment/CoNIC_Challenge/conic'
     black_list = ['DEBUG']
     folds = [f for f in os.listdir(data_dir) if f not in black_list]
     folds.sort()
     for fold in folds:
-        save_dir = os.path.join(data_dir, fold, 'res101', 'fold_0', 'test_results')
+        save_dir = os.path.join(data_dir, fold, 'res50', 'fold_0', 'test_results')
         if fold == 'pt1k':
-            save_dir = os.path.join(data_dir, fold, 'res101_1k', 'fold_0', 'test_results')
+            save_dir = os.path.join(data_dir, fold, 'res50_1k', 'fold_0', 'test_results')
         elif fold == 'pt21k':
-            save_dir = os.path.join(data_dir, fold, 'res101_21k', 'fold_0', 'test_results')
+            save_dir = os.path.join(data_dir, fold, 'res50_21k', 'fold_0', 'test_results')
         if if_complete_train(save_dir):
             get_results(save_dir)
             print(f'{fold}')

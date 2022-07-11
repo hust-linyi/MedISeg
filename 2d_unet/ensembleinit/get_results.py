@@ -27,7 +27,7 @@ def get_ensemble(mode='vote'):
     save_dir = os.path.join(opt.result_dir, opt.task, opt.model['name'])
     fold_list = [0, 1, 2, 3, 4]
     seed_list = [2022, 2023, 2024, 2025, 2026]
-    metric_names = ['p_recall', 'p_precision', 'dice', 'miou']
+    metric_names = ['p_recall', 'p_precision', 'p_F1', 'miou']
     all_result = util.AverageMeterArray(len(metric_names))
     results_all = list()
 

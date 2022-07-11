@@ -71,7 +71,7 @@ class NetworkInference:
         return pred
 
     def run(self):
-        metric_names = ['p_recall', 'p_precision', 'dice', 'miou']
+        metric_names = ['p_recall', 'p_precision', 'p_F1', 'miou']
         all_result = AverageMeterArray(len(metric_names))
         for i, data in enumerate(tqdm(self.test_loader)):
             input, gt, name = data['image'].cuda(), data['label'], data['name']
@@ -94,6 +94,8 @@ class NetworkInference:
             for j in range(pred.shape[0]):
                 pred[j] = self.post_process(pred[j])
                 metrics = compute_metrics(pred[j], gt[j], metric_names)
+                if metrics[metric_names[0]] == -1:
+                    continue
                 all_result.update([metrics[metric_name] for metric_name in metric_names])
                 if self.opt.test['save_flag']:
                     imageio.imwrite(os.path.join(self.opt.test['save_dir'], 'img', f'{name[j]}_pred.png'), (pred[j] * 255).astype(np.uint8))

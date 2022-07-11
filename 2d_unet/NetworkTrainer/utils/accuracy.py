@@ -28,6 +28,11 @@ def compute_metrics(pred, gt, names):
 
     results = {}
 
+    if gt_binary.sum() == 0:
+        for name in names:
+            results[name] = -1
+        return results
+
     # pixel-level metrics
     if 'acc' in names:
         results['acc'] = accuracy_score(gt_binary, pred_binary)
@@ -50,8 +55,6 @@ def compute_metrics(pred, gt, names):
     if 'dice' in names:
         # results['dice'], results['iou'], _ = accuracy_object_level(pred_labeled, gt_labeled, False)
         results['dice'] = get_dice_1(gt_labeled, pred_labeled)
-    
-
     return results
 
 
