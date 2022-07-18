@@ -67,7 +67,8 @@ class NetworkInference:
         if self.opt.post['abl']:
             pred = abl(pred, for_which_classes=[1])
         if self.opt.post['rsa']:
-            pred = rsa(pred, for_which_classes=[1], minimum_valid_object_size={1: 120})
+            # pred = rsa(pred, for_which_classes=[1], minimum_valid_object_size={1: 120})
+            pred = rsa(pred, for_which_classes=[1], minimum_valid_object_size={1: 10})
         return pred
 
     def run(self):

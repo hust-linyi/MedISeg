@@ -39,6 +39,11 @@ if __name__ == '__main__':
             save_dir = os.path.join(data_dir, fold, 'res50_1k', 'fold_0', 'test_results')
         elif fold == 'pt21k':
             save_dir = os.path.join(data_dir, fold, 'res50_21k', 'fold_0', 'test_results')
+        elif fold == 'ptsimclr':
+            save_dir = os.path.join(data_dir, fold, 'res50_simclr', 'fold_0', 'test_results')
+        elif fold == 'ptmoco':
+            save_dir = os.path.join(data_dir, fold, 'res50_moco', 'fold_0', 'test_results')
+            
         if if_complete_train(save_dir):
             get_results(save_dir)
             print(f'{fold}')
