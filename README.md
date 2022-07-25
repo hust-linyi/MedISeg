@@ -10,10 +10,7 @@ The repo contains the official PyTorch Implementation for paper:
 [comment]: <> ()
 ![visualization](figures/fig1.png)
 
-We separate an MIS model into six implementation phases, which include pre-training model, data pre-processing, data augmentation, model implementation, model inference, and result post-processing. For each trick, we experimentally explore its effectiveness on the consistent CNNs segmentation baselines including 2D-UNet and 3D-UNet on three medical image segmentation datasets.
-
-[comment]: <> ()
-![visualization](figures/fig1.png)
+We separate an medical image segmentation model into six implementation phases, which include pre-training model, data pre-processing, data augmentation, model implementation, model inference, and result post-processing. For each trick, we experimentally explore its effectiveness on the consistent CNNs segmentation baselines including 2D-UNet and 3D-UNet on three medical image segmentation datasets.
 
 ###  Authors:
 * [Dong Zhang](https://dongzhang89.github.io/)
@@ -25,12 +22,12 @@ We separate an MIS model into six implementation phases, which include pre-train
 * [Kwang-Ting Cheng](https://seng.hkust.edu.hk/about/people/faculty/tim-kwang-ting-cheng)
 
 
-#### 🌻 Installation
-Option 1: 
+### Installation
+#### 🌻 Option 1: 
 ```python
 pip install -r requirements.txt
 ```
-Option 2: 
+#### 🌻 Option 2: 
 ```python
 conda install ipython
 pip install torch==1.7.1 torchvision==0.8.2 torchaudio==0.7.2
@@ -49,17 +46,17 @@ pip install matplotlib
 pip install test-tube
 pip install wandb
 ```
-#### 🌻 Data Preparation
+### 🌻 Data Preparation
 By default, for training, testing and demo, we use [ISIC 2018](https://challenge.isic-archive.com/landing/2018/)
 
 
 
-#### 🌻 Inference  with Pre-trained Models
+### 🌻 Inference  with Pre-trained Models
 
-#### 🌻 Training & Evaluation
+### 🌻 Training & Evaluation
 
 
-#### 🌻 Model Zoo
+### 🌻 Model Zoo
 
 Dataset  | Baseline | Method | Recall (%) | Percision (%) |  Dice (%) |  IoU (%) | Weight
 ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | -------------
@@ -69,7 +66,7 @@ Dataset  | Baseline | Method | Recall (%) | Percision (%) |  Dice (%) |  IoU (%)
 
 
 
-#### 🌻 Citation
+### 🌻 Citation
 
 
 If you have any problems in using this code, please contact: dongz@ust.hk or yi.lin@connect.ust.hk
