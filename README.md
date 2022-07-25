@@ -1,6 +1,12 @@
 [comment]: <> ()
 ![visualization](figures/logo.png)
 
+[🛠️Installation](https://github.com/hust-linyi/seg_trick) |
+[👀Model Zoo](https://github.com/hust-linyi/seg_trick) |
+[🆕Update News](https://github.com/hust-linyi/seg_trick) |
+[🚀Ongoing Projects](https://github.com/hust-linyi/seg_trick) |
+[🤔Reporting Issues](https://github.com/hust-linyi/seg_trick/issues)
+
 ## Introduction
 <div align="justify">
 The modern MIS publications usually focus on presentations of the major technologies while exorbitantly ignoring some marginal implementation details, leading to a potential problem of the unfair experimental result comparisons. In this work, we collect a series of MIS tricks for different implementation phases, and experimentally explore the effectiveness of these tricks on the consistent CNNs baselines. Witnessed by the extensive experimental results on both the representative 2D and 3D medical image datasets, we explicitly clarify the effect of these tricks on MIS.
