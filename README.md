@@ -4,8 +4,8 @@ The repo contains the official PyTorch Implementation for paper:
 [Bag of Tricks with Convolutional Neural Networks for Medical Image Segmentation](https://arxiv.org/list/cs.CV/recent)
 
 
-[comment]: <> (![fig1]&#40;figures/fig1.png&#41;)
-#### 🌻 An illustration of the surveyed MIS tricks and their latent relations  
+[comment]: <> ()
+### An illustration of the surveyed MIS tricks and their latent relations  
 We separate an medical image segmentation model into six implementation phases, which include pre-training model, data pre-processing, data augmentation, model implementation, model inference, and result post-processing. For each trick, we experimentally explore its effectiveness on the consistent CNNs segmentation baselines including 2D-UNet and 3D-UNet on three medical image segmentation datasets.
 
 [comment]: <> ()
@@ -19,7 +19,6 @@ We separate an medical image segmentation model into six implementation phases, 
 * [Xin Yang](https://scholar.google.com/citations?user=lsz8OOYAAAAJ&hl=zh-CN)
 * [Jinhui Tang](https://scholar.google.com/citations?user=ByBLlEwAAAAJ&hl=zh-CN)
 * [Kwang-Ting Cheng](https://seng.hkust.edu.hk/about/people/faculty/tim-kwang-ting-cheng)
-
 
 ### Installation
 #### 🌻 Option 1: 
@@ -46,11 +45,13 @@ pip install test-tube
 pip install wandb
 ```
 ### Data Preparation
-By default, for training, testing and demo, we use [ISIC 2018](https://challenge.isic-archive.com/landing/2018/)
+Please download the dataset from the official website:
 
+* [ISIC 2018](https://challenge.isic-archive.com/landing/2018/)
+* [CoNIC](https://conic-challenge.grand-challenge.org/)
+* [KiTS19](https://kits19.grand-challenge.org/data/)
 
-
-### Inference  with Pre-trained Models
+### Inference with Pre-trained Models
 
 ### Training & Evaluation
 
@@ -64,8 +65,15 @@ Dataset  | Baseline | Method | Recall (%) | Percision (%) |  Dice (%) |  IoU (%)
 [KiTS19](https://kits19.grand-challenge.org/data/) | 3D-UNet | + PyTorch  | 87.35% | 87.35%  | 87.35% | 87.35% | weight
 
 
-
 ### Citation
+'''
+@article{zhangbatmis2022,
+  title={Bag of Tricks with Convolutional Neural Networks for Medical Image Segmentation},
+  author={Zhang, Dong and Lin, Yi and Chen, Hao and Tian, Zhuotao and Yang, Xin and Tang, Jinhui and Cheng, Kwang-Ting},
+  journal={arXiv},
+  year={2022}
+}
+'''
 
 
 If you have any problems in using this code, please contact: dongz@ust.hk or yi.lin@connect.ust.hk
