@@ -75,13 +75,13 @@ Dataset  | Baseline | Method | Recall (%) | Percision (%) |  Dice (%) |  IoU (%)
 ```
 
 ### Todo list
-[ ] Experiments on more medical image datasets 
+- [ ] Experiments on more medical image datasets 
 
-[ ] Experiments on other backbone networks 
+- [ ] Experiments on other backbone networks 
 
-[ ] Experiments on more MIS tricks
+- [ ] Experiments on more MIS tricks
 
-[ ] Other interesting attempts
+- [ ] Other interesting attempts
 
 
 🌻 We welcome more like-minded friends to join in this project and continue to expand this storage
