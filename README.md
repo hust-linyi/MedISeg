@@ -44,9 +44,9 @@ pip install matplotlib
 pip install test-tube
 pip install wandb
 ```
-### Data Preparation
-Please download the dataset from the official website:
 
+### Data Preparation
+🌻 Please download the dataset from the official website:
 * [ISIC 2018](https://challenge.isic-archive.com/landing/2018/)
 * [CoNIC](https://conic-challenge.grand-challenge.org/)
 * [KiTS19](https://kits19.grand-challenge.org/data/)
@@ -66,7 +66,7 @@ Dataset  | Baseline | Method | Recall (%) | Percision (%) |  Dice (%) |  IoU (%)
 
 
 ### Citation
-If you find this repo useful, please cite:
+🌻 If you find this repo useful, please cite:
 ```
 @article{zhangbatmis2022,
   title={Bag of Tricks with Convolutional Neural Networks for Medical Image Segmentation},
@@ -76,7 +76,4 @@ If you find this repo useful, please cite:
 }
 ```
 
-
-If you have any problems in using this code, please contact: dongz@ust.hk or yi.lin@connect.ust.hk
-
-
+🌻 If you have any problems in using this code, please contact: dongz@ust.hk or yi.lin@connect.ust.hk
