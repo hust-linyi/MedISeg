@@ -46,17 +46,17 @@ pip install matplotlib
 pip install test-tube
 pip install wandb
 ```
-### 🌻 Data Preparation
+### Data Preparation
 By default, for training, testing and demo, we use [ISIC 2018](https://challenge.isic-archive.com/landing/2018/)
 
 
 
-### 🌻 Inference  with Pre-trained Models
+### Inference  with Pre-trained Models
 
-### 🌻 Training & Evaluation
+### Training & Evaluation
 
 
-### 🌻 Model Zoo
+### Model Zoo
 
 Dataset  | Baseline | Method | Recall (%) | Percision (%) |  Dice (%) |  IoU (%) | Weight
 ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | -------------
@@ -66,7 +66,7 @@ Dataset  | Baseline | Method | Recall (%) | Percision (%) |  Dice (%) |  IoU (%)
 
 
 
-### 🌻 Citation
+### Citation
 
 
 If you have any problems in using this code, please contact: dongz@ust.hk or yi.lin@connect.ust.hk
