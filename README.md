@@ -1,7 +1,6 @@
 [comment]: <> ()
 ![visualization](figures/logo.png)
 
-<div align="center">
 [🛠️Installation](https://github.com/hust-linyi/seg_trick) |
 [👀Model Zoo](https://github.com/hust-linyi/seg_trick) |
 [🆕Update News](https://github.com/hust-linyi/seg_trick) |
