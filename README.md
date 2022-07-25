@@ -1,11 +1,13 @@
 [comment]: <> ()
 ![visualization](figures/logo.png)
 
+<div align="center">
 [🛠️Installation](https://github.com/hust-linyi/seg_trick) |
 [👀Model Zoo](https://github.com/hust-linyi/seg_trick) |
 [🆕Update News](https://github.com/hust-linyi/seg_trick) |
 [🚀Ongoing Projects](https://github.com/hust-linyi/seg_trick) |
 [🤔Reporting Issues](https://github.com/hust-linyi/seg_trick/issues)
+</div>
 
 ## Introduction
 <div align="justify">
