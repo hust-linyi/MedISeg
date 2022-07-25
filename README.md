@@ -3,7 +3,7 @@
 
 <div align="center">
 
-[🆕What's New](#What's-New) |
+[🆕What's New](#News) |
 [🛠️Installation](#Installation) |
 [👀Model Zoo](#Model-Zoo) |
 [🤔Reporting Issues](https://github.com/hust-linyi/seg_trick/issues)
@@ -30,7 +30,7 @@ The surveyed medical image segmentation tricks and their latent relations
 * [Jinhui Tang](https://scholar.google.com/citations?user=ByBLlEwAAAAJ&hl=zh-CN)
 * [Kwang-Ting Cheng](https://seng.hkust.edu.hk/about/people/faculty/tim-kwang-ting-cheng)
 
-## What's New
+## News
 **1.1.0** was released in 01/08/2022:  
 - A series of MIS tricks are collected and experimentally explored on [2D-UNet](https://arxiv.org/abs/1505.04597) and [3D-UNet](https://arxiv.org/abs/1606.06650).
 - We explicitly clarify the effectiveness of tricks on [ISIC 2018](https://challenge.isic-archive.com/landing/2018/), [CoNIC](https://conic-challenge.grand-challenge.org/), [KiTS19](https://kits19.grand-challenge.org/data/) datasets. 
