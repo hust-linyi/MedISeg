@@ -1,4 +1,5 @@
-# BaT-MIS
+[comment]: <> ()
+![visualization](figures/logo.png)
 
 The repo contains the official PyTorch Implementation for paper:  
 [Bag of Tricks with Convolutional Neural Networks for Medical Image Segmentation](https://arxiv.org/list/cs.CV/recent)
