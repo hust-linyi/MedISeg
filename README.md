@@ -3,7 +3,7 @@
 
 <div align="center">
 
-[🆕What's New](#News) |
+[🆕News](#News) |
 [🛠️Installation](#Installation) |
 [👀Model Zoo](#Model-Zoo) |
 [🤔Reporting Issues](https://github.com/hust-linyi/seg_trick/issues)
