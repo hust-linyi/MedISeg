@@ -16,7 +16,8 @@ The modern MIS publications usually focus on presentations of the major technolo
 The surveyed medical image segmentation tricks and their latent relations 
 </div>
 
-#### 🌻 
+### Major Features
+
 
 ### Authors:
 * [Dong Zhang](https://dongzhang89.github.io/)
