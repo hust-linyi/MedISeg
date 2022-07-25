@@ -1,16 +1,13 @@
 # BaT-MIS
 
-**The repo contains the official PyTorch Implementation for paper:
+The repo contains the official PyTorch Implementation for paper:
 [Bag of Tricks with Convolutional Neural Networks for Medical Image Segmentation](https://arxiv.org/list/cs.CV/recent)
-**
+
 
 [comment]: <> (![fig1]&#40;figures/fig1.png&#41;)
 ### An illustration of the surveyed MIS tricks and their latent relations
 We separate an MIS model into six implementation phases, which include pre-training model, data pre-processing, data augmentation, model implementation, model inference, and result post-processing. For each trick, we experimentally explore its effectiveness on the consistent CNNs segmentation baselines including 2D-UNet and 3D-UNet on three medical image segmentation datasets.
-[comment]: <> (an illustration of the surveyed MIS tricks and their latent relations.&#41;)
-![visualization](figures/fig1.png)
 
-[========]
 
 ###  Authors:
 * [Dong Zhang](https://dongzhang89.github.io/)
@@ -21,7 +18,6 @@ We separate an MIS model into six implementation phases, which include pre-train
 * [Jinhui Tang](https://scholar.google.com/citations?user=ByBLlEwAAAAJ&hl=zh-CN)
 * [Kwang-Ting Cheng](https://seng.hkust.edu.hk/about/people/faculty/tim-kwang-ting-cheng)
 
-[========]
 
 #### 🌻 Installation
 Option 1: 
@@ -56,7 +52,6 @@ By default, for training, testing and demo, we use [ISIC 2018](https://challenge
 
 #### 🌻 Training & Evaluation
 
-[========]
 
 #### 🌻 Model Zoo
 
@@ -67,7 +62,6 @@ Dataset  | Baseline | Method | Recall (%) | Percision (%) |  Dice (%) |  IoU (%)
 [KiTS19](https://kits19.grand-challenge.org/data/) | 3D-UNet | + PyTorch  | 87.35% | 87.35%  | 87.35% | 87.35% | weight
 
 
-[========]
 
 #### 🌻 Citation
 
