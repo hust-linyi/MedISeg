@@ -52,9 +52,9 @@ pip install wandb
 
 ## Data Preparation
 🌻 Please download the dataset from the official website:
-* [ISIC 2018: 2D ISIC 2018 Lesion Boundary Segmentation Dataset](https://challenge.isic-archive.com/landing/2018/)
-* [CoNIC: 2D Colon Nuclei Identification and Counting Challenge Dataset](https://conic-challenge.grand-challenge.org/)
-* [KiTS19: 3D Kidney Tumor Segmentation 2019 Dataset](https://kits19.grand-challenge.org/data/)
+* ISIC 2018: [2D ISIC 2018 Lesion Boundary Segmentation Dataset](https://challenge.isic-archive.com/landing/2018/)
+* CoNIC: [2D Colon Nuclei Identification and Counting Challenge Dataset](https://conic-challenge.grand-challenge.org/)
+* KiTS19: [3D Kidney Tumor Segmentation 2019 Dataset](https://kits19.grand-challenge.org/data/)
 
 ## Inference with Pre-trained Models
 
@@ -72,7 +72,7 @@ Dataset  | Baseline | Method | Recall (%) | Percision (%) |  Dice (%) |  IoU (%)
 
 
 ## Citation
-🌻 If you find this repo useful, please cite:
+🌻 If you use this toolbox or benchmark in your research, please cite:
 ```
 @article{zhangbatmis2022,
   title={Bag of Tricks with Convolutional Neural Networks for Medical Image Segmentation},
