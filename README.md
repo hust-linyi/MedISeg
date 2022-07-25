@@ -24,7 +24,7 @@ The surveyed medical image segmentation tricks and their latent relations
 ## What's New
 **1.1.0** was released in 01/08/2022:  
 - A series of MIS tricks are collected and experimentally explored on 2D/3D UNet.
-- We explicitly clarify the effectiveness of tricks on the 2D and 3D datasets. 
+- We explicitly clarify the effectiveness of tricks on [ISIC 2018](https://challenge.isic-archive.com/landing/2018/), [CoNIC](https://conic-challenge.grand-challenge.org/), [KiTS19](https://kits19.grand-challenge.org/data/) datasets. 
 - BaT-MIS will provide guidance for a wide range of medical image processing challenges in the future.
 
 ## Installation
