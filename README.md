@@ -6,6 +6,10 @@ The repo contains the official PyTorch Implementation for paper:
 
 [comment]: <> (![fig1]&#40;figures/fig1.png&#41;)
 ### An illustration of the surveyed MIS tricks and their latent relations
+
+[comment]: <> ()
+![visualization](figures/fig1.png)
+
 We separate an MIS model into six implementation phases, which include pre-training model, data pre-processing, data augmentation, model implementation, model inference, and result post-processing. For each trick, we experimentally explore its effectiveness on the consistent CNNs segmentation baselines including 2D-UNet and 3D-UNet on three medical image segmentation datasets.
 
 [comment]: <> ()
@@ -58,7 +62,7 @@ By default, for training, testing and demo, we use [ISIC 2018](https://challenge
 #### 🌻 Model Zoo
 
 Dataset  | Baseline | Method | Recall (%) | Percision (%) |  Dice (%) |  IoU (%) | Weight
-------------- | -------------
+------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | -------------
 [ISIC 2018](https://challenge.isic-archive.com/landing/2018/)  | 2D-UNet | + PyTorch | 85.80%  | 85.80%  | 85.80% | 85.80%  | weight
 [CoNIC](https://conic-challenge.grand-challenge.org/)  | 2D-UNet | + PyTorch | 87.07%  | 85.80%   | 85.80% | 85.80% | weight 
 [KiTS19](https://kits19.grand-challenge.org/data/) | 3D-UNet | + PyTorch  | 87.35% | 87.35%  | 87.35% | 87.35% | weight
