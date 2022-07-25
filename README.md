@@ -94,6 +94,6 @@ Dataset  | Baseline | Method | Recall (%) | Percision (%) |  Dice (%) |  IoU (%)
 
 🌻 We welcome more like-minded friends to join in this project and continue to expand this storage
 
-🌻 If you have any better suggestions or comments please let us know
+🌻 If you have any suggestions or comments please let us know
 
-🌻 If you have problems in using this code, please contact: dongz@ust.hk or yi.lin@connect.ust.hk
+🌻 If you have any problems in using this code, please contact: dongz@ust.hk or yi.lin@connect.ust.hk
