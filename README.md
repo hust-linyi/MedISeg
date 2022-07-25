@@ -4,7 +4,7 @@
 #### 🌻 The repo contains the official PyTorch Implementation for paper: [BaT-MIS](https://arxiv.org/list/cs.CV/recent)
 
 [comment]: <> ()
-#### 🌻 An illustration of the surveyed MIS tricks and their latent relations  
+#### 🌻 The surveyed MIS tricks and their latent relations  
 We separate an medical image segmentation model into six implementation phases, which include pre-training model, data pre-processing, data augmentation, model implementation, model inference, and result post-processing. For each trick, we experimentally explore its effectiveness on the consistent CNNs segmentation baselines including 2D-UNet and 3D-UNet on three medical image segmentation datasets.
 
 [comment]: <> ()
