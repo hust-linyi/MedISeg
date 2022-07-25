@@ -1,8 +1,7 @@
 [comment]: <> ()
 ![visualization](figures/logo.png)
 
-The repo contains the official PyTorch Implementation for paper: [BaT-MIS](https://arxiv.org/list/cs.CV/recent)
-
+#### 🌻 The repo contains the official PyTorch Implementation for paper: [BaT-MIS](https://arxiv.org/list/cs.CV/recent)
 
 [comment]: <> ()
 #### 🌻 An illustration of the surveyed MIS tricks and their latent relations  
