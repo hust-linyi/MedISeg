@@ -26,10 +26,10 @@ The surveyed medical image segmentation tricks and their latent relations
 * [Kwang-Ting Cheng](https://seng.hkust.edu.hk/about/people/faculty/tim-kwang-ting-cheng)
 
 ### Features
-#### 🌻 A series of MIS tricks are collected and experimentally explored on the consistent baselines.
-#### 🌻 We explicitly clarify the effectiveness of these tricks on both the 2D and 3D medical datasets. 
-#### 🌻 This repository includes the rich segmentation tricks and each of them has the plug-and-play advantage.
-#### 🌻 BaT-MIS will provide guidance for a wide range of medical image processing challenges in the future.
+- A series of MIS tricks are collected and experimentally explored on the consistent baselines.
+- We explicitly clarify the effectiveness of these tricks on both the 2D and 3D medical datasets. 
+- This repository includes the rich segmentation tricks and each of them has the plug-and-play advantage.
+- BaT-MIS will provide guidance for a wide range of medical image processing challenges in the future.
 
 ### Installation
 #### 🌻 Option 1: 
