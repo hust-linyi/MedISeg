@@ -74,4 +74,16 @@ Dataset  | Baseline | Method | Recall (%) | Percision (%) |  Dice (%) |  IoU (%)
 }
 ```
 
+### Todo list
+- [] Experiments on more medical image datasets 
+
+- [] Experiments on other backbone networks 
+
+- [] Experiments on more MIS tricks
+
+- [] Other interesting attempts
+
+
+🌻 We welcome more like-minded friends to join in this project and continue to expand this storage
+
 🌻 If you have any problems in using this code, please contact: dongz@ust.hk or yi.lin@connect.ust.hk
