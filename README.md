@@ -16,10 +16,7 @@ The modern MIS publications usually focus on presentations of the major technolo
 The surveyed medical image segmentation tricks and their latent relations 
 </div>
 
-### Major Features
-
-
-### Authors:
+### Authors
 * [Dong Zhang](https://dongzhang89.github.io/)
 * [Yi Lin](https://ianyilin.github.io/)
 * [Hao Chen](https://cse.hkust.edu.hk/admin/people/faculty/profile/jhc)
@@ -27,6 +24,12 @@ The surveyed medical image segmentation tricks and their latent relations
 * [Xin Yang](https://scholar.google.com/citations?user=lsz8OOYAAAAJ&hl=zh-CN)
 * [Jinhui Tang](https://scholar.google.com/citations?user=ByBLlEwAAAAJ&hl=zh-CN)
 * [Kwang-Ting Cheng](https://seng.hkust.edu.hk/about/people/faculty/tim-kwang-ting-cheng)
+
+### Features
+#### 🌻 A series of MIS tricks are collected and experimentally explored on the consistent CNNs baselines.
+#### 🌻 We explicitly clarify the effectiveness of these tricks on both the 2D and 3D datasets. 
+#### 🌻 This repository includes the rich segmentation tricks and each of them has the plug-and-play advantage.
+#### 🌻 This work will provide practical guidance for a wide range of medical image processing challenges in the future.
 
 ### Installation
 #### 🌻 Option 1: 
