@@ -3,9 +3,9 @@
 
 <div align="center">
 
+[🆕What's New](https://github.com/hust-linyi/seg_trick) |
 [🛠️Installation](https://github.com/hust-linyi/seg_trick) |
 [👀Model Zoo](https://github.com/hust-linyi/seg_trick) |
-[🆕What's New](https://github.com/hust-linyi/seg_trick) |
 [🤔Reporting Issues](https://github.com/hust-linyi/seg_trick/issues)
 
 </div>
