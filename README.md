@@ -5,7 +5,7 @@
 
 [comment]: <> ()
 #### 🌻 The surveyed MIS tricks and their latent relations  
-We separate an medical image segmentation model into six implementation phases, which include pre-training model, data pre-processing, data augmentation, model implementation, model inference, and result post-processing. For each trick, we experimentally explore its effectiveness on the consistent CNNs segmentation baselines including 2D-UNet and 3D-UNet on three medical image segmentation datasets.
+The modern Medical Image Segmentation (MIS) publications usually focus on presentations of the major technologies (e.g., network architectures, training strategies, and loss functions) while exorbitantly ignoring some marginal implementation details, leading to a potential problem of the unfair experimental result comparisons. In this work, we collect a series of MIS tricks for different implementation phases (i.e., pre-training model, data pre-processing, data augmentation, model implementation, model inference, and result post-processing), and experimentally explore the effectiveness of these tricks on the consistent CNNs baselines. Witnessed by the extensive experimental results on both the representative 2D and 3D medical image datasets, we explicitly clarify the effect of these tricks on MIS.
 
 [comment]: <> ()
 ![visualization](figures/fig1.png)
