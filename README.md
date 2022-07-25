@@ -5,7 +5,7 @@ The repo contains the official PyTorch Implementation for paper:
 
 
 [comment]: <> (![fig1]&#40;figures/fig1.png&#41;)
-<h1 align = "center">An illustration of the surveyed MIS tricks and their latent relations</h1> 
+<center>An illustration of the surveyed MIS tricks and their latent relations<center>
 
 [comment]: <> ()
 ![visualization](figures/fig1.png)
