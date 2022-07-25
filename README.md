@@ -66,14 +66,15 @@ Dataset  | Baseline | Method | Recall (%) | Percision (%) |  Dice (%) |  IoU (%)
 
 
 ### Citation
-'''
+If you find this repo useful, please cite:
+```
 @article{zhangbatmis2022,
   title={Bag of Tricks with Convolutional Neural Networks for Medical Image Segmentation},
   author={Zhang, Dong and Lin, Yi and Chen, Hao and Tian, Zhuotao and Yang, Xin and Tang, Jinhui and Cheng, Kwang-Ting},
   journal={arXiv},
   year={2022}
 }
-'''
+```
 
 
 If you have any problems in using this code, please contact: dongz@ust.hk or yi.lin@connect.ust.hk
