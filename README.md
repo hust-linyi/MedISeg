@@ -28,13 +28,11 @@ pip install -r requirements.txt
 #### 🌻 Option 2: 
 ```python
 conda install ipython
-pip install torch==1.7.1 torchvision==0.8.2 torchaudio==0.7.2
-pip install git+https://github.com/zhanghang1989/PyTorch-Encoding/
-pip install pytorch-lightning==1.3.5
+pip install albumentations
+pip install torch
 pip install opencv-python
 pip install imageio
 pip install ftfy regex tqdm
-pip install git+https://github.com/openai/CLIP.git
 pip install altair
 pip install streamlit
 pip install --upgrade protobuf

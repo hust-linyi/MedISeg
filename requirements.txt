@@ -1,0 +1,13 @@
+albumentations
+torch
+opencv-python
+imageio
+ftfy regex tqdm
+altair
+streamlit
+--upgrade protobuf
+timm
+tensorboardX
+matplotlib
+test-tube
+wandb
