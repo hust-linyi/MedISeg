@@ -31,10 +31,21 @@ The surveyed medical image segmentation tricks and their latent relations
 * [Kwang-Ting Cheng](https://seng.hkust.edu.hk/about/people/faculty/tim-kwang-ting-cheng)
 
 ## News
-**1.1.0** was released in 01/08/2022:  
-- A series of MIS tricks are collected and experimentally explored on [2D-UNet](https://arxiv.org/abs/1505.04597) and [3D-UNet](https://arxiv.org/abs/1606.06650).
-- We explicitly clarify the effectiveness of tricks on [ISIC 2018](https://challenge.isic-archive.com/landing/2018/), [CoNIC](https://conic-challenge.grand-challenge.org/), [KiTS19](https://kits19.grand-challenge.org/data/) datasets. 
-- BaT-MIS will provide guidance for a wide range of medical image processing challenges in the future.
+🌻 **1.1.0** was released in 01/08/2022:  
+
+🌻 Supported Backbones:
+- [ResNet](https://arxiv.org/abs/1512.03385?context=cs)
+- [DenseNet](https://arxiv.org/abs/1608.06993)
+- [ViT](https://arxiv.org/abs/2010.11929)
+
+🌻 Supported Methods:
+- [2D-UNet](https://arxiv.org/abs/1505.04597)
+- [3D-UNet](https://arxiv.org/abs/1606.06650)
+
+🌻 Supported Datasets:
+- [ISIC 2018](https://challenge.isic-archive.com/landing/2018/) 
+- [CoNIC](https://conic-challenge.grand-challenge.org/)
+- [KiTS19](https://kits19.grand-challenge.org/data/)
 
 ## Installation
 ### 🌻 Option 1: 
