@@ -34,13 +34,13 @@ The surveyed medical image segmentation tricks and their latent relations
 **1.1.0 was released in 01/08/2022**
 
 🌻 Supported Backbones:
-- [ResNet](https://arxiv.org/abs/1512.03385?context=cs)
-- [DenseNet](https://arxiv.org/abs/1608.06993)
-- [ViT](https://arxiv.org/abs/2010.11929)
+- [ResNet (CVPR'2016)](https://arxiv.org/abs/1512.03385?context=cs)
+- [DenseNet (CVPR'2017)](https://arxiv.org/abs/1608.06993)
+- [ViT (ICLR'2021)](https://arxiv.org/abs/2010.11929)
 
 🌻 Supported Methods:
-- [2D-UNet](https://arxiv.org/abs/1505.04597)
-- [3D-UNet](https://arxiv.org/abs/1606.06650)
+- [2D-UNet (MICCAI'2016)](https://arxiv.org/abs/1505.04597)
+- [3D-UNet (MICCAI'2016)](https://arxiv.org/abs/1606.06650)
 
 🌻 Supported Datasets:
 - [ISIC 2018](https://challenge.isic-archive.com/landing/2018/) 
