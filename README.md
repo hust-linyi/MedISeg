@@ -48,11 +48,11 @@ The surveyed medical image segmentation tricks and their latent relations
 - [x] [KiTS19](https://kits19.grand-challenge.org/data/)
 
 ## Installation
-### 🌻 Option 1: 
+### - Option 1: 
 ```python
 pip install -r requirements.txt
 ```
-### 🌻 Option 2: 
+### - Option 2: 
 ```python
 conda install ipython
 pip install albumentations
@@ -71,7 +71,7 @@ pip install wandb
 ```
 
 ## Data Preparation
-🌻 Please download the dataset from the official website:
+- Please download the dataset from the official website:
 - [x] ISIC 2018: [2D ISIC 2018 Lesion Boundary Segmentation Dataset](https://challenge.isic-archive.com/landing/2018/)
 - [x] CoNIC: [2D Colon Nuclei Identification and Counting Challenge Dataset](https://conic-challenge.grand-challenge.org/)
 - [x] KiTS19: [3D Kidney Tumor Segmentation 2019 Dataset](https://kits19.grand-challenge.org/data/)
