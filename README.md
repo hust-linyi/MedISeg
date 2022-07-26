@@ -31,18 +31,18 @@ The surveyed medical image segmentation tricks and their latent relations
 * [Kwang-Ting Cheng](https://seng.hkust.edu.hk/about/people/faculty/tim-kwang-ting-cheng)
 
 ## News
-**1.1.0 was released in 01/08/2022**
+🌻 **1.1.0 was released in 01/08/2022**
 
-🌻 Supported Backbones:
+- [x] Supported Backbones:
 - [ResNet (CVPR'2016)](https://arxiv.org/abs/1512.03385?context=cs)
 - [DenseNet (CVPR'2017)](https://arxiv.org/abs/1608.06993)
 - [ViT (ICLR'2021)](https://arxiv.org/abs/2010.11929)
 
-🌻 Supported Methods:
+- [x] Supported Methods:
 - [2D-UNet (MICCAI'2016)](https://arxiv.org/abs/1505.04597)
 - [3D-UNet (MICCAI'2016)](https://arxiv.org/abs/1606.06650)
 
-🌻 Supported Datasets:
+- [x] Supported Datasets:
 - [ISIC 2018](https://challenge.isic-archive.com/landing/2018/) 
 - [CoNIC](https://conic-challenge.grand-challenge.org/)
 - [KiTS19](https://kits19.grand-challenge.org/data/)
