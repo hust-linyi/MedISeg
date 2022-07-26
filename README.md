@@ -21,14 +21,16 @@ The modern MIS publications usually focus on presentations of the major technolo
 The surveyed medical image segmentation tricks and their latent relations 
 </div>
 
-## Authors
-* [Dong Zhang](https://dongzhang89.github.io/)
-* [Yi Lin](https://ianyilin.github.io/)
-* [Hao Chen](https://cse.hkust.edu.hk/admin/people/faculty/profile/jhc)
-* [Zhuotao Tian](https://scholar.google.com/citations?user=mEjhz-IAAAAJ&hl=zh-TW)
-* [Xin Yang](https://scholar.google.com/citations?user=lsz8OOYAAAAJ&hl=zh-CN)
-* [Jinhui Tang](https://scholar.google.com/citations?user=ByBLlEwAAAAJ&hl=zh-CN)
-* [Kwang-Ting Cheng](https://seng.hkust.edu.hk/about/people/faculty/tim-kwang-ting-cheng)
+## Citation
+🌻 If you use this toolbox or benchmark in your research, please cite:
+```
+@article{zhangbatmis2022,
+  title={Bag of Tricks with Convolutional Neural Networks for Medical Image Segmentation},
+  author={Zhang, Dong and Lin, Yi and Chen, Hao and Tian, Zhuotao and Yang, Xin and Tang, Jinhui and Cheng, Kwang-Ting},
+  journal={arXiv},
+  year={2022}
+}
+```
 
 ## News
 🌻 1.1.0 was released in 01/08/2022
@@ -90,17 +92,6 @@ Dataset  | Baseline | Method | Recall (%) | Percision (%) |  Dice (%) |  IoU (%)
 [CoNIC](https://conic-challenge.grand-challenge.org/)  | 2D-UNet | + PyTorch | 87.07%  | 85.80%   | 85.80% | 85.80% | weight 
 [KiTS19](https://kits19.grand-challenge.org/data/) | 3D-UNet | + PyTorch  | 87.35% | 87.35%  | 87.35% | 87.35% | weight
 
-
-## Citation
-🌻 If you use this toolbox or benchmark in your research, please cite:
-```
-@article{zhangbatmis2022,
-  title={Bag of Tricks with Convolutional Neural Networks for Medical Image Segmentation},
-  author={Zhang, Dong and Lin, Yi and Chen, Hao and Tian, Zhuotao and Yang, Xin and Tang, Jinhui and Cheng, Kwang-Ting},
-  journal={arXiv},
-  year={2022}
-}
-```
 
 ## Todo list
 - [ ] Experiments on more medical image datasets 
