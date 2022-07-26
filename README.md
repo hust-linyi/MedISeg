@@ -31,7 +31,7 @@ The surveyed medical image segmentation tricks and their latent relations
 * [Kwang-Ting Cheng](https://seng.hkust.edu.hk/about/people/faculty/tim-kwang-ting-cheng)
 
 ## News
-🌻 **1.1.0** was released in 01/08/2022:  
+**1.1.0 was released in 01/08/2022**
 
 🌻 Supported Backbones:
 - [ResNet](https://arxiv.org/abs/1512.03385?context=cs)
