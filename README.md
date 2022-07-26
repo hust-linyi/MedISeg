@@ -31,18 +31,18 @@ The surveyed medical image segmentation tricks and their latent relations
 * [Kwang-Ting Cheng](https://seng.hkust.edu.hk/about/people/faculty/tim-kwang-ting-cheng)
 
 ## News
-🌻 **1.1.0 was released in 01/08/2022**
+🌻 1.1.0 was released in 01/08/2022
 
-- Supported Backbones:
+- **Supported Backbones:**
 - [x] [ResNet (CVPR'2016)](https://arxiv.org/abs/1512.03385?context=cs)
 - [x] [DenseNet (CVPR'2017)](https://arxiv.org/abs/1608.06993)
 - [x] [ViT (ICLR'2021)](https://arxiv.org/abs/2010.11929)
 
-- Supported Methods:
+- **Supported Methods:**
 - [x] [2D-UNet (MICCAI'2016)](https://arxiv.org/abs/1505.04597)
 - [x] [3D-UNet (MICCAI'2016)](https://arxiv.org/abs/1606.06650)
 
-- Supported Datasets:
+- **Supported Datasets:**
 - [x] [ISIC 2018](https://challenge.isic-archive.com/landing/2018/) 
 - [x] [CoNIC](https://conic-challenge.grand-challenge.org/)
 - [x] [KiTS19](https://kits19.grand-challenge.org/data/)
@@ -72,9 +72,9 @@ pip install wandb
 
 ## Data Preparation
 🌻 Please download the dataset from the official website:
-* ISIC 2018: [2D ISIC 2018 Lesion Boundary Segmentation Dataset](https://challenge.isic-archive.com/landing/2018/)
-* CoNIC: [2D Colon Nuclei Identification and Counting Challenge Dataset](https://conic-challenge.grand-challenge.org/)
-* KiTS19: [3D Kidney Tumor Segmentation 2019 Dataset](https://kits19.grand-challenge.org/data/)
+- [x] ISIC 2018: [2D ISIC 2018 Lesion Boundary Segmentation Dataset](https://challenge.isic-archive.com/landing/2018/)
+- [x] CoNIC: [2D Colon Nuclei Identification and Counting Challenge Dataset](https://conic-challenge.grand-challenge.org/)
+- [x] KiTS19: [3D Kidney Tumor Segmentation 2019 Dataset](https://kits19.grand-challenge.org/data/)
 
 ## Inference with Pre-trained Models
 
