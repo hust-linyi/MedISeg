@@ -48,11 +48,11 @@ The surveyed medical image segmentation tricks and their latent relations
 - [x] [KiTS19](https://kits19.grand-challenge.org/data/)
 
 ## Installation
-### - Option 1: 
+- **Option 1:**
 ```python
 pip install -r requirements.txt
 ```
-### - Option 2: 
+- **Option 2:** 
 ```python
 conda install ipython
 pip install albumentations
