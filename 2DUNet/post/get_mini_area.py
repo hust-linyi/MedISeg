@@ -7,7 +7,6 @@ def get_mini_area_conic():
     label = label[...,0]
     # debug
     label = label[:100]
-    import ipdb; ipdb.set_trace()
     mini_area = 1e5
     for i in range(label.shape[0]):
         _label = label[i]

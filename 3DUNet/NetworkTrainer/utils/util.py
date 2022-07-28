@@ -122,6 +122,25 @@ def setup_logging(opt):
 
     logger.info('***** Training starts *****')
     logger.info('save directory: {:s}'.format(opt.train['save_dir']))
+
+    # print options
+    if opt.isTrain:
+        logger.info('training options:')
+        for group, options in opt.__dict__.items():
+            if group == 'test' or group == 'transform':
+                continue
+            try:
+                for name, val in options.items():
+                     logger.info("{:s} = {:s}".format(name, repr(val)))
+            except:
+                 logger.info("{:s} = {:s}".format(group, repr(options)))
+    else:
+        logger.info('test options:')
+        for group, options in opt.__dict__.items():
+            if group == 'test':
+                for name, val in options.items():
+                     logger.info("{:s} = {:s}".format(name, repr(val)))
+
     if mode == 'w':
         logger_results.info('epoch\ttrain_loss\ttrain_loss_vor\ttrain_loss_cluster\ttrain_loss_repel')
 

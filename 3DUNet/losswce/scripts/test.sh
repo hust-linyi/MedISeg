@@ -1,4 +1,4 @@
-cd /newdata/ianlin/CODE/seg_trick/3DUNet/losswce
+cd /newdata/ianlin/CODE/seg_trick/3DUNet/NetworkTrainer
 
 python test.py --task losswce --fold 0 --test-gpus 0 --test-test-epoch 0 
 python test.py --task losswce --fold 1 --test-gpus 0 --test-test-epoch 0 

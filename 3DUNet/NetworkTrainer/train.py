@@ -1,9 +1,8 @@
-from hmac import trans_36
 import sys
 sys.path.append('../')
-from NetworkTrainer.network_trainer import NetworkTrainer
+from network_trainer import NetworkTrainer
 import os
-from options import Options
+from options.options import Options
 
 def main():
     opt = Options(isTrain=True)
@@ -15,6 +14,7 @@ def main():
     trainer.set_logging()
     trainer.set_randomseed()
     trainer.set_network()
+    trainer.set_loss()
     trainer.set_optimizer()
     trainer.set_dataloader()
     trainer.run()

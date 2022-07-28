@@ -1,6 +1,7 @@
 import os
 import argparse
-from NetworkTrainer.dataloaders.get_transform import get_transform
+from dataloaders.get_transform import get_transform
+from rich import print
 
 
 class Options:
@@ -15,12 +16,12 @@ class Options:
     def parse(self):
         """ Parse the options, replace the default value if there is a new input """
         parser = argparse.ArgumentParser(description='')
-        parser.add_argument('--dataset', type=str, default='yeung', help='dataset name')
+        parser.add_argument('--dataset', type=str, default='monai', help='dataset name')
         parser.add_argument('--task', type=str, default='DEBUG', help='')
         parser.add_argument('--fold', type=int, default=0, help='0-4, five fold cross validation')
         parser.add_argument('--pretrained', type=bool, default=False, help='True or False')
         parser.add_argument('--in-c', type=int, default=1, help='input channel')
-        parser.add_argument('--num-class', type=int, default=3, help='input channel')
+        parser.add_argument('--num-class', type=int, default=2, help='input channel')
         parser.add_argument('--patch-size', type=int, default=96, help='input size of the image')
         parser.add_argument('--train-train-epochs', type=int, default=100, help='number of training epochs')
         parser.add_argument('--train-batch-size', type=int, default=2, help='batch size')
@@ -52,12 +53,12 @@ class Options:
         home_dir = '/home/ylindq'
         if not os.path.exists(home_dir):
             home_dir = '/newdata/ianlin/'
-        self.root_dir = home_dir + f'/Data/KIT-19/{self.dataset}/preprocess'
-        self.result_dir = home_dir + f'/Experiment/KIT19/kit19/'
+        self.root_dir = home_dir + f'/Data/COVID-19-20/{self.dataset}/preprocess'
+        self.result_dir = home_dir + f'/Experiment/COVID/'
         self.model['pretrained'] = args.pretrained
         self.model['in_c'] = args.in_c
         self.model['num_class'] = args.num_class
-        self.model['input_size'] = tuple([args.patch_size, args.patch_size, args.patch_size])
+        self.model['input_size'] = tuple([args.patch_size, args.patch_size, 16])
 
         # --- training params --- #
         self.train['save_dir'] = '{:s}/{:s}/fold_{:d}'.format(self.result_dir, self.task, self.fold)  # path to save results

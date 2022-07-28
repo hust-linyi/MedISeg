@@ -29,9 +29,9 @@ class NetworkInfer:
        os.environ['CUDA_VISIBLE_DEVICES'] = ','.join(str(x) for x in self.opt.test['gpus'])
  
     def set_network(self):
-        self.net = UNet3D(num_classes=3, input_channels=1, act='relu', norm=self.opt.train['norm'])
+        self.net = UNet3D(num_classes=self.opt.model['num_class'], input_channels=self.opt.model['in_c'], act='relu', norm=self.opt.train['norm'])
         if self.opt.train['deeps']:
-            self.net = UNet3D_ds(num_classes=3, input_channels=1, act='relu', norm=self.opt.train['norm'])
+            self.net = UNet3D_ds(num_classes=self.opt.model['num_class'], input_channels=self.opt.model['in_c'], act='relu', norm=self.opt.train['norm'])
              
         self.net = torch.nn.DataParallel(self.net)
         self.net = self.net.cuda()

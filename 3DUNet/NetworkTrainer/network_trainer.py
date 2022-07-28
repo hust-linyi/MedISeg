@@ -39,9 +39,9 @@ class NetworkTrainer:
         torch.cuda.manual_seed_all(num)
     
     def set_network(self):
-        self.net = UNet3D(num_classes=3, input_channels=1, act='relu', norm=self.opt.train['norm'])
+        self.net = UNet3D(num_classes=self.opt.model['num_class'], input_channels=self.opt.model['in_c'], act='relu', norm=self.opt.train['norm'])
         if self.opt.train['deeps']:
-            self.net = UNet3D_ds(num_classes=3, input_channels=1, act='relu', norm=self.opt.train['norm'])
+            self.net = UNet3D_ds(num_classes=self.opt.model['num_class'], input_channels=self.opt.model['in_c'], act='relu', norm=self.opt.train['norm'])
                 
         self.net = torch.nn.DataParallel(self.net)
         self.net = self.net.cuda()
@@ -129,10 +129,11 @@ class NetworkTrainer:
 
     def run(self):
         num_epoch = self.opt.train['train_epochs']
-        self.logger.info("=> Initial learning rate: {:g}".format(self.opt.train['lr']))
-        self.logger.info("=> Batch size: {:d}".format(self.opt.train['batch_size']))
-        self.logger.info("=> Number of training iterations: {:d} * {:d}".format(num_epoch, int(len(self.train_loader))))
-        self.logger.info("=> Training epochs: {:d}".format(self.opt.train['train_epochs']))
+        # log config
+        # self.logger.info("=> Initial learning rate: {:g}".format(self.opt.train['lr']))
+        # self.logger.info("=> Batch size: {:d}".format(self.opt.train['batch_size']))
+        # self.logger.info("=> Number of training iterations: {:d} * {:d}".format(num_epoch, int(len(self.train_loader))))
+        # self.logger.info("=> Training epochs: {:d}".format(self.opt.train['train_epochs']))
 
         dataprocess = tqdm(range(self.opt.train['start_epoch'], num_epoch))
         best_val_loss = 100.0    

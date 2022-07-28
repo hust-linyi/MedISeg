@@ -3,3 +3,6 @@ sc create --name 3dda21 --image "10.81.138.201:5000/xsemseg:v_det4" --gpu 1 --cm
 sc create --name 3dda22 --image "10.81.138.201:5000/xsemseg:v_det4" --gpu 1 --cmd "source /newdata/ianlin/.bashrc && conda activate cu11 && cd /newdata/ianlin/CODE/seg_trick/3DUNet/da2/scripts && bash train_test2.sh" --arch ampere
 sc create --name 3dda23 --image "10.81.138.201:5000/xsemseg:v_det4" --gpu 1 --cmd "source /newdata/ianlin/.bashrc && conda activate cu11 && cd /newdata/ianlin/CODE/seg_trick/3DUNet/da2/scripts && bash train_test3.sh" --arch ampere
 sc create --name 3dda24 --image "10.81.138.201:5000/xsemseg:v_det4" --gpu 1 --cmd "source /newdata/ianlin/.bashrc && conda activate cu11 && cd /newdata/ianlin/CODE/seg_trick/3DUNet/da2/scripts && bash train_test4.sh" --arch ampere
+
+#### TEST ####
+sc create --name 3dda2test --image "10.81.138.201:5000/xsemseg:v_det4" --gpu 1 --cmd "source /newdata/ianlin/.bashrc && conda activate cu11 && cd /newdata/ianlin/CODE/seg_trick/3DUNet/da2/scripts && bash test.sh" --arch ampere

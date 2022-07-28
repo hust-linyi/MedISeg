@@ -1,4 +1,4 @@
-cd /newdata/ianlin/CODE/seg_trick/3DUNet/patch128
+cd /newdata/ianlin/CODE/seg_trick/3DUNet/NetworkTrainer
 
 python test.py --task patch128 --fold 0 --test-gpus 0 --test-test-epoch 0 --patch-size 128
 python test.py --task patch128 --fold 1 --test-gpus 0 --test-test-epoch 0 --patch-size 128

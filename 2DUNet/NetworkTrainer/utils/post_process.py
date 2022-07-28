@@ -124,7 +124,6 @@ class TTA():
         if not self.if_tta:
             return out
         # apply flip
-        import ipdb; ipdb.set_trace()
         for i in range(3):
             out.append(np.flip(img, axis=i))
         # apply rotation
