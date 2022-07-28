@@ -152,7 +152,7 @@ class GenericPreprocessor(object):
                 f.write('\n')
 
 if __name__ == "__main__":
-    cada = GenericPreprocessor(downloaded_data_dir= "/home/ylindq/Code/seg_trick/3d_unet/kits19/data",
+    cada = GenericPreprocessor(downloaded_data_dir= "/home/ylindq/Code/seg_trick/3DUNet/kits19/data",
                                out_data_dir='/home/ylindq/Data/KIT-19',
                                task_name="yeung")
     cada.get_raw_training_data()

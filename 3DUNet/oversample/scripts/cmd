@@ -1,8 +1,8 @@
-sc create --name 3doversample0 --image "10.81.138.201:5000/xsemseg:v_det4" --gpu 1 --cmd "source /newdata/ianlin/.bashrc && conda activate cu11 && cd /newdata/ianlin/CODE/seg_trick/3d_unet/oversample/scripts && bash train_test0.sh" --arch ampere
-sc create --name 3doversample1 --image "10.81.138.201:5000/xsemseg:v_det4" --gpu 1 --cmd "source /newdata/ianlin/.bashrc && conda activate cu11 && cd /newdata/ianlin/CODE/seg_trick/3d_unet/oversample/scripts && bash train_test1.sh" --arch ampere
-sc create --name 3doversample2 --image "10.81.138.201:5000/xsemseg:v_det4" --gpu 1 --cmd "source /newdata/ianlin/.bashrc && conda activate cu11 && cd /newdata/ianlin/CODE/seg_trick/3d_unet/oversample/scripts && bash train_test2.sh" --arch ampere
-sc create --name 3doversample3 --image "10.81.138.201:5000/xsemseg:v_det4" --gpu 1 --cmd "source /newdata/ianlin/.bashrc && conda activate cu11 && cd /newdata/ianlin/CODE/seg_trick/3d_unet/oversample/scripts && bash train_test3.sh" --arch ampere
-sc create --name 3doversample4 --image "10.81.138.201:5000/xsemseg:v_det4" --gpu 1 --cmd "source /newdata/ianlin/.bashrc && conda activate cu11 && cd /newdata/ianlin/CODE/seg_trick/3d_unet/oversample/scripts && bash train_test4.sh" --arch ampere
+sc create --name 3doversample0 --image "10.81.138.201:5000/xsemseg:v_det4" --gpu 1 --cmd "source /newdata/ianlin/.bashrc && conda activate cu11 && cd /newdata/ianlin/CODE/seg_trick/3DUNet/oversample/scripts && bash train_test0.sh" --arch ampere
+sc create --name 3doversample1 --image "10.81.138.201:5000/xsemseg:v_det4" --gpu 1 --cmd "source /newdata/ianlin/.bashrc && conda activate cu11 && cd /newdata/ianlin/CODE/seg_trick/3DUNet/oversample/scripts && bash train_test1.sh" --arch ampere
+sc create --name 3doversample2 --image "10.81.138.201:5000/xsemseg:v_det4" --gpu 1 --cmd "source /newdata/ianlin/.bashrc && conda activate cu11 && cd /newdata/ianlin/CODE/seg_trick/3DUNet/oversample/scripts && bash train_test2.sh" --arch ampere
+sc create --name 3doversample3 --image "10.81.138.201:5000/xsemseg:v_det4" --gpu 1 --cmd "source /newdata/ianlin/.bashrc && conda activate cu11 && cd /newdata/ianlin/CODE/seg_trick/3DUNet/oversample/scripts && bash train_test3.sh" --arch ampere
+sc create --name 3doversample4 --image "10.81.138.201:5000/xsemseg:v_det4" --gpu 1 --cmd "source /newdata/ianlin/.bashrc && conda activate cu11 && cd /newdata/ianlin/CODE/seg_trick/3DUNet/oversample/scripts && bash train_test4.sh" --arch ampere
 
 ##### TEST #####
-sc create --name 3doversampletest --image "10.81.138.201:5000/xsemseg:v_det4" --gpu 1 --cmd "source /newdata/ianlin/.bashrc && conda activate cu11 && cd /newdata/ianlin/CODE/seg_trick/3d_unet/oversample/scripts && bash test.sh" --arch ampere
+sc create --name 3doversampletest --image "10.81.138.201:5000/xsemseg:v_det4" --gpu 1 --cmd "source /newdata/ianlin/.bashrc && conda activate cu11 && cd /newdata/ianlin/CODE/seg_trick/3DUNet/oversample/scripts && bash test.sh" --arch ampere

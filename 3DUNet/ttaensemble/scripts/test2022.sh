@@ -1,4 +1,4 @@
-cd /newdata/ianlin/CODE/seg_trick/3d_unet/ttaensemble
+cd /newdata/ianlin/CODE/seg_trick/3DUNet/ttaensemble
 
 python test.py --task ttaensemble --fold 0 --train-seed 2022 --test-flip True --test-save-flag True
 python test.py --task ttaensemble --fold 1 --train-seed 2022 --test-flip True --test-save-flag True   

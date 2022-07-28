@@ -1,4 +1,4 @@
-cd /newdata/ianlin/CODE/seg_trick/3d_unet/post
+cd /newdata/ianlin/CODE/seg_trick/3DUNet/post
 
 python test.py --task abl --fold 0 --test-test-epoch 0 --post-abl True
 python test.py --task abl --fold 1 --test-test-epoch 0 --post-abl True

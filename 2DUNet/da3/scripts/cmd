@@ -1,5 +1,5 @@
 sc create --name 2dda3 --image "10.81.138.201:5000/xsemseg:v_det4" --gpu 1 --cmd "source /newdata/ianlin/.bashrc && conda activate cu11 && cd /newdata/ianlin/CODE/seg_trick/2d_unet/da3/scripts && bash train_test_cv.sh" --arch ampere
 
 ##### TEST #####
-sc create --name 3dda3test --image "10.81.138.201:5000/xsemseg:v_det4" --gpu 1 --cmd "source /newdata/ianlin/.bashrc && conda activate cu11 && cd /newdata/ianlin/CODE/seg_trick/3d_unet/da3/scripts && bash test.sh" --arch ampere
+sc create --name 3dda3test --image "10.81.138.201:5000/xsemseg:v_det4" --gpu 1 --cmd "source /newdata/ianlin/.bashrc && conda activate cu11 && cd /newdata/ianlin/CODE/seg_trick/3DUNet/da3/scripts && bash test.sh" --arch ampere
 
