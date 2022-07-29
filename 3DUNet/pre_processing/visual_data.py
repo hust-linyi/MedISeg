@@ -32,22 +32,25 @@ def check_data():
 
 
 def check_data_pro():
-    pkl_pth = '/newdata/ianlin/Data/COVID-19-20/monai/preprocess/dataset_pro.pkl'
-    data_dir = '/mnt/yfs/ianlin/Data/COVID-19-20/COVID-19-20_v2/preprocess/monai/raw/imagesTr'
+    # pkl_pth = '/newdata/ianlin/Data/COVID-19-20/monai/preprocess/dataset_pro.pkl'
+    # data_dir = '/mnt/yfs/ianlin/Data/COVID-19-20/COVID-19-20_v2/preprocess/monai/raw/imagesTr'
+    pkl_pth = '/mnt/yfs/ianlin/Data/LIVER/preprocess/monai/preprocess/dataset_pro.pkl'
+    data_dir = '/mnt/yfs/ianlin/Data/LIVER/preprocess/monai/raw/imagesTr'
     data_info = pickle.load(open(pkl_pth, 'rb'))
     for patient_id in data_info['patient_names']:
         # print(data_info['dataset_properties'][patient_id]['origin'])
         # print(data_info['dataset_properties'][patient_id]['spacing'])
         print(data_info['dataset_properties'][patient_id]['direction'])
         # print(data_info['dataset_properties'][patient_id]['size'])
-        if data_info['dataset_properties'][patient_id]['direction'][-1] == -1:
-            # reverse the z direction
-            img = np.load(os.path.join(data_dir, patient_id + '_image.npy'))
-            label = np.load(os.path.join(data_dir, patient_id + '_label.npy'))
-            img = np.flip(img, axis=-1)
-            label = np.flip(label, axis=-1)
-            np.save(os.path.join(data_dir, patient_id + '_image.npy'), img)
-            np.save(os.path.join(data_dir, patient_id + '_label.npy'), label)
+
+        # if data_info['dataset_properties'][patient_id]['direction'][-1] == -1:
+        #     # reverse the z direction
+        #     img = np.load(os.path.join(data_dir, patient_id + '_image.npy'))
+        #     label = np.load(os.path.join(data_dir, patient_id + '_label.npy'))
+        #     img = np.flip(img, axis=-1)
+        #     label = np.flip(label, axis=-1)
+        #     np.save(os.path.join(data_dir, patient_id + '_image.npy'), img)
+        #     np.save(os.path.join(data_dir, patient_id + '_label.npy'), label)
 
 
 

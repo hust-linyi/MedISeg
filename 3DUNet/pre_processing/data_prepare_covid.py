@@ -58,6 +58,11 @@ class GenericPreprocessor(object):
         for patient_id in tqdm.tqdm(patient_ids):
             img_1 = sitk.ReadImage(join(self.downloaded_data_dir, patient_id + '_ct.nii.gz'))
             img_2 = sitk.ReadImage(join(self.downloaded_data_dir, patient_id + '_seg.nii.gz'))
+
+            # set direction
+            img_1.SetDirection(tuple((1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0)))
+            img_2.SetDirection(tuple((1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0)))
+
             volume = sitk.GetArrayFromImage(img_1) # z, x, y
             label = sitk.GetArrayFromImage(img_2) # z, x, y
             np.save(join(imagestr, patient_id + "_image.npy"),volume.astype(np.float32))
@@ -159,7 +164,7 @@ if __name__ == "__main__":
     cada = GenericPreprocessor(downloaded_data_dir= "/mnt/yfs/ianlin/Data/COVID-19-20/COVID-19-20_v2/RAWDATA",
                                out_data_dir='/mnt/yfs/ianlin/Data/COVID-19-20/COVID-19-20_v2/preprocess',
                                task_name="monai")
-    # cada.get_raw_training_data()
+    cada.get_raw_training_data()
     cada.do_preprocessing(minimun=-1000, maxmun=500, new_spacing=(5, 1.25, 1.25)) # new_spacing=[z, x, y]
 
 

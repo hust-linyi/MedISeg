@@ -57,6 +57,11 @@ class GenericPreprocessor(object):
         for patient_id in tqdm.tqdm(patient_ids):
             img_1 = sitk.ReadImage(join(self.downloaded_data_dir, 'volume-' + patient_id + '.nii'))
             img_2 = sitk.ReadImage(join(self.downloaded_data_dir, 'segmentation-' + patient_id + '.nii'))
+
+            # set direction
+            img_1.SetDirection(tuple((1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0)))
+            img_2.SetDirection(tuple((1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0)))
+
             volume = sitk.GetArrayFromImage(img_1) # z, x, y
             label = sitk.GetArrayFromImage(img_2) # z, x, y
             np.save(join(imagestr, patient_id + "_image.npy"),volume.astype(np.float32))
