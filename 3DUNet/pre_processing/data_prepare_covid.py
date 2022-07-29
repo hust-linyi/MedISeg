@@ -8,6 +8,7 @@ from collections import OrderedDict
 from batchgenerators.augmentations.spatial_transformations import augment_resize
 from rich import print
 import tqdm
+import time
 
 
 def load_itk_image(path):
@@ -51,17 +52,14 @@ class GenericPreprocessor(object):
     def get_raw_training_data(self):
         imagestr = join(self.out_base_raw, "imagesTr")
         maybe_mkdir_p(imagestr)
-        # blacklist = ['case_00015', 'case_00023', 'case_00037', 'case_00068', 'case_00125', 'case_00133']
-        patient_ids = [f for f in os.listdir(self.downloaded_data_dir) if f.endswith('seg.nii.gz')]
+        patient_ids = [f.replace('_seg.nii.gz', '') for f in os.listdir(self.downloaded_data_dir) if f.endswith('_seg.nii.gz')]
         print(f'Got total {len(patient_ids)} raw data')
         patient_ids.sort()
         for patient_id in tqdm.tqdm(patient_ids):
-            img_1 = sitk.ReadImage(join(self.downloaded_data_dir, patient_id.replace('seg.nii.gz', 'ct.nii.gz')))
-            img_2 = sitk.ReadImage(join(self.downloaded_data_dir, patient_id))
-            volume = sitk.GetArrayFromImage(img_1)
-            label = sitk.GetArrayFromImage(img_2)
-            volume = np.moveaxis(volume, -1, 0) # z, x, y
-            label = np.moveaxis(label, -1, 0) # z, x, y
+            img_1 = sitk.ReadImage(join(self.downloaded_data_dir, patient_id + '_ct.nii.gz'))
+            img_2 = sitk.ReadImage(join(self.downloaded_data_dir, patient_id + '_seg.nii.gz'))
+            volume = sitk.GetArrayFromImage(img_1) # z, x, y
+            label = sitk.GetArrayFromImage(img_2) # z, x, y
             np.save(join(imagestr, patient_id + "_image.npy"),volume.astype(np.float32))
             np.save(join(imagestr, patient_id + "_label.npy"),label)
 
@@ -69,8 +67,8 @@ class GenericPreprocessor(object):
 
             if True:
                 self.train_patient_names.append(patient_id)
-                self.images.append(volume)
-                self.labels.append(label)
+                # self.images.append(volume)
+                # self.labels.append(label)
                 self.data_info['dataset_properties'][patient_id] = OrderedDict()  
                 self.data_info['dataset_properties'][patient_id]['origin'] = ori1
                 self.data_info['dataset_properties'][patient_id]['spacing'] = spacing1
@@ -139,11 +137,15 @@ class GenericPreprocessor(object):
                 upper_bound,lower_bound,median,mean_before,sd_before = self._get_voxels_in_foreground(voxels,label)
             mask = (voxels > lower_bound) & (voxels < upper_bound)
             voxels = np.clip(voxels, lower_bound, upper_bound)
-            mn = voxels[mask].mean()
-            sd = voxels[mask].std()
-            voxels = (voxels - mn) / sd
+            # mn = voxels[mask].mean()
+            # sd = voxels[mask].std()
+            # voxels = (voxels - mn) / sd
+            ### Convert to [0, 1]
+            voxels = (voxels - voxels.min()) / (voxels.max() - voxels.min())
             # resample to isotropic voxel size
-            spacing = self.data_info['dataset_properties'][self.data_info['patient_names'][i]]['spacing']
+            spacing = self.data_info['dataset_properties'][self.data_info['patient_names'][i]]['spacing']   # the spacing is x, y, z, so change it inot z, x, y
+            spacing = (spacing[2], spacing[0], spacing[1])
+
             voxels, label = self.resample(voxels, label, spacing, new_spacing)
             np.save(join(self.out_base_preprocess, self.data_info['patient_names'][i] + "_image.npy"),voxels.astype(np.float32))
             np.save(join(self.out_base_preprocess, self.data_info['patient_names'][i] + "_label.npy"),label)
@@ -158,6 +160,6 @@ if __name__ == "__main__":
                                out_data_dir='/mnt/yfs/ianlin/Data/COVID-19-20/COVID-19-20_v2/preprocess',
                                task_name="monai")
     # cada.get_raw_training_data()
-    cada.do_preprocessing(minimun=-1000, maxmun=500, new_spacing=(5, 1.25, 1.25))
+    cada.do_preprocessing(minimun=-1000, maxmun=500, new_spacing=(5, 1.25, 1.25)) # new_spacing=[z, x, y]
 
 

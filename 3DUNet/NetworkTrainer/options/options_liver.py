@@ -22,7 +22,7 @@ class Options:
         parser.add_argument('--pretrained', type=bool, default=False, help='True or False')
         parser.add_argument('--in-c', type=int, default=1, help='input channel')
         parser.add_argument('--num-class', type=int, default=2, help='input channel')
-        parser.add_argument('--patch-size', type=int, default=192, help='input size of the image')
+        parser.add_argument('--patch-size', type=int, default=96, help='input size of the image')
         parser.add_argument('--train-train-epochs', type=int, default=100, help='number of training epochs')
         parser.add_argument('--train-batch-size', type=int, default=2, help='batch size')
         parser.add_argument('--train-checkpoint-freq', type=int, default=30, help='epoch to save checkpoints')
@@ -53,12 +53,12 @@ class Options:
         home_dir = '/home/ylindq'
         if not os.path.exists(home_dir):
             home_dir = '/newdata/ianlin/'
-        self.root_dir = home_dir + f'/Data/COVID-19-20/{self.dataset}/preprocess'
-        self.result_dir = home_dir + f'/Experiment/COVID/'
+        self.root_dir = home_dir + f'/Data/LIVER/{self.dataset}/preprocess'
+        self.result_dir = home_dir + f'/Experiment/LIVER/'
         self.model['pretrained'] = args.pretrained
         self.model['in_c'] = args.in_c
         self.model['num_class'] = args.num_class
-        self.model['input_size'] = tuple([args.patch_size, args.patch_size, 16])
+        self.model['input_size'] = tuple([args.patch_size, args.patch_size, 32])
 
         # --- training params --- #
         self.train['save_dir'] = '{:s}/{:s}/fold_{:d}'.format(self.result_dir, self.task, self.fold)  # path to save results

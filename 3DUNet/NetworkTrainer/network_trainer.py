@@ -88,6 +88,9 @@ class NetworkTrainer:
         for i_batch, sampled_batch in enumerate(self.train_loader):
             volume_batch, label_batch = sampled_batch['image'], sampled_batch['label']
             volume_batch, label_batch = volume_batch.cuda(), label_batch.cuda()
+            # check if the label is binary when the number of classes is 2
+            if self.opt.model['num_class'] == 2:
+                label_batch = (label_batch > 0).type(torch.float32)
             outputs = self.net(volume_batch)
             if not self.opt.train['deeps']:
                 loss = self.criterion(outputs, label_batch)
@@ -118,7 +121,11 @@ class NetworkTrainer:
         with torch.no_grad():
             for i_batch, sampled_batch in enumerate(self.val_loader):
                 volume_batch, label_batch = sampled_batch['image'], sampled_batch['label']
+                # check if the label is binary when the number of classes is 2
+                if self.opt.model['num_class'] == 2:
+                    label_batch = (label_batch > 0).type(torch.float32)
                 volume_batch, label_batch = volume_batch.cuda(), label_batch.cuda()
+                
                 outputs = self.net(volume_batch)
                 if self.opt.train['deeps']:
                     outputs = outputs[0]                

@@ -49,7 +49,7 @@ class NetworkInfer:
         tta = TTA(if_flip=self.opt.test['flip'], if_rot=self.opt.test['rotate'])
         patch_size = self.opt.model['input_size']
         stride_xy = patch_size[0]//2
-        stride_z = patch_size[0]//2
+        stride_z = patch_size[2]//2
         # if the size of image is less than patch_size, then padding it
         add_pad = False
         if w < patch_size[0]:
@@ -123,7 +123,10 @@ class NetworkInfer:
         return pred
 
     def run(self):
-        metric_names = ['recall1', 'precision1', 'dice1', 'miou1', 'recall2', 'precision2', 'dice2', 'miou2']
+        if self.opt.model['num_class'] == 2:
+            metric_names = ['recall1', 'precision1', 'dice1', 'miou1']
+        else:
+            metric_names = ['recall1', 'precision1', 'dice1', 'miou1', 'recall2', 'precision2', 'dice2', 'miou2']
         total_metric = AverageMeterArray(len(metric_names))
         if self.opt.test['save_flag']:
             if not os.path.exists(self.opt.test['save_dir'] + '/img'):
