@@ -161,9 +161,16 @@ class GenericPreprocessor(object):
                 f.write('\n')
 
 if __name__ == "__main__":
-    cada = GenericPreprocessor(downloaded_data_dir= "/mnt/yfs/ianlin/Data/COVID-19-20/COVID-19-20_v2/RAWDATA",
-                               out_data_dir='/mnt/yfs/ianlin/Data/COVID-19-20/COVID-19-20_v2/preprocess',
-                               task_name="monai")
+    # SM_server
+    # downloaded_data_dir = "/mnt/yfs/ianlin/Data/COVID-19-20/COVID-19-20_v2/RAWDATA"
+    # out_data_dir = "/mnt/yfs/ianlin/Data/COVID-19-20/COVID-19-20_v2/preprocess"
+
+    # eez244
+    downloaded_data_dir = "/home/ylindq/Data/COVID-19-20/RAWDATA"
+    out_data_dir = "/home/ylindq/Data/COVID-19-20/preprocess"
+
+
+    cada = GenericPreprocessor(downloaded_data_dir=downloaded_data_dir, out_data_dir=out_data_dir,task_name="monai")
     cada.get_raw_training_data()
     cada.do_preprocessing(minimun=-1000, maxmun=500, new_spacing=(5, 1.25, 1.25)) # new_spacing=[z, x, y]
 

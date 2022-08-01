@@ -1,3 +1,7 @@
 */.idea
 */__pycache__
 */.vscode
+*/config
+*/figures
+*/README.md
+*/requirements.txt

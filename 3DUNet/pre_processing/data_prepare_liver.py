@@ -125,6 +125,7 @@ class GenericPreprocessor(object):
         out_img, out_seg = out_img[0], out_seg[0] # x,y,z
         return out_img, out_seg
 
+
     def do_preprocessing(self,minimun=0, maxmun=0, new_spacing=(3.22,1.62,1.62)):
         maybe_mkdir_p(self.out_base_preprocess)
         self.data_info = pickle.load(open(join(self.out_base_raw, 'dataset_pro.pkl'), 'rb'))
@@ -150,6 +151,8 @@ class GenericPreprocessor(object):
             
             # resample to isotropic voxel size
             spacing = self.data_info['dataset_properties'][self.data_info['patient_names'][i]]['spacing']
+            spacing = (spacing[2], spacing[0], spacing[1])
+
             voxels, label = self.resample(voxels, label, spacing, new_spacing)
             np.save(join(self.out_base_preprocess, self.data_info['patient_names'][i] + "_image.npy"),voxels.astype(np.float32))
             np.save(join(self.out_base_preprocess, self.data_info['patient_names'][i] + "_label.npy"),label)
@@ -160,10 +163,16 @@ class GenericPreprocessor(object):
                 f.write('\n')
 
 if __name__ == "__main__":
-    cada = GenericPreprocessor(downloaded_data_dir= "/mnt/yfs/ianlin/Data/LIVER/RAWDATA",
-                               out_data_dir='/mnt/yfs/ianlin/Data/LIVER/preprocess',
-                               task_name="monai")
-    cada.get_raw_training_data()
+    # SM_server
+    # downloaded_data_dir = "/mnt/yfs/ianlin/Data/LIVER/RAWDATA"
+    # out_data_dir = "/mnt/yfs/ianlin/Data/LIVER/preprocess"
+
+    # eez244
+    downloaded_data_dir = "/home/ylindq/Data/LIVER/RAWDATA"
+    out_data_dir = "/home/ylindq/Data/LIVER/"
+
+    cada = GenericPreprocessor(downloaded_data_dir=downloaded_data_dir, out_data_dir=out_data_dir,task_name="monai")
+    # cada.get_raw_training_data()
     cada.do_preprocessing(minimun=-124, maxmun=276, new_spacing=(1, 1, 1))
 
 
