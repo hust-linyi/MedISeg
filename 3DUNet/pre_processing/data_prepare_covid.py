@@ -58,13 +58,26 @@ class GenericPreprocessor(object):
         for patient_id in tqdm.tqdm(patient_ids):
             img_1 = sitk.ReadImage(join(self.downloaded_data_dir, patient_id + '_ct.nii.gz'))
             img_2 = sitk.ReadImage(join(self.downloaded_data_dir, patient_id + '_seg.nii.gz'))
+            volume = sitk.GetArrayFromImage(img_1) # z, y, x
+            label = sitk.GetArrayFromImage(img_2) # z, y, x
+
+            # normalize direction
+            old_direction = img_1.GetDirection()
+            if old_direction[0] == -1:
+                volume = volume[:, :, ::-1]
+                label = label[:, :, ::-1]
+            if old_direction[4] == -1:
+                volume = volume[:, ::-1, :]
+                label = label[:, ::-1, :]
+            if old_direction[8] == -1:
+                volume = volume[::-1, :, :]
+                label = label[::-1, :, :]
 
             # set direction
             img_1.SetDirection(tuple((1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0)))
             img_2.SetDirection(tuple((1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0)))
 
-            volume = sitk.GetArrayFromImage(img_1) # z, x, y
-            label = sitk.GetArrayFromImage(img_2) # z, x, y
+
             np.save(join(imagestr, patient_id + "_image.npy"),volume.astype(np.float32))
             np.save(join(imagestr, patient_id + "_label.npy"),label)
 
@@ -115,15 +128,15 @@ class GenericPreprocessor(object):
         new_spacing = spacing / real_resize_factor
 
         # image = scipy.ndimage.interpolation.zoom(image, real_resize_factor, mode='nearest')
-        image = np.moveaxis(image, 0, -1) # x, y, z
-        label = np.moveaxis(label, 0, -1) # x, y, z
-        image = np.expand_dims(image, axis=0) # 1, x, y, z
-        label = np.expand_dims(label, axis=0) # 1, x, y, z
+        image = np.moveaxis(image, 0, -1) # y, x, z
+        label = np.moveaxis(label, 0, -1) # y, x, z
+        image = np.expand_dims(image, axis=0) # 1, y, x, z
+        label = np.expand_dims(label, axis=0) # 1, y, x, z
 
-        # target_size = tuple(new_shape.transpose(1,2,0).astype(int)) # x, y, z
+        # target_size = tuple(new_shape.transpose(1,2,0).astype(int)) # y, x, z
         target_size = tuple(np.array((new_shape[1], new_shape[2], new_shape[0])).astype(int)) # x, y, z
         out_img, out_seg = augment_resize(sample_data=image, sample_seg=label, target_size=target_size)
-        out_img, out_seg = out_img[0], out_seg[0] # x,y,z
+        out_img, out_seg = out_img[0], out_seg[0] # y, x, z
         return out_img, out_seg
 
     def do_preprocessing(self,minimun=0, maxmun=0, new_spacing=(3.22,1.62,1.62)):
@@ -148,7 +161,7 @@ class GenericPreprocessor(object):
             ### Convert to [0, 1]
             voxels = (voxels - voxels.min()) / (voxels.max() - voxels.min())
             # resample to isotropic voxel size
-            spacing = self.data_info['dataset_properties'][self.data_info['patient_names'][i]]['spacing']   # the spacing is x, y, z, so change it inot z, x, y
+            spacing = self.data_info['dataset_properties'][self.data_info['patient_names'][i]]['spacing']   # the spacing is y, x, z, so change it inot z, y, x,
             spacing = (spacing[2], spacing[0], spacing[1])
 
             voxels, label = self.resample(voxels, label, spacing, new_spacing)
@@ -162,12 +175,12 @@ class GenericPreprocessor(object):
 
 if __name__ == "__main__":
     # SM_server
-    # downloaded_data_dir = "/mnt/yfs/ianlin/Data/COVID-19-20/COVID-19-20_v2/RAWDATA"
-    # out_data_dir = "/mnt/yfs/ianlin/Data/COVID-19-20/COVID-19-20_v2/preprocess"
+    downloaded_data_dir = "/mnt/yfs/ianlin/Data/COVID-19-20/COVID-19-20_v2/RAWDATA"
+    out_data_dir = "/mnt/yfs/ianlin/Data/COVID-19-20/COVID-19-20_v2/preprocess"
 
     # eez244
-    downloaded_data_dir = "/home/ylindq/Data/COVID-19-20/RAWDATA"
-    out_data_dir = "/home/ylindq/Data/COVID-19-20/preprocess"
+    # downloaded_data_dir = "/home/ylindq/Data/COVID-19-20/RAWDATA"
+    # out_data_dir = "/home/ylindq/Data/COVID-19-20/preprocess"
 
 
     cada = GenericPreprocessor(downloaded_data_dir=downloaded_data_dir, out_data_dir=out_data_dir,task_name="monai")

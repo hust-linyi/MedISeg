@@ -2,7 +2,7 @@ import sys
 sys.path.append('../')
 from network_trainer import NetworkTrainer_da3
 import os
-from NetworkTrainer.options import Options
+from NetworkTrainer.options.options import Options
 
 def main():
     opt = Options(isTrain=True)

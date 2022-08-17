@@ -3,7 +3,7 @@ sys.path.append('../')
 import os
 import numpy as np
 import NetworkTrainer.utils.util as utils
-from NetworkTrainer.options import Options
+from NetworkTrainer.options.options import Options
 import pandas as pd
 from NetworkTrainer.utils.test_util import get_imglist, calculate_metric_percase
 from tqdm import tqdm

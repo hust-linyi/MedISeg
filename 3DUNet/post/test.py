@@ -1,7 +1,7 @@
 import sys
 sys.path.append('../')
 from NetworkTrainer.network_infer import NetworkInfer
-from NetworkTrainer.options import Options
+from NetworkTrainer.options.options import Options
 
 def main():
     opt = Options(isTrain=True)

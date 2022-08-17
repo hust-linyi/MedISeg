@@ -23,7 +23,7 @@ class Options:
         parser.add_argument('--in-c', type=int, default=1, help='input channel')
         parser.add_argument('--num-class', type=int, default=2, help='input channel')
         parser.add_argument('--patch-size', type=int, default=192, help='input size of the image')
-        parser.add_argument('--train-train-epochs', type=int, default=100, help='number of training epochs')
+        parser.add_argument('--train-train-epochs', type=int, default=500, help='number of training epochs')
         parser.add_argument('--train-batch-size', type=int, default=2, help='batch size')
         parser.add_argument('--train-checkpoint-freq', type=int, default=30, help='epoch to save checkpoints')
         parser.add_argument('--train-lr', type=float, default=0.01, help='initial learning rate')
@@ -54,7 +54,7 @@ class Options:
         if not os.path.exists(home_dir):
             home_dir = '/newdata/ianlin/'
         self.root_dir = home_dir + f'/Data/COVID-19-20/{self.dataset}/preprocess'
-        self.result_dir = home_dir + f'/Experiment/COVID/'
+        self.result_dir = home_dir + f'/Experiment/COVID/Epoch_{args.train_train_epochs}'
         self.model['pretrained'] = args.pretrained
         self.model['in_c'] = args.in_c
         self.model['num_class'] = args.num_class

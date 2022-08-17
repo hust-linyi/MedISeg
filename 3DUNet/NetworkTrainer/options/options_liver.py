@@ -16,14 +16,14 @@ class Options:
     def parse(self):
         """ Parse the options, replace the default value if there is a new input """
         parser = argparse.ArgumentParser(description='')
-        parser.add_argument('--dataset', type=str, default='monai', help='dataset name')
+        parser.add_argument('--dataset', type=str, default='lits2017', help='dataset name')
         parser.add_argument('--task', type=str, default='DEBUG', help='')
         parser.add_argument('--fold', type=int, default=0, help='0-4, five fold cross validation')
         parser.add_argument('--pretrained', type=bool, default=False, help='True or False')
         parser.add_argument('--in-c', type=int, default=1, help='input channel')
         parser.add_argument('--num-class', type=int, default=2, help='input channel')
         parser.add_argument('--patch-size', type=int, default=96, help='input size of the image')
-        parser.add_argument('--train-train-epochs', type=int, default=100, help='number of training epochs')
+        parser.add_argument('--train-train-epochs', type=int, default=500, help='number of training epochs')
         parser.add_argument('--train-batch-size', type=int, default=2, help='batch size')
         parser.add_argument('--train-checkpoint-freq', type=int, default=30, help='epoch to save checkpoints')
         parser.add_argument('--train-lr', type=float, default=0.01, help='initial learning rate')
@@ -33,7 +33,7 @@ class Options:
         parser.add_argument('--train-start-epoch', type=int, default=0, help='start epoch')
         parser.add_argument('--train-checkpoint', type=str, default='', help='checkpoint')
         parser.add_argument('--train-norm', type=str, default='bn', help='bn or in')
-        parser.add_argument('--train-seed', type=str, default=2022, help='bn or in')
+        parser.add_argument('--train-seed', type=int, default=2022, help='bn or in')
         parser.add_argument('--train-loss', type=str, default='ce', help='save directory')
         parser.add_argument('--train-deeps', type=bool, default=False, help='save directory')
         parser.add_argument('--test-test-epoch', type=int, default=0, help='test epoch')
@@ -52,9 +52,10 @@ class Options:
         # check if the root directory exists
         home_dir = '/home/ylindq'
         if not os.path.exists(home_dir):
-            home_dir = '/newdata/ianlin/'
+            home_dir = '/newdata/ianlin'
+            # home_dir = '/mnt/yfs/ianlin'
         self.root_dir = home_dir + f'/Data/LIVER/{self.dataset}/preprocess'
-        self.result_dir = home_dir + f'/Experiment/LIVER/'
+        self.result_dir = home_dir + f'/Experiment/LIVER'
         self.model['pretrained'] = args.pretrained
         self.model['in_c'] = args.in_c
         self.model['num_class'] = args.num_class
@@ -85,7 +86,7 @@ class Options:
         self.test['flip'] = args.test_flip
         self.test['rotate'] = args.test_rotate
         self.test['save_dir'] = '{:s}/test_results'.format(self.train['save_dir'])
-        self.test['checkpoint_dir'] = '{:s}/checkpoints/'.format(self.train['save_dir'])
+        self.test['checkpoint_dir'] = '{:s}/checkpoints'.format(self.train['save_dir'])
         self.test['model_path'] = '{:s}/checkpoint_{:d}.pth.tar'.format(self.test['checkpoint_dir'], self.test['test_epoch'])
 
         # --- post processing --- #

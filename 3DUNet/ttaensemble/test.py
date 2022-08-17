@@ -1,7 +1,7 @@
 import sys
 sys.path.append('../')
 from NetworkTrainer.network_infer import NetworkInfer
-from NetworkTrainer.options import Options
+from NetworkTrainer.options.options import Options
 import os
 
 def main():
@@ -9,7 +9,8 @@ def main():
     opt.parse()
     # DEBUG
     opt.test['save_dir'] = os.path.join(opt.result_dir, opt.task, f"fold_{opt.fold}", f"{opt.train['seed']}", 'test_results')
-    opt.test['model_path'] = os.path.join(opt.result_dir, 'ensembleinit', f"fold_{opt.fold}", f"{opt.train['seed']}", 'checkpoints', f"checkpoint_{opt.test['test_epoch']:d}.pth.tar")
+    # opt.test['model_path'] = os.path.join(opt.result_dir, 'ensembleinit', f"fold_{opt.fold}", f"{opt.train['seed']}", 'checkpoints', f"checkpoint_{opt.test['test_epoch']:d}.pth.tar")
+    opt.test['model_path'] = os.path.join('/mnt/yfs/ianlin/Experiment/LIVER/', 'ensembleinit', f"fold_{opt.fold}", f"{opt.train['seed']}", 'checkpoints', f"checkpoint_{opt.test['test_epoch']:d}.pth.tar")
     
     opt.save_options()
 

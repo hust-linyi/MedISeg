@@ -117,9 +117,9 @@ class NetworkInfer:
 
     def post_process(self, pred):
         if self.opt.post['abl']:
-            pred = abl(pred, for_which_classes=[2,])
+            pred = abl(pred, for_which_classes=[1,])
         if self.opt.post['rsa']:
-            pred = rsa(pred, for_which_classes=[1,2], minimum_valid_object_size={1: 5000, 2: 80})
+            pred = rsa(pred, for_which_classes=[1,2], minimum_valid_object_size={1: 1000, 2: 80})
         return pred
 
     def run(self):

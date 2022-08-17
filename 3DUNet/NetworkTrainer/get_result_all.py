@@ -29,7 +29,8 @@ def if_complete_train(path):
 
 if __name__ == '__main__':
     # data_dir = '/newdata/ianlin/Experiment/ISIC-2018/isic2018'
-    data_dir = '/newdata/ianlin/Experiment/COVID'
+    # data_dir = '/newdata/ianlin/Experiment/COVID/Epoch_500'
+    data_dir = '/newdata/ianlin/Experiment/LIVER'
     black_list = ['DEBUG']
     folds = [f for f in os.listdir(data_dir) if f not in black_list]
     folds.sort()

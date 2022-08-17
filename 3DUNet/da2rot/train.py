@@ -2,7 +2,7 @@ import sys
 sys.path.append('../')
 from NetworkTrainer.network_trainer import NetworkTrainer
 import os
-from NetworkTrainer.options import Options
+from NetworkTrainer.options.options import Options
 from NetworkTrainer.dataloaders.data_kit import *
 
 def main():

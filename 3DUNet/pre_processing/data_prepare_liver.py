@@ -164,12 +164,12 @@ class GenericPreprocessor(object):
 
 if __name__ == "__main__":
     # SM_server
-    # downloaded_data_dir = "/mnt/yfs/ianlin/Data/LIVER/RAWDATA"
-    # out_data_dir = "/mnt/yfs/ianlin/Data/LIVER/preprocess"
+    downloaded_data_dir = "/mnt/yfs/ianlin/Data/LIVER/RAWDATA"
+    out_data_dir = "/mnt/yfs/ianlin/Data/LIVER/preprocess"
 
     # eez244
-    downloaded_data_dir = "/home/ylindq/Data/LIVER/RAWDATA"
-    out_data_dir = "/home/ylindq/Data/LIVER/"
+    # downloaded_data_dir = "/home/ylindq/Data/LIVER/RAWDATA"
+    # out_data_dir = "/home/ylindq/Data/LIVER/"
 
     cada = GenericPreprocessor(downloaded_data_dir=downloaded_data_dir, out_data_dir=out_data_dir,task_name="monai")
     # cada.get_raw_training_data()

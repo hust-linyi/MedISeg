@@ -1,7 +1,7 @@
 import sys
 sys.path.append('../')
 import os
-from NetworkTrainer.options import Options
+from NetworkTrainer.options.options import Options
 from NetworkTrainer.network_inference import test_calculate_metric
 
 if __name__ == '__main__':

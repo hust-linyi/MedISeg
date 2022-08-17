@@ -1,11 +1,18 @@
 import sys
 sys.path.append('../')
-import os
-from NetworkTrainer.options import Options
-from NetworkTrainer.network_inference import test_calculate_metric
+from NetworkTrainer.network_infer import NetworkInfer
+from NetworkTrainer.options.options import Options
 
-if __name__ == '__main__':
-    opt = Options(isTrain=False)
+def main():
+    opt = Options(isTrain=True)
     opt.parse()
-    os.environ['CUDA_VISIBLE_DEVICES'] = ','.join(str(x) for x in opt.test['gpus'])
-    metric = test_calculate_metric(opt)
+    opt.save_options()
+    
+    inferencer = NetworkInfer(opt)
+    inferencer.set_GPU_device()
+    inferencer.set_network()
+    inferencer.set_dataloader()
+    inferencer.run()
+
+if __name__ == "__main__":
+    main()

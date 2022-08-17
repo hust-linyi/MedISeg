@@ -26,6 +26,24 @@ def get_transform(opt, phase='train'):
                 RandomMirroring(),
                 ToTensor()
             ]
+        elif opt.task == 'da2flip':
+            transform = [
+                RandomCrop(opt.model['input_size']),
+                RandomMirroring(),
+                ToTensor()
+            ]
+        elif opt.task == 'da2rot':
+            transform = [
+                RandomCrop(opt.model['input_size']),
+                RandomRotation(),
+                ToTensor()
+            ]
+        elif opt.task == 'da2scale':
+            transform = [
+                RandomScale([0.85, 1.25]),
+                RandomCrop(opt.model['input_size']),
+                ToTensor()
+            ]
         elif opt.task == 'da4':
             transform = [
                 RandomScale([0.85, 1.25]),

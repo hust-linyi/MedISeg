@@ -1,6 +1,13 @@
 import os
-import pickle
+import numpy as np
 
-data_dir = '/mnt/yfs/ianlin/Data/COVID-19-20/COVID-19-20_v2/preprocess/monai/raw'
-data_info = pickle.load(open(os.path.join(data_dir, 'dataset_pro.pkl'), 'rb'))
-print(data_info)
+data_dir = '/newdata/ianlin/Data/LIVER/lits2017/preprocess'
+filenames = [f for f in os.listdir(data_dir) if 'label' in f]
+
+for f in filenames:
+    img = np.load(os.path.join(data_dir, f.replace('label', 'image')))
+    label = np.load(os.path.join(data_dir, f))
+    if img.shape != label.shape:
+        print(f)
+        print(img.shape)
+        print(label.shape)
