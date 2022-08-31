@@ -6,16 +6,14 @@ import numpy as np
 import torch
 import torch.optim as optim
 import torch.nn.functional as F
-
 from torch.utils.data import DataLoader
-from NetworkTrainer.networks.unet import UNet3D
-from NetworkTrainer.networks.unet_ds import UNet3D_ds
-from NetworkTrainer.dataloaders.data_kit import DataFolder
+from NetworkTrainer.networks.unet import UNet3D, UNet3D_ds
+from NetworkTrainer.dataloaders.dataload import DataFolder
 from NetworkTrainer.utils.util import save_bestcheckpoint, save_checkpoint, setup_logging, compute_loss_list, AverageMeter
 import logging
 from rich import print
 from torchvision import transforms
-from NetworkTrainer.utils.losses_imbalance import DiceLoss, FocalLoss, TverskyLoss, OHEMLoss, CELoss
+from NetworkTrainer.utils.losses import DiceLoss, FocalLoss, TverskyLoss, OHEMLoss, CELoss
 
 
 class NetworkTrainer:
@@ -69,7 +67,6 @@ class NetworkTrainer:
         elif self.opt.train['loss'] == 'ohem':
             self.criterion = OHEMLoss()
         elif self.opt.train['loss'] == 'wce':
-            # self.criterion = CELoss(weight=torch.tensor([0.1, 0.5, 1.0]))
             self.criterion = CELoss(weight=torch.tensor([0.2, 0.8]))
 
     def set_optimizer(self):
@@ -137,12 +134,6 @@ class NetworkTrainer:
 
     def run(self):
         num_epoch = self.opt.train['train_epochs']
-        # log config
-        # self.logger.info("=> Initial learning rate: {:g}".format(self.opt.train['lr']))
-        # self.logger.info("=> Batch size: {:d}".format(self.opt.train['batch_size']))
-        # self.logger.info("=> Number of training iterations: {:d} * {:d}".format(num_epoch, int(len(self.train_loader))))
-        # self.logger.info("=> Training epochs: {:d}".format(self.opt.train['train_epochs']))
-
         dataprocess = tqdm(range(self.opt.train['start_epoch'], num_epoch))
         best_val_loss = 100.0    
         for epoch in dataprocess:

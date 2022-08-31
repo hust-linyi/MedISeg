@@ -1,4 +1,4 @@
-from NetworkTrainer.dataloaders.data_kit import *
+from NetworkTrainer.dataloaders.dataload import *
 
 def get_transform(opt, phase='train'):
     # define data transforms for validation 

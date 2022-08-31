@@ -1,237 +1,211 @@
+from secrets import token_hex
 import torch
-from torch.nn import functional as F
+import torch.nn as nn
 import numpy as np
-from scipy.ndimage import distance_transform_edt as distance
-from skimage import segmentation as skimage_seg
 
-def BCEDiceLoss(input, target):
-    bce = torch.nn.BCELoss()(input, target)
-    # bce = torch.nn.CrossEntropyLoss()(input, target)
-    smooth = 1e-5
-    num = target.size(0)
-    input = input.view(num, -1)
-    target = target.view(num, -1)
-    intersection = (input * target)
-    dice = (2. * intersection.sum(1) + smooth) / (input.sum(1) + target.sum(1) + smooth)
-    dice = 1 - dice.sum() / num
-    return 0.2 * bce + dice
 
-def dice_loss(score, target):
-    target = target.float()
-    smooth = 1e-5
-    intersect = torch.sum(score * target)
-    y_sum = torch.sum(target * target)
-    z_sum = torch.sum(score * score)
-    loss = (2 * intersect + smooth) / (z_sum + y_sum + smooth)
-    loss = 1 - loss
-    return loss
+class CELoss(nn.Module):
+    def __init__(self, weight=None, reduction='mean'):
+        self.weight = weight
+        self.reduction = reduction
 
-def dice_loss_multiclass(score, label):
-    label = label.float()
-    smooth = 1e-5
-    target = torch.zeros_like(score)
-    for i in range(1, score.shape[1]):
-        target[:, i, ...] = label == i
-    intersect = torch.sum(score * target)
-    y_sum = torch.sum(target * target)
-    z_sum = torch.sum(score * score)
-    loss = (2 * intersect + smooth) / (z_sum + y_sum + smooth)
-    loss = 1 - loss
-    return loss
+    def __call__(self, y_pred, y_true):
+        y_true = y_true.long()
+        if self.weight is not None:
+            self.weight = self.weight.to(y_pred.device)
+        if len(y_true.shape) == 5:
+            y_true = y_true[:, 0, ...]
+        loss = nn.CrossEntropyLoss(weight=self.weight, reduction=self.reduction)
+        return loss(y_pred, y_true)
 
-def dice_loss1(score, target):
-    # non-square
-    target = target.float()
-    smooth = 1e-5
-    intersect = torch.sum(score * target)
-    y_sum = torch.sum(target)
-    z_sum = torch.sum(score)
-    loss = (2 * intersect + smooth) / (z_sum + y_sum + smooth)
-    loss = 1 - loss
-    return loss
 
-def iou_loss(score, target):
-    target = target.float()
-    smooth = 1e-5
-    tp_sum = torch.sum(score * target)
-    fp_sum = torch.sum(score * (1-target))
-    fn_sum = torch.sum((1-score) * target)
-    loss = (tp_sum + smooth) / (tp_sum + fp_sum + fn_sum + smooth)
-    loss = 1 - loss
-    return loss
+class DiceLoss(nn.Module):
+    def __init__(self, smooth=1e-8):
+        super(DiceLoss, self).__init__()
+        
+        self.smooth = smooth
 
-def entropy_loss(p,C=2):
-    ## p N*C*W*H*D
-    y1 = -1*torch.sum(p*torch.log(p+1e-6), dim=1)/torch.tensor(np.log(C)).cuda()
-    ent = torch.mean(y1)
+    def forward(self, y_pred, y_true):
+        # first convert y_true to one-hot format
+        axis = identify_axis(y_pred.shape)
+        y_pred = nn.Softmax(dim=1)(y_pred)
+        tp, fp, fn, _ = get_tp_fp_fn_tn(y_pred, y_true, axis)
+        intersection = 2 * tp + self.smooth
+        union = 2 * tp + fp + fn + self.smooth
+        dice = 1 - (intersection / union)
+        return dice.mean()
 
-    return ent
 
-def softmax_dice_loss(input_logits, target_logits):
-    """Takes softmax on both sides and returns MSE loss
-
-    Note:
-    - Returns the sum over all examples. Divide by the batch size afterwards
-      if you want the mean.
-    - Sends gradients to inputs but not the targets.
+# taken from https://github.com/JunMa11/SegLoss/blob/master/test/nnUNetV2/loss_functions/focal_loss.py
+class FocalLoss(nn.Module):
     """
-    assert input_logits.size() == target_logits.size()
-    input_softmax = F.softmax(input_logits, dim=1)
-    target_softmax = F.softmax(target_logits, dim=1)
-    n = input_logits.shape[1]
-    dice = 0
-    for i in range(0, n):
-        dice += dice_loss1(input_softmax[:, i], target_softmax[:, i])
-    mean_dice = dice / n
-
-    return mean_dice
-
-
-def entropy_loss_map(p, C=2):
-    ent = -1*torch.sum(p * torch.log(p + 1e-6), dim=1, keepdim=True)/torch.tensor(np.log(C)).cuda()
-    return ent
-
-def softmax_mse_loss(input_logits, target_logits):
-    """Takes softmax on both sides and returns MSE loss
-
-    Note:
-    - Returns the sum over all examples. Divide by the batch size afterwards
-      if you want the mean.
-    - Sends gradients to inputs but not the targets.
+    copy from: https://github.com/Hsuxu/Loss_ToolBox-PyTorch/blob/master/FocalLoss/FocalLoss.py
+    This is a implementation of Focal Loss with smooth label cross entropy supported which is proposed in
+    'Focal Loss for Dense Object Detection. (https://arxiv.org/abs/1708.02002)'
+        Focal_Loss= -1*alpha*(1-pt)*log(pt)
+    :param num_class:
+    :param alpha: (tensor) 3D or 4D the scalar factor for this criterion
+    :param gamma: (float,double) gamma > 0 reduces the relative loss for well-classified examples (p>0.5) putting more
+                    focus on hard misclassified example
+    :param smooth: (float,double) smooth value when cross entropy
+    :param balance_index: (int) balance class index, should be specific when alpha is float
+    :param size_average: (bool, optional) By default, the losses are averaged over each loss element in the batch.
     """
-    assert input_logits.size() == target_logits.size()
-    input_softmax = F.softmax(input_logits, dim=1)
-    target_softmax = F.softmax(target_logits, dim=1)
 
-    mse_loss = (input_softmax-target_softmax)**2
-    return mse_loss
+    def __init__(self, apply_nonlin=None, alpha=0.25, gamma=2, balance_index=0, smooth=1e-5, size_average=True):
+        super(FocalLoss, self).__init__()
+        self.apply_nonlin = apply_nonlin
+        self.alpha = alpha
+        self.gamma = gamma
+        self.balance_index = balance_index
+        self.smooth = smooth
+        self.size_average = size_average
 
-def softmax_kl_loss(input_logits, target_logits):
-    """Takes softmax on both sides and returns KL divergence
+        if self.smooth is not None:
+            if self.smooth < 0 or self.smooth > 1.0:
+                raise ValueError('smooth value should be in [0,1]')
 
-    Note:
-    - Returns the sum over all examples. Divide by the batch size afterwards
-      if you want the mean.
-    - Sends gradients to inputs but not the targets.
+    def forward(self, logit, target):
+        if self.apply_nonlin is not None:
+            logit = self.apply_nonlin(logit)
+        num_class = logit.shape[1]
+
+        if logit.dim() > 2:
+            # N,C,d1,d2 -> N,C,m (m=d1*d2*...)
+            logit = logit.view(logit.size(0), logit.size(1), -1)
+            logit = logit.permute(0, 2, 1).contiguous()
+            logit = logit.view(-1, logit.size(-1))
+        target = torch.squeeze(target, 1)
+        target = target.view(-1, 1)
+        alpha = self.alpha
+
+        if alpha is None:
+            alpha = torch.ones(num_class, 1)
+        elif isinstance(alpha, (list, np.ndarray)):
+            assert len(alpha) == num_class
+            alpha = torch.FloatTensor(alpha).view(num_class, 1)
+            alpha = alpha / alpha.sum()
+        elif isinstance(alpha, float):
+            alpha = torch.ones(num_class, 1)
+            alpha = alpha * (1 - self.alpha)
+            alpha[self.balance_index] = self.alpha
+
+        else:
+            raise TypeError('Not support alpha type')
+
+        if alpha.device != logit.device:
+            alpha = alpha.to(logit.device)
+
+        idx = target.cpu().long()
+
+        one_hot_key = torch.FloatTensor(target.size(0), num_class).zero_()
+        one_hot_key = one_hot_key.scatter_(1, idx, 1)
+        if one_hot_key.device != logit.device:
+            one_hot_key = one_hot_key.to(logit.device)
+
+        if self.smooth:
+            one_hot_key = torch.clamp(
+                one_hot_key, self.smooth / (num_class - 1), 1.0 - self.smooth)
+        pt = (one_hot_key * logit).sum(1) + self.smooth
+        logpt = pt.log()
+
+        gamma = self.gamma
+
+        alpha = alpha[idx]
+        alpha = torch.squeeze(alpha)
+        loss = -1 * alpha * torch.pow((1 - pt), gamma) * logpt
+
+        if self.size_average:
+            loss = loss.mean()
+        else:
+            loss = loss.sum()
+        return loss
+
+
+class TverskyLoss(nn.Module):
+    def __init__(self, alpha=0.3, beta=0.7, eps=1e-7):
+        super(TverskyLoss, self).__init__()
+        self.alpha = alpha
+        self.beta = beta
+        self.eps = eps
+
+    def forward(self, y_pred, y_true):
+        axis = identify_axis(y_pred.shape)
+        y_pred = nn.Softmax(dim=1)(y_pred)
+        y_true = to_onehot(y_pred, y_true)
+        y_pred = torch.clamp(y_pred, self.eps, 1. - self.eps)
+        tp, fp, fn, _ = get_tp_fp_fn_tn(y_pred, y_true, axis)
+        tversky = (tp + self.eps) / (tp + self.eps + self.alpha * fn + self.beta * fp)
+        return (y_pred.shape[1] - tversky.sum()) / y_pred.shape[1]
+
+
+class OHEMLoss(nn.CrossEntropyLoss):
     """
-    assert input_logits.size() == target_logits.size()
-    input_log_softmax = F.log_softmax(input_logits, dim=1)
-    target_softmax = F.softmax(target_logits, dim=1)
-
-    # return F.kl_div(input_log_softmax, target_softmax)
-    kl_div = F.kl_div(input_log_softmax, target_softmax, reduction='none')
-    # mean_kl_div = torch.mean(0.2*kl_div[:,0,...]+0.8*kl_div[:,1,...])
-    return kl_div
-
-def symmetric_mse_loss(input1, input2):
-    """Like F.mse_loss but sends gradients to both directions
-
-    Note:
-    - Returns the sum over all examples. Divide by the batch size afterwards
-      if you want the mean.
-    - Sends gradients to both input1 and input2.
+    Network has to have NO LINEARITY!
     """
-    assert input1.size() == input2.size()
-    return torch.mean((input1 - input2)**2)
+    def __init__(self, weight=None, ignore_index=-100, k=0.7):
+        super(OHEMLoss, self).__init__()
+        self.k = k
+        self.weight = weight
+        self.ignore_index = ignore_index
+
+    def forward(self, y_pred, y_true):
+        res = CELoss(reduction='none')(y_pred, y_true)
+        num_voxels = np.prod(res.shape, dtype=np.int64)
+        res, _ = torch.topk(res.view((-1, )), int(num_voxels * self.k), sorted=False)
+        return res.mean()
+
+
+def to_onehot(y_pred, y_true):
+    shp_x = y_pred.shape
+    shp_y = y_true.shape
+    with torch.no_grad():
+        if len(shp_x) != len(shp_y):
+            y_true = y_true.view((shp_y[0], 1, *shp_y[1:]))
+
+        if all([i == j for i, j in zip(y_pred.shape, y_true.shape)]):
+            # if this is the case then gt is probably already a one hot encoding
+            y_onehot = y_true 
+        else:
+            y_true = y_true.long()
+            y_onehot = torch.zeros(shp_x, device=y_pred.device)
+            y_onehot.scatter_(1, y_true, 1)
+    return y_onehot
 
 
 
-
-
-def compute_sdf01(segmentation):
+def get_tp_fp_fn_tn(net_output, gt, axes=None, square=False):
     """
-    compute the signed distance map of binary mask
-    input: segmentation, shape = (batch_size, class, x, y, z)
-    output: the Signed Distance Map (SDM) 
-    sdm(x) = 0; x in segmentation boundary
-             -inf|x-y|; x in segmentation
-             +inf|x-y|; x out of segmentation
-
+    net_output must be (b, c, x, y(, z)))
+    gt must be a label map (shape (b, 1, x, y(, z)) OR shape (b, x, y(, z))) or one hot encoding (b, c, x, y(, z))
+    if mask is provided it must have shape (b, 1, x, y(, z)))
+    :param net_output:
+    :param gt:
+    :return:
     """
-    # print(type(segmentation), segmentation.shape)
+    if axes is None:
+        axes = tuple(range(2, len(net_output.size())))
 
-    segmentation = segmentation.astype(np.uint8)
-    if len(segmentation.shape) == 4: # 3D image
-        segmentation = np.expand_dims(segmentation, 1)
-    normalized_sdf = np.zeros(segmentation.shape)
-    if segmentation.shape[1] == 1:
-        dis_id = 0
-    else:
-        dis_id = 1
-    for b in range(segmentation.shape[0]): # batch size
-        for c in range(dis_id, segmentation.shape[1]): # class_num
-            # ignore background
-            posmask = segmentation[b][c]
-            negmask = ~posmask
-            posdis = distance(posmask)
-            negdis = distance(negmask)
-            boundary = skimage_seg.find_boundaries(posmask, mode='inner').astype(np.uint8)
-            sdf = negdis/np.max(negdis)/2 - posdis/np.max(posdis)/2 + 0.5
-            sdf[boundary>0] = 0.5
-            normalized_sdf[b][c] = sdf
-    return normalized_sdf
+    y_onehot = to_onehot(net_output, gt)
 
+    tp = net_output * y_onehot
+    fp = net_output * (1 - y_onehot)
+    fn = (1 - net_output) * y_onehot
+    tn = (1 - net_output) * (1 - y_onehot)
 
-def compute_sdf1_1(segmentation):
-    """
-    compute the signed distance map of binary mask
-    input: segmentation, shape = (batch_size, class, x, y, z)
-    output: the Signed Distance Map (SDM) 
-    sdm(x) = 0; x in segmentation boundary
-             -inf|x-y|; x in segmentation
-             +inf|x-y|; x out of segmentation
+    if square:
+        tp = tp ** 2
+        fp = fp ** 2
+        fn = fn ** 2
+        tn = tn ** 2
 
-    """
-    # print(type(segmentation), segmentation.shape)
+    if len(axes) > 0:
+        tp = sum_tensor(tp, axes, keepdim=False)
+        fp = sum_tensor(fp, axes, keepdim=False)
+        fn = sum_tensor(fn, axes, keepdim=False)
+        tn = sum_tensor(tn, axes, keepdim=False)
 
-    segmentation = segmentation.astype(np.uint8)
-    if len(segmentation.shape) == 4: # 3D image
-        segmentation = np.expand_dims(segmentation, 1)
-    normalized_sdf = np.zeros(segmentation.shape)
-    if segmentation.shape[1] == 1:
-        dis_id = 0
-    else:
-        dis_id = 1
-    for b in range(segmentation.shape[0]): # batch size
-        for c in range(dis_id, segmentation.shape[1]): # class_num
-            # ignore background
-            posmask = segmentation[b][c]
-            negmask = ~posmask
-            posdis = distance(posmask)
-            negdis = distance(negmask)
-            boundary = skimage_seg.find_boundaries(posmask, mode='inner').astype(np.uint8)
-            sdf = negdis/np.max(negdis) - posdis/np.max(posdis)
-            sdf[boundary>0] = 0
-            normalized_sdf[b][c] = sdf
-    return normalized_sdf
-
-
-def compute_fore_dist(segmentation):
-    """
-    compute the foreground of binary mask
-    input: segmentation, shape = (batch_size, class, x, y, z)
-    output: the Signed Distance Map (SDM) 
-    sdm(x) = 0; x in segmentation boundary
-             -inf|x-y|; x in segmentation
-             +inf|x-y|; x out of segmentation
-    """
-    # print(type(segmentation), segmentation.shape)
-
-    segmentation = segmentation.astype(np.uint8)
-    if len(segmentation.shape) == 4: # 3D image
-        segmentation = np.expand_dims(segmentation, 1)
-    normalized_sdf = np.zeros(segmentation.shape)
-    if segmentation.shape[1] == 1:
-        dis_id = 0
-    else:
-        dis_id = 1
-    for b in range(segmentation.shape[0]): # batch size
-        for c in range(dis_id, segmentation.shape[1]): # class_num
-            # ignore background
-            posmask = segmentation[b][c]
-            posdis = distance(posmask)
-            normalized_sdf[b][c] = posdis/np.max(posdis)
-    return normalized_sdf
+    return tp, fp, fn, tn
 
 
 def sum_tensor(inp, axes, keepdim=False):
@@ -245,70 +219,24 @@ def sum_tensor(inp, axes, keepdim=False):
     return inp
 
 
-def AAAI_sdf_loss(net_output, gt):
+def identify_axis(shape):
     """
-    net_output: net logits; shape=(batch_size, class, x, y, z)
-    gt: ground truth; (shape (batch_size, 1, x, y, z) OR (batch_size, x, y, z))
+    Helper function to enable loss function to be flexibly used for 
+    both 2D or 3D image segmentation - source: https://github.com/frankkramer-lab/MIScnn
     """
-    smooth = 1e-5
-    axes = tuple(range(2, len(net_output.size())))
-    shp_x = net_output.shape
-    shp_y = gt.shape
-
-    with torch.no_grad():
-        if len(shp_x) != len(shp_y):
-            gt = gt.view((shp_y[0], 1, *shp_y[1:]))
-
-        if all([i == j for i, j in zip(net_output.shape, gt.shape)]):
-            # if this is the case then gt is probably already a one hot encoding
-            y_onehot = gt
-        else:
-            gt = gt.long()
-            y_onehot = torch.zeros(shp_x)
-            if net_output.device.type == "cuda":
-                y_onehot = y_onehot.cuda(net_output.device.index)
-            y_onehot.scatter_(1, gt, 1)
-        gt_sdm_npy = compute_sdf1_1(y_onehot.cpu().numpy())
-        gt_sdm = torch.from_numpy(gt_sdm_npy).float().cuda(net_output.device.index)
-    intersect = sum_tensor(net_output * gt_sdm, axes, keepdim=False)
-    pd_sum = sum_tensor(net_output ** 2, axes, keepdim=False)
-    gt_sum = sum_tensor(gt_sdm ** 2, axes, keepdim=False)
-    L_product = (intersect + smooth) / (intersect + pd_sum + gt_sum)
-    # print('L_product.shape', L_product.shape) (4,2)
-    L_SDF_AAAI = - L_product.mean() + torch.norm(net_output - gt_sdm, 1)/torch.numel(net_output)
-
-    return L_SDF_AAAI
+    # Three dimensional
+    if len(shape) == 5 : return [2,3,4]
+    # Two dimensional
+    elif len(shape) == 4 : return [2,3]
+    # Exception - Unknown
+    else : raise ValueError('Metric: Shape of tensor is neither 2D or 3D.')
 
 
-def sdf_kl_loss(net_output, gt):
-    """
-    net_output: net logits; shape=(batch_size, class, x, y, z)
-    gt: ground truth; (shape (batch_size, 1, x, y, z) OR (batch_size, x, y, z))
-    """
-    smooth = 1e-5
-    axes = tuple(range(2, len(net_output.size())))
-    shp_x = net_output.shape
-    shp_y = gt.shape
-
-    with torch.no_grad():
-        if len(shp_x) != len(shp_y):
-            gt = gt.view((shp_y[0], 1, *shp_y[1:]))
-
-        if all([i == j for i, j in zip(net_output.shape, gt.shape)]):
-            # if this is the case then gt is probably already a one hot encoding
-            y_onehot = gt
-        else:
-            gt = gt.long()
-            y_onehot = torch.zeros(shp_x)
-            if net_output.device.type == "cuda":
-                y_onehot = y_onehot.cuda(net_output.device.index)
-            y_onehot.scatter_(1, gt, 1)
-        # print('y_onehot.shape', y_onehot.shape)
-        gt_sdf_npy = compute_sdf(y_onehot.cpu().numpy())
-        gt_sdf = torch.from_numpy(gt_sdf_npy+smooth).float().cuda(net_output.device.index)
-    # print('net_output, gt_sdf', net_output.shape, gt_sdf.shape)
-    # exit()
-    sdf_kl_loss = F.kl_div(net_output, gt_sdf[:,1:2,...], reduction='batchmean')
-
-    return sdf_kl_loss
-
+if __name__=='__main__':
+    y_pred = torch.rand(1, 3, 5, 5, 5)
+    y_true = torch.randint(0, 3, (1, 5, 5, 5))
+    # loss = DiceLoss()
+    # loss = FocalLoss()
+    loss = TverskyLoss()
+    # loss = OHEMLoss()
+    print(loss(y_pred, y_true))

@@ -1,10 +1,7 @@
 import os
 import torch
 import numpy as np
-from glob import glob
 from torch.utils.data import Dataset
-import itertools
-from torch.utils.data.sampler import Sampler
 from batchgenerators.augmentations.spatial_transformations import augment_resize
 
 
@@ -241,7 +238,7 @@ class ToTensor(object):
 if __name__=='__main__':
     # test transform
     from torchvision import transforms
-    data_dir = '/home/ylindq/Data/KIT-19/yeung/preprocess'
+    data_dir = ''
     x = np.load(os.path.join(data_dir, 'case_00001_image.npy'))
     y = np.load(os.path.join(data_dir, 'case_00001_label.npy'))
     sample = {'image': x, 'label': y}

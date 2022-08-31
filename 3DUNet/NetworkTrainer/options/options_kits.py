@@ -15,14 +15,14 @@ class Options:
     def parse(self):
         """ Parse the options, replace the default value if there is a new input """
         parser = argparse.ArgumentParser(description='')
-        parser.add_argument('--dataset', type=str, default='yeung', help='dataset name')
-        parser.add_argument('--task', type=str, default='DEBUG', help='')
+        parser.add_argument('--dataset', type=str, default='yeung', help='dataset name, the method of preprocessing')
+        parser.add_argument('--task', type=str, default='DEBUG', help='The name of the task')
         parser.add_argument('--fold', type=int, default=0, help='0-4, five fold cross validation')
-        parser.add_argument('--pretrained', type=bool, default=False, help='True or False')
+        parser.add_argument('--pretrained', type=bool, default=False, help='If use pretrained model')
         parser.add_argument('--in-c', type=int, default=1, help='input channel')
-        parser.add_argument('--num-class', type=int, default=3, help='input channel')
+        parser.add_argument('--num-class', type=int, default=3, help='number of classes')
         parser.add_argument('--patch-size', type=int, default=96, help='input size of the image')
-        parser.add_argument('--train-train-epochs', type=int, default=100, help='number of training epochs')
+        parser.add_argument('--train-train-epochs', type=int, default=200, help='number of training epochs')
         parser.add_argument('--train-batch-size', type=int, default=2, help='batch size')
         parser.add_argument('--train-checkpoint-freq', type=int, default=30, help='epoch to save checkpoints')
         parser.add_argument('--train-lr', type=float, default=0.01, help='initial learning rate')
@@ -32,14 +32,14 @@ class Options:
         parser.add_argument('--train-start-epoch', type=int, default=0, help='start epoch')
         parser.add_argument('--train-checkpoint', type=str, default='', help='checkpoint')
         parser.add_argument('--train-norm', type=str, default='bn', help='bn or in')
-        parser.add_argument('--train-seed', type=str, default=2022, help='bn or in')
-        parser.add_argument('--train-loss', type=str, default='ce', help='save directory')
-        parser.add_argument('--train-deeps', type=bool, default=False, help='save directory')
-        parser.add_argument('--test-test-epoch', type=int, default=0, help='test epoch')
+        parser.add_argument('--train-seed', type=int, default=2022, help='the seed used to generate the random number')
+        parser.add_argument('--train-loss', type=str, default='ce', help='loss function, e.g., ce, dice, focal, ohem, tversky, wce')
+        parser.add_argument('--train-deeps', type=bool, default=False, help='if use deep supervision')
+        parser.add_argument('--test-test-epoch', type=int, default=0, help='the checkpoint to test')
         parser.add_argument('--test-gpus', type=list, default=[0, ], help='select gpu devices')
-        parser.add_argument('--test-save-flag', type=bool, default=False, help='True or False')
-        parser.add_argument('--test-flip', type=bool, default=False, help='Test Time Augmentation')       
-        parser.add_argument('--test-rotate', type=bool, default=False, help='Test Time Augmentation')       
+        parser.add_argument('--test-save-flag', type=bool, default=False, help='if save the predicted results')
+        parser.add_argument('--test-flip', type=bool, default=False, help='Test Time Augmentation with flipping')       
+        parser.add_argument('--test-rotate', type=bool, default=False, help='Test Time Augmentation with rotation')       
         parser.add_argument('--post-abl', type=bool, default=False, help='True or False, post processing')
         parser.add_argument('--post-rsa', type=bool, default=False, help='True or False, post processing')
 
@@ -49,11 +49,8 @@ class Options:
         self.task = args.task
         self.fold = args.fold
         # check if the root directory exists
-        home_dir = '/home/ylindq'
-        if not os.path.exists(home_dir):
-            home_dir = '/newdata/ianlin/'
-        self.root_dir = home_dir + f'/Data/KIT-19/{self.dataset}/preprocess'
-        self.result_dir = home_dir + f'/Experiment/KIT19/kit19/'
+        self.root_dir = f'/Data/KIT-19/{self.dataset}/preprocess'
+        self.result_dir = f'/Experiment/KIT19/kit19/'
         self.model['pretrained'] = args.pretrained
         self.model['in_c'] = args.in_c
         self.model['num_class'] = args.num_class
@@ -110,7 +107,6 @@ class Options:
             filename = '{:s}/test_options.txt'.format(self.test['save_dir'])
         file = open(filename, 'w')
         groups = ['model', 'test', 'post', 'transform']
-        # groups = ['model', 'train', ] if self.isTrain else ['model', 'test', 'post', ]
 
         file.write("# ---------- Options ---------- #")
         file.write('\ndataset: {:s}\n'.format(self.dataset))

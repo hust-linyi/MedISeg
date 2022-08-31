@@ -1,24 +1,17 @@
 import torch
 import os
 import math
-import nibabel as nib
 import numpy as np
-from medpy import metric
 import torch
 import torch.nn.functional as F
 from tqdm import tqdm
 import os
 import pandas as pd
-from collections import OrderedDict
-import glob
 from NetworkTrainer.utils.util import AverageMeterArray
-from sklearn.metrics import recall_score, precision_score, f1_score, jaccard_score
-from NetworkTrainer.networks.unet import UNet3D
-from NetworkTrainer.networks.unet_ds import UNet3D_ds
-from NetworkTrainer.utils.test_util import test_all_case, calculate_metric_percase
-from NetworkTrainer.dataloaders.data_kit import get_imglist
+from NetworkTrainer.networks.unet import UNet3D, UNet3D_ds
+from NetworkTrainer.utils.test_util import calculate_metric_percase
+from NetworkTrainer.dataloaders.dataload import get_imglist
 from NetworkTrainer.utils.post_process import *
-from NetworkTrainer.utils.tta import TTA
 
 
 class NetworkInfer:
@@ -145,7 +138,6 @@ class NetworkInfer:
 
             if self.opt.test['save_flag']:
                 np.save(os.path.join(self.opt.test['save_dir'], 'img', case_name+'_pred.npy'), prediction)
-                # np.save(os.path.join(self.opt.test['save_dir'], 'img', case_name+'_gt.npy'), label)
                 np.save(os.path.join(self.opt.test['save_dir'], 'img', case_name+'_prob.npy'), score_map)
                 # np.save(os.path.join(self.opt.test['save_dir'], 'img', case_name+'_img.npy'), image)
             print(case_name, single_metric)
