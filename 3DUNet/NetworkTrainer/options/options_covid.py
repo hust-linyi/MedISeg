@@ -23,9 +23,9 @@ class Options:
         parser.add_argument('--in-c', type=int, default=1, help='input channel')
         parser.add_argument('--num-class', type=int, default=2, help='input channel')
         parser.add_argument('--patch-size', type=int, default=192, help='input size of the image')
-        parser.add_argument('--train-train-epochs', type=int, default=500, help='number of training epochs')
+        parser.add_argument('--train-train-epochs', type=int, default=200, help='number of training epochs')
         parser.add_argument('--train-batch-size', type=int, default=2, help='batch size')
-        parser.add_argument('--train-checkpoint-freq', type=int, default=30, help='epoch to save checkpoints')
+        parser.add_argument('--train-checkpoint-freq', type=int, default=50, help='epoch to save checkpoints')
         parser.add_argument('--train-lr', type=float, default=0.01, help='initial learning rate')
         parser.add_argument('--train-weight-decay', type=float, default=1e-4, help='weight decay')
         parser.add_argument('--train-workers', type=int, default=16, help='number of workers to load images')
@@ -52,13 +52,14 @@ class Options:
         # check if the root directory exists
         home_dir = '/home/ylindq'
         if not os.path.exists(home_dir):
-            home_dir = '/newdata/ianlin/'
+            # home_dir = '/newdata/ianlin/'
+            home_dir = '/mnt/yfs/ianlin'
         self.root_dir = home_dir + f'/Data/COVID-19-20/{self.dataset}/preprocess'
-        self.result_dir = home_dir + f'/Experiment/COVID/Epoch_{args.train_train_epochs}'
+        self.result_dir = home_dir + f'/Experiment/COVID/'
         self.model['pretrained'] = args.pretrained
         self.model['in_c'] = args.in_c
         self.model['num_class'] = args.num_class
-        self.model['input_size'] = tuple([args.patch_size, args.patch_size, 16])
+        self.model['input_size'] = tuple([args.patch_size, args.patch_size, 32])
 
         # --- training params --- #
         self.train['save_dir'] = '{:s}/{:s}/fold_{:d}'.format(self.result_dir, self.task, self.fold)  # path to save results

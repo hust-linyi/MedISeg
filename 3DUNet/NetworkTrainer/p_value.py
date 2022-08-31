@@ -16,7 +16,8 @@ def t_test():
         except:
             try:
                 result = pd.read_csv(os.path.join(result_dir, fold, 'test_results_all.csv')).values[:-1].flatten().tolist()
-            continue
+            except:
+                continue
         p_value = stats.ttest_rel(result_baseline, result)
         print(fold, p_value)
 

@@ -8,7 +8,6 @@ def main():
     opt = Options(isTrain=True)
     opt.parse()
     opt.save_options()
-
     trainer = NetworkTrainer_da3(opt)
     trainer.set_GPU_device()
     trainer.set_logging()

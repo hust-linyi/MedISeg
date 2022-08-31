@@ -40,7 +40,8 @@ class DataFolder(Dataset):
         image_name = self.image_list[idx]
         image = np.load(os.path.join(self.root_dir, image_name + "_image.npy"))
         label = np.load(os.path.join(self.root_dir, image_name + "_label.npy"))
-        if np.random.rand() < 0.2:
+        # if np.random.rand() < 0.2:
+        if np.random.rand() < 2:
             aug_dir = '/'.join(self.root_dir.split('/')[:-2]) + '/aug'
             try:
                 image = np.load(os.path.join(aug_dir, image_name + "_image.npy"))
@@ -143,6 +144,7 @@ class RandomCrop(object):
         image, label = sample['image'], sample['label']
 
         # pad the sample if necessary
+
         if label.shape[0] <= self.output_size[0] or label.shape[1] <= self.output_size[1] or label.shape[2] <= \
                 self.output_size[2]:
             pw = max((self.output_size[0] - label.shape[0]) // 2 + 3, 0)

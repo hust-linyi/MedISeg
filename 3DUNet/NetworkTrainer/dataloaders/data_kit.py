@@ -134,7 +134,6 @@ class RandomCrop(object):
 
     def __call__(self, sample):
         image, label = sample['image'], sample['label']
-
         # pad the sample if necessary
         if label.shape[0] <= self.output_size[0] or label.shape[1] <= self.output_size[1] or label.shape[2] <= \
                 self.output_size[2]:
