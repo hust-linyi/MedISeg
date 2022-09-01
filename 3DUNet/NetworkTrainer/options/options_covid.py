@@ -37,6 +37,7 @@ class Options:
         parser.add_argument('--train-seed', type=int, default=2022, help='the seed used to generate the random number')
         parser.add_argument('--train-loss', type=str, default='ce', help='loss function, e.g., ce, dice, focal, ohem, tversky, wce')
         parser.add_argument('--train-deeps', type=bool, default=False, help='if use deep supervision')
+        parser.add_argument('--test-model-path', type=str, default=None, help='model path to test')
         parser.add_argument('--test-test-epoch', type=int, default=0, help='the checkpoint to test')
         parser.add_argument('--test-gpus', type=list, default=[0, ], help='select gpu devices')
         parser.add_argument('--test-save-flag', type=bool, default=False, help='if save the predicted results')
@@ -84,8 +85,8 @@ class Options:
         self.test['flip'] = args.test_flip
         self.test['rotate'] = args.test_rotate
         self.test['save_dir'] = '{:s}/test_results'.format(self.train['save_dir'])
-        self.test['checkpoint_dir'] = '{:s}/checkpoints/'.format(self.train['save_dir'])
-        self.test['model_path'] = '{:s}/checkpoint_{:d}.pth.tar'.format(self.test['checkpoint_dir'], self.test['test_epoch'])
+        if not args.test_model_path:
+            self.test['model_path'] = '{:s}/checkpoints/checkpoint_{:d}.pth.tar'.format(self.test['checkpoint_dir'], self.test['test_epoch'])
 
         # --- post processing --- #
         self.post['abl'] = args.post_abl
