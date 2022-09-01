@@ -50,7 +50,6 @@ class Options:
         self.dataset = args.dataset
         self.task = args.task
         self.fold = args.fold
-        # check if the root directory exists
         self.root_dir = f'~/Data/LIVER/{self.dataset}/preprocess'
         self.result_dir = f'~/Experiment/LIVER'
         self.model['pretrained'] = args.pretrained

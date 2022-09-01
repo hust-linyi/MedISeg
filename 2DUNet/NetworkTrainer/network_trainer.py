@@ -10,9 +10,8 @@ import albumentations as A
 import torch.nn.functional as F
 from NetworkTrainer.utils.losses_imbalance import DiceLoss, FocalLoss, TverskyLoss, OHEMLoss, CELoss
 from NetworkTrainer.networks.unet import UNet
-from NetworkTrainer.networks.resunet import ResUNet
+from NetworkTrainer.networks.resunet import ResUNet, ResUNet_ds
 from NetworkTrainer.networks.denseunet import DenseUNet
-from NetworkTrainer.networks.resunet_ds import ResUNet_ds
 from NetworkTrainer.networks.vit_seg_modeling import VisionTransformer as ViT_seg
 from NetworkTrainer.networks.vit_seg_modeling import CONFIGS as CONFIGS_ViT_seg
 from NetworkTrainer.dataloaders.dataload import DataFolder
@@ -78,7 +77,7 @@ class NetworkTrainer:
         self.scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(self.optimizer, T_max=self.opt.train['train_epochs'])
 
     def set_dataloader(self):
-        self.train_set = DataFolder(root_dir=self.opt.root_dir, phase='train', fold=self.opt.fold, data_transform=A.Compose(self.opt.transform['train']))
+        self.train_set = DataFolder(root_dir=self.opt.root_dir, phase='train', fold=self.opt.fold, gan_aug=self.opt.gan_aug, data_transform=A.Compose(self.opt.transform['train']))
         self.val_set = DataFolder(root_dir=self.opt.root_dir, phase='val', data_transform=A.Compose(self.opt.transform['val']), fold=self.opt.fold)
         self.train_loader = DataLoader(self.train_set, batch_size=self.opt.train['batch_size'], shuffle=True, num_workers=self.opt.train['workers'])
         self.val_loader = DataLoader(self.val_set, batch_size=self.opt.train['batch_size'], shuffle=False, drop_last=False, num_workers=self.opt.train['workers'])

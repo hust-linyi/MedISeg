@@ -62,22 +62,22 @@ class ResUNet(nn.Module):
     def __init__(self, net='res50', seg_classes = 2, colour_classes = 3, fixed_feature=False, pretrained=False):
         super().__init__()
         # load weight of pre-trained resnet
-        l = [64, 64, 128, 256, 512]
+        self.l = [64, 64, 128, 256, 512]
         if 'res101' in net:
             self.resnet = resnet101(pretrained=pretrained, arch=net)
-            l = [64, 256, 512, 1024, 2048]
+            self.l = [64, 256, 512, 1024, 2048]
         elif 'res50' in net:
             self.resnet = resnet50(pretrained=pretrained, arch=net)
-            l = [64, 256, 512, 1024, 2048]
+            self.l = [64, 256, 512, 1024, 2048]
         elif 'res18' in net:
             self.resnet = resnet18(pretrained=pretrained)
-            l = [64, 64, 128, 256, 512]
+            self.l = [64, 64, 128, 256, 512]
         elif 'res34' in net:
             self.resnet = resnet34(pretrained=pretrained)
-            l = [64, 64, 128, 256, 512]
+            self.l = [64, 64, 128, 256, 512]
         elif 'res152' in net:
             self.resnet = resnet152(pretrained=pretrained)
-            l = [64, 256, 512, 1024, 2048]
+            self.l = [64, 256, 512, 1024, 2048]
         else:
             raise ValueError('Unknown network architecture: {}'.format(net))
         # self.resnet1 = Resnet34(pretrained=False)
@@ -86,17 +86,13 @@ class ResUNet(nn.Module):
                 param.requires_grad = False
 
         # up conv
-        self.u5 = ConvUpBlock(l[4], l[3], dropout_rate=0.1)
-        self.u6 = ConvUpBlock(l[3], l[2], dropout_rate=0.1)
-        self.u7 = ConvUpBlock(l[2], l[1], dropout_rate=0.1)
-        self.u8 = ConvUpBlock(l[1], l[0], dropout_rate=0.1)
+        self.u5 = ConvUpBlock(self.l[4], self.l[3], dropout_rate=0.1)
+        self.u6 = ConvUpBlock(self.l[3], self.l[2], dropout_rate=0.1)
+        self.u7 = ConvUpBlock(self.l[2], self.l[1], dropout_rate=0.1)
+        self.u8 = ConvUpBlock(self.l[1], self.l[0], dropout_rate=0.1)
         # final conv
-        self.seg = nn.ConvTranspose2d(l[0], seg_classes, 2, stride=2)
-        self.bnd = nn.ConvTranspose2d(l[0], seg_classes, 2, stride=2)
+        self.seg = nn.ConvTranspose2d(self.l[0], seg_classes, 2, stride=2)
 
-        self.colour = nn.ConvTranspose2d(l[0], colour_classes, 2, stride=2)
-        self.sigmoid = nn.Sigmoid()
-        self.softmax = nn.Softmax(dim = 1)
     def forward(self, x):
         # refer https://github.com/pytorch/vision/blob/master/torchvision/models/resnet.py
         x = self.resnet.conv1(x)
@@ -118,6 +114,35 @@ class ResUNet(nn.Module):
         x1 = self.u8(x1, s1)
         out = self.seg(x1)
         return out
+
+
+class ResUNet_ds(ResUNet):
+    def __init__(self, net='res50', seg_classes = 2):
+        super().__init__()
+        # load weight of pre-trained resnet
+        self.seg1 = nn.Conv2d(self.l[0], seg_classes, 1, stride=1)
+        self.seg2 = nn.Conv2d(self.l[1], seg_classes, 1, stride=1)
+        self.seg3 = nn.Conv2d(self.l[2], seg_classes, 1, stride=1)
+
+    def forward(self, x):
+        x = self.resnet.conv1(x)
+        x = self.resnet.bn1(x)
+        x = s1 = self.resnet.relu(x)
+        x = self.resnet.maxpool(x)
+        x = s2 = self.resnet.layer1(x)
+        x = s3 = self.resnet.layer2(x)
+        x = s4 = self.resnet.layer3(x)
+        x = self.resnet.layer4(x)
+
+        x4 = self.u5(x, s4)
+        x3 = self.u6(x4, s3)
+        x2 = self.u7(x3, s2)
+        x1 = self.u8(x2, s1)
+        out = self.seg(x1)
+        out1 = self.seg1(x1)
+        out2 = self.seg2(x2)
+        out3 = self.seg3(x3)
+        return [out, out1, out2, out3]
 
 
 if __name__=='__main__':
