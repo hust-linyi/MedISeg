@@ -44,6 +44,9 @@ class NetworkTrainer:
         self.net = torch.nn.DataParallel(self.net)
         self.net = self.net.cuda()
         if self.opt.model['pretrained']:
+            # the pretrained weights from "Zhout et al., Models Genesis: Generic Autodidactic Models for 3D Medical Image Analysis"
+            # details can be found at https://github.com/MrGiovanni/ModelsGenesis
+            # you may change the path to your own pretrained weights
             ckpt_path = '/'.join(self.opt.root_dir.split('/')[:-2]) + '/pretrained_weights/' + 'Genesis_Chest_CT.pt'
             print(f'Loading pretrained weights from {ckpt_path}')
 
@@ -74,7 +77,7 @@ class NetworkTrainer:
         self.scheduler = optim.lr_scheduler.ReduceLROnPlateau(self.optimizer, 'min')
 
     def set_dataloader(self):
-        self.train_set = DataFolder(root_dir=self.opt.root_dir, phase='train', fold=self.opt.fold, data_transform=transforms.Compose(self.opt.transform['train']))
+        self.train_set = DataFolder(root_dir=self.opt.root_dir, phase='train', fold=self.opt.fold, gan_aug=self.opt.gan_aug, data_transform=transforms.Compose(self.opt.transform['train']))
         self.val_set = DataFolder(root_dir=self.opt.root_dir, phase='val', data_transform=transforms.Compose(self.opt.transform['val']), fold=self.opt.fold)
         self.train_loader = DataLoader(self.train_set, batch_size=self.opt.train['batch_size'], shuffle=True, num_workers=self.opt.train['workers'])
         self.val_loader = DataLoader(self.val_set, batch_size=self.opt.train['batch_size'], shuffle=False, drop_last=False, num_workers=self.opt.train['workers'])

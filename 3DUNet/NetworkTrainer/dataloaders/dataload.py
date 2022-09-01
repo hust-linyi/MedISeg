@@ -6,6 +6,8 @@ from batchgenerators.augmentations.spatial_transformations import augment_resize
 
 
 def get_imglist(root_dir, fold, phase):
+    # randomly split the dataset into train, val, and test (20%).
+    # change the "fold" from 0 to 4 to perform 5-fold cross validation. 
     image_list = [item.replace('_image.npy','') for item in os.listdir(root_dir) if item.endswith('_image.npy')]
     testnum = int(len(image_list) * 0.2)
     teststart = fold * testnum
@@ -22,11 +24,12 @@ def get_imglist(root_dir, fold, phase):
         image_list = image_list[:valnum]
     return image_list
 
+
 class DataFolder(Dataset):
-    """ Kit19 Dataset """
-    def __init__(self, root_dir, phase, fold, data_transform=None):
+    def __init__(self, root_dir, phase, fold, gan_aug=False, data_transform=None):
         self.root_dir = root_dir
         self.transform = data_transform
+        self.gan_aug = gan_aug
         self.image_list = get_imglist(root_dir, fold, phase)
         print(f"total {len(self.image_list)} samples for {phase}")
 
@@ -36,6 +39,9 @@ class DataFolder(Dataset):
     def __getitem__(self, idx):
         image_name = self.image_list[idx]
         image = np.load(os.path.join(self.root_dir, image_name + "_image.npy"))
+        if self.gan_aug and np.random.rand() < 0.2:
+            aug_dir = '/'.join(self.root_dir.split('/')[:-1]) + '/aug'
+            image = np.load(os.path.join(aug_dir, image_name + "_image.npy"))
         label = np.load(os.path.join(self.root_dir, image_name + "_label.npy"))
         image = np.squeeze(image)
         label = np.squeeze(label)
@@ -194,6 +200,7 @@ class RandomNoise(object):
         image = image + noise
         return {'image': image, 'label': label}
 
+
 class GammaAdjust(object):
     def __init__(self, gamma_range=(0.5, 2), epsilon=1e-7,retain_stats = False):
         self.gamma_range = gamma_range
@@ -216,6 +223,7 @@ class GammaAdjust(object):
             image = image - image.mean() + mn
             image = image / (image.std() + 1e-8) * sd
         return {'image': image, 'label': label}
+
 
 class ToTensor(object):
     """Convert ndarrays in sample to Tensors."""

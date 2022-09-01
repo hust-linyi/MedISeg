@@ -15,7 +15,7 @@ from NetworkTrainer.networks.denseunet import DenseUNet
 from NetworkTrainer.networks.resunet_ds import ResUNet_ds
 from NetworkTrainer.networks.vit_seg_modeling import VisionTransformer as ViT_seg
 from NetworkTrainer.networks.vit_seg_modeling import CONFIGS as CONFIGS_ViT_seg
-from NetworkTrainer.dataloaders.dataset import DataFolder
+from NetworkTrainer.dataloaders.dataload import DataFolder
 from NetworkTrainer.utils.util import save_bestcheckpoint, save_checkpoint, setup_logging, compute_loss_list, AverageMeter
 from thop import profile
 

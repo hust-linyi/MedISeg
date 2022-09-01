@@ -1,8 +1,0 @@
-sc create --name 3dpatch960 --image "10.81.138.201:5000/xsemseg:v_det4" --gpu 1 --cmd "source /newdata/ianlin/.bashrc && conda activate cu11 && cd /newdata/ianlin/CODE/seg_trick/3DUNet/patch96/scripts && bash train_test0.sh" --arch ampere
-sc create --name 3dpatch961 --image "10.81.138.201:5000/xsemseg:v_det4" --gpu 1 --cmd "source /newdata/ianlin/.bashrc && conda activate cu11 && cd /newdata/ianlin/CODE/seg_trick/3DUNet/patch96/scripts && bash train_test1.sh" --arch ampere
-sc create --name 3dpatch962 --image "10.81.138.201:5000/xsemseg:v_det4" --gpu 1 --cmd "source /newdata/ianlin/.bashrc && conda activate cu11 && cd /newdata/ianlin/CODE/seg_trick/3DUNet/patch96/scripts && bash train_test2.sh" --arch ampere
-sc create --name 3dpatch963 --image "10.81.138.201:5000/xsemseg:v_det4" --gpu 1 --cmd "source /newdata/ianlin/.bashrc && conda activate cu11 && cd /newdata/ianlin/CODE/seg_trick/3DUNet/patch96/scripts && bash train_test3.sh" --arch ampere
-sc create --name 3dpatch964 --image "10.81.138.201:5000/xsemseg:v_det4" --gpu 1 --cmd "source /newdata/ianlin/.bashrc && conda activate cu11 && cd /newdata/ianlin/CODE/seg_trick/3DUNet/patch96/scripts && bash train_test4.sh" --arch ampere
-
-##### TEST #####
-sc create --name 3dpatch96test --image "10.81.138.201:5000/xsemseg:v_det4" --gpu 1 --cmd "source /newdata/ianlin/.bashrc && conda activate cu11 && cd /newdata/ianlin/CODE/seg_trick/3DUNet/patch96/scripts && bash test.sh" --arch ampere
