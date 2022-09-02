@@ -82,6 +82,7 @@ Please download datasets from the official website:
 
 ## Inference with Pre-trained Models
 Download the trained weights from [here](youtube.com). 
+
 Run the following command for 2DUNet:
 ```
 python 2DUNet/NetworkTrainer/test.py --test-model-path $YOUR_MODEL_PATH
@@ -94,11 +95,13 @@ python 3DUNet/NetworkTrainer/test.py --test-model-path $YOUR_MODEL_PATH
 
 ## Training & Evaluation
 We provide the shell scripts for training and evaluation by 5-fold cross-validation. 
-Please run the following command for 2DUNet:
+
+Run the following command for 2DUNet:
 ```
 sh 2DUNet/config/baseline.sh
 ```
-Please run the following command for 3DUNet:
+
+Run the following command for 3DUNet:
 ```
 sh 3DUNet/config/baseline.sh
 ```
