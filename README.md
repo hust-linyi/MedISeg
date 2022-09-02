@@ -111,7 +111,7 @@ And the commands train/test with various tricks are also provided in  */config/.
 
 Dataset  | Baseline | Method | Recall (%) | Percision (%) |  Dice (%) |  IoU (%) | Weight
 ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | -------------
-[ISIC 2018](https://challenge.isic-archive.com/landing/2018/)  | 2DUNet | -- | 88.18%  | 89.88%  | 86.89% | 85.80%  | [weight](https://drive.google.com/drive/folders/1cwvroWLmjQCvRU9qP_kMnlAVnds5wA9u?usp=sharing)
+[ISIC 2018](https://challenge.isic-archive.com/landing/2018/)  | 2DUNet | + PyTorch | 88.18%  | 89.88%  | 86.89% | 85.80%  | [weight](https://drive.google.com/drive/folders/1cwvroWLmjQCvRU9qP_kMnlAVnds5wA9u?usp=sharing)
 [ISIC 2018](https://challenge.isic-archive.com/landing/2018/)  | 2DUNet | + Image-21K | 90.21%  | 91.48%  | 89.38% | 88.00%  | [weight] 
 [ISIC 2018](https://challenge.isic-archive.com/landing/2018/)  | 2DUNet | + GTAug-B | 88.32%  | 91.11%  | 88.07% | 86.98%  | [weight] 
 [ISIC 2018](https://challenge.isic-archive.com/landing/2018/)  | 2DUNet | + CBL(Tvers) | 89.40%  | 90.19%  | 87.87% | 86.42%  | [weight] 
