@@ -12,10 +12,7 @@
 
 ## Introduction
 <div align="justify">
-The modern MIS publications usually focus on presentations of the major contributions, leading to a potential problem of the unfair experimental result comparisons. In this work, we collect a series of MedISeg tricks for different model implementation phases, and experimentally explore the effectiveness of these tricks on the consistent baseline models. Witnessed by the extensive experimental results on both the representative 2D and 3D medical image datasets, we explicitly clarify the effect of these tricks.
-
-
-focus on presentations of the major technologies while exorbitantly ignoring some marginal implementation details, leading to a potential problem of the unfair experimental result comparisons. In this work, we collect a series of MIS tricks for different implementation phases, and experimentally explore the effectiveness of these tricks on the consistent CNNs baselines. Witnessed by the extensive experimental results on both the representative 2D and 3D medical image datasets, we explicitly clarify the effect of these tricks on MIS.
+The modern MedISeg publications usually focus on presentations of the major contributions while unwittingly ignoring some marginal implementation tricks, leading to a potential problem of the unfair experimental result comparisons. In this paper, we collect a series of MedISeg tricks for different model implementation phases, and experimentally explore the effectiveness of these tricks on the consistent baseline models. Compared to some paper-driven surveys that only blandly focus on the advantage and limitation analyses of segmentation models, our work provides a large number of solid experiments and is more technically operable. Witnessed by the extensive experimental results on both the representative 2D and 3D medical image datasets, we explicitly clarify the effect of these tricks.
 </div>
 
 [comment]: <> ()
