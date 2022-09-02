@@ -5,6 +5,24 @@ from torch.utils.data import Dataset
 from batchgenerators.augmentations.spatial_transformations import augment_resize
 
 
+def get_imglist(root_dir, fold, phase):
+    # randomly split the dataset into train, val, and test (20%).
+    # change the "fold" from 0 to 4 to perform 5-fold cross validation. 
+    image_list = [item.replace('_image.npy','') for item in os.listdir(self.root_dir) if item.endswith('_image.npy')]
+    testnum = int(len(image_list) * 0.2)
+    teststart = fold * testnum
+    testend = (fold + 1) * testnum
+    if phase == 'test':
+        image_list = image_list[teststart:testend]
+    else:
+        image_list = np.concatenate([image_list[:teststart], image_list[testend:]], axis=0)
+        valnum = int(len(image_list) * 0.1)
+    if phase == 'train':
+        image_list = image_list[valnum:]
+    elif phase == 'val':
+        valnum = int(len(image_list) * 0.1)
+        image_list = image_list[:valnum]
+    return image_list
 
 
 class DataFolder(Dataset):
@@ -14,7 +32,7 @@ class DataFolder(Dataset):
         self.gan_aug = gan_aug
         self.phase = phase
         self.fold = fold
-        self.image_list = self.get_imglist()
+        self.image_list = self.get_imglist(self.root_dir, self.fold, self.phase)
         print(f"total {len(self.image_list)} samples for {phase}")
 
     def __len__(self):
@@ -33,25 +51,6 @@ class DataFolder(Dataset):
         if self.transform:
             sample = self.transform(sample)
         return sample
-
-    def get_imglist(self):
-        # randomly split the dataset into train, val, and test (20%).
-        # change the "fold" from 0 to 4 to perform 5-fold cross validation. 
-        image_list = [item.replace('_image.npy','') for item in os.listdir(self.root_dir) if item.endswith('_image.npy')]
-        testnum = int(len(image_list) * 0.2)
-        teststart = self.fold * testnum
-        testend = (self.fold + 1) * testnum
-        if self.phase == 'test':
-            image_list = image_list[teststart:testend]
-        else:
-            image_list = np.concatenate([image_list[:teststart], image_list[testend:]], axis=0)
-            valnum = int(len(image_list) * 0.1)
-        if self.phase == 'train':
-            image_list = image_list[valnum:]
-        elif self.phase == 'val':
-            valnum = int(len(image_list) * 0.1)
-            image_list = image_list[:valnum]
-        return image_list
 
 
 class RandomScale(object):

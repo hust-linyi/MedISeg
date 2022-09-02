@@ -12,7 +12,6 @@ from NetworkTrainer.networks.resunet import ResUNet, ResUNet_ds
 from NetworkTrainer.networks.denseunet import DenseUNet
 from NetworkTrainer.networks.vit_seg_modeling import VisionTransformer as ViT_seg
 from NetworkTrainer.networks.vit_seg_modeling import CONFIGS as CONFIGS_ViT_seg
-
 from NetworkTrainer.dataloaders.dataload import DataFolder
 from NetworkTrainer.utils.util import AverageMeterArray
 from NetworkTrainer.utils.accuracy import compute_metrics
@@ -48,7 +47,12 @@ class NetworkInference:
         # ----- load trained model ----- #
         print(f"=> loading trained model in {self.opt.test['model_path']}")
         checkpoint = torch.load(self.opt.test['model_path'])
-        self.net.load_state_dict(checkpoint['state_dict'])
+        state_dict = self.net.state_dict()
+        pretrained_dict = {k: v for k, v in checkpoint['state_dict'].items() if k in state_dict}
+        state_dict.update(pretrained_dict)
+        self.net.load_state_dict(state_dict)
+
+        # self.net.load_state_dict(checkpoint['state_dict'])
         print("=> loaded model at epoch {}".format(checkpoint['epoch']))
         self.net = self.net.module
         self.net.eval()
@@ -96,11 +100,17 @@ class NetworkInference:
                 metrics = compute_metrics(pred[j], gt[j], metric_names)
                 if metrics[metric_names[0]] == -1:
                     continue
+                print(f"{name[j]}: {metrics[2]}")
                 all_result.update([metrics[metric_name] for metric_name in metric_names])
                 if self.opt.test['save_flag']:
                     imageio.imwrite(os.path.join(self.opt.test['save_dir'], 'img', f'{name[j]}_pred.png'), (pred[j] * 255).astype(np.uint8))
                     imageio.imwrite(os.path.join(self.opt.test['save_dir'], 'img', f'{name[j]}_gt.png'), (gt[j].numpy() * 255).astype(np.uint8))
-                    np.save(os.path.join(self.opt.test['save_dir'], 'img', f'{name[j]}_prob.npy'), output[j])
+                    # np.save(os.path.join(self.opt.test['save_dir'], 'img', f'{name[j]}_prob.npy'), output[j])
+                    img_save = input[j].cpu().numpy().transpose(1, 2, 0)
+                    img_save = img_save * (0.229, 0.224, 0.225) + (0.485, 0.456, 0.406)
+                    img_save = (img_save * 255).astype(np.uint8)
+
+                    imageio.imwrite(os.path.join(self.opt.test['save_dir'], 'img', f'{name[j]}_img.png'), img_save)
 
         for i in range(len(metric_names)):
             print(f"{metric_names[i]}: {all_result.avg[i]:.4f}", end='\t')
