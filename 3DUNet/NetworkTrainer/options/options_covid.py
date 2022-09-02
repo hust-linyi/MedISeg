@@ -52,15 +52,15 @@ class Options:
         self.task = args.task
         self.fold = args.fold
         # check if the root directory exists
-        self.root_dir = f'/Data/COVID-19-20/{self.dataset}/preprocess'
-        self.result_dir = f'/Experiment/COVID/'
+        self.root_dir = os.path.expanduser("~") + f'/Data/COVID-19-20/{self.dataset}/preprocess'
+        self.result_dir = os.path.expanduser("~") + f'/Experiment/COVID/'
         self.model['pretrained'] = args.pretrained
         self.model['in_c'] = args.in_c
         self.model['num_class'] = args.num_class
         self.model['input_size'] = tuple([args.patch_size, args.patch_size, 32])
 
         # --- training params --- #
-        self.train['save_dir'] = '{:s}/{:s}/fold_{:d}/{:d}'.format(self.result_dir, self.task, self.fold, self.train['seed'])  # path to save results
+        self.train['save_dir'] = '{:s}/{:s}/fold_{:d}/'.format(self.result_dir, self.task, self.fold)  # path to save results
         self.train['train_epochs'] = args.train_train_epochs
         self.train['batch_size'] = args.train_batch_size
         self.train['checkpoint_freq'] = args.train_checkpoint_freq
@@ -72,7 +72,7 @@ class Options:
         self.train['seed'] = args.train_seed
         self.train['loss'] = args.train_loss
         self.train['deeps'] = args.train_deeps
-        self.train['gan_aug'] = args.gan_aug
+        self.train['gan_aug'] = args.train_gan_aug
 
         # --- resume training --- #
         self.train['start_epoch'] = args.train_start_epoch
@@ -97,13 +97,10 @@ class Options:
         self.transform['val'] = get_transform(self, 'val')
 
     def save_options(self):
-
         if not os.path.exists(self.train['save_dir']):
             os.makedirs(self.train['save_dir'], exist_ok=True)
-        if not os.path.exists(self.test['checkpoint_dir']):
-            os.makedirs(self.test['checkpoint_dir'], exist_ok=True)
-        if not os.path.exists(self.test['save_dir']):
-            os.makedirs(self.test['save_dir'], exist_ok=True)
+            os.makedirs(os.path.join(self.train['save_dir'], 'test_results'), exist_ok=True)
+            os.makedirs(os.path.join(self.train['save_dir'], 'checkpoints'), exist_ok=True)
         
         if self.isTrain:
             filename = '{:s}/train_options.txt'.format(self.train['save_dir'])

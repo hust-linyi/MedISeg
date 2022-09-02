@@ -1,18 +1,10 @@
 albumentations
-torch
-opencv-python
-imageio
-ftfy regex tqdm
-altair
-streamlit
-timm
-test-tube
-wandb
-tqdm
-numpy 
-thop
-scipy
-rich
 ml_collections
-python-opencv
+numpy 
+opencv-python
 pandas
+rich
+SimpleITK
+timm
+torch
+tqdm
