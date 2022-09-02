@@ -118,22 +118,17 @@ ISIC 2018
 CoNIC
 </div>
 
+[comment]: <> ()
+![visualization](figures/res_kits19.gif)
+<div align="center">
+KiTS19
+</div>
 
-<!-- [comment]: <> ()
-![visualization](figures/video/2_img.gif)![visualization](figures/video/7_img.gif)![visualization](figures/video/8_img.gif)![visualization](figures/video/41_img.gif)![visualization](figures/video/55_img.gif)![visualization](figures/video/65_img.gif)![visualization](figures/video/75_img.gif)
-![visualization](figures/video/2_label.gif)![visualization](figures/video/7_label.gif)![visualization](figures/video/8_label.gif)![visualization](figures/video/41_label.gif)![visualization](figures/video/55_label.gif)![visualization](figures/video/65_label.gif)![visualization](figures/video/75_label.gif)
-![visualization](figures/video/2_pred.gif)![visualization](figures/video/7_pred.gif)![visualization](figures/video/8_pred.gif)![visualization](figures/video/41_pred.gif)![visualization](figures/video/55_pred.gif)![visualization](figures/video/65_pred.gif)![visualization](figures/video/75_pred.gif)
+[comment]: <> ()
+![visualization](figures/res_lits17.gif)
 <div align="center">
 LiTS17
-</div> -->
-
-
-<div align=center><img width="90" height="90" src="figures/video/2_img.gif"/><img width="90" height="90" src="figures/video/7_img.gif"/><img width="90" height="90" src="figures/video/8_img.gif"/><img width="90" height="90" src="figures/video/41_img.gif"/><img width="90" height="90" src="figures/video/55_img.gif"/><img width="90" height="90" src="figures/video/65_img.gif"/><img width="90" height="90" src="figures/video/75_img.gif"/></div>
-<div align=center><img width="90" height="90" src="figures/video/2_label.gif"/><img width="90" height="90" src="figures/video/7_label.gif"/><img width="90" height="90" src="figures/video/8_label.gif"/><img width="90" height="90" src="figures/video/41_label.gif"/><img width="90" height="90" src="figures/video/55_label.gif"/><img width="90" height="90" src="figures/video/65_label.gif"/><img width="90" height="90" src="figures/video/75_label.gif"/></div>
-<div align=center><img width="90" height="90" src="figures/video/2_pred.gif"/><img width="90" height="90" src="figures/video/7_pred.gif"/><img width="90" height="90" src="figures/video/8_pred.gif"/><img width="90" height="90" src="figures/video/41_pred.gif"/><img width="90" height="90" src="figures/video/55_pred.gif"/><img width="90" height="90" src="figures/video/65_pred.gif"/><img width="90" height="90" src="figures/video/75_pred.gif"/></div>
-<div align="center">
-LiTS17
-</div> -->
+</div>
 
 ## Model Zoo
 
