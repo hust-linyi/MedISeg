@@ -106,6 +106,8 @@ sh 3DUNet/config/baseline.sh
 And the commands train/test with various tricks are also provided in  */config/. For the details of the segmentation tricks, please refer to the paper.
 
 ## Visualization
+From top to bottom: raw image, ground truth, prediction.
+
 [comment]: <> ()
 ![visualization](figures/res_isic.png)
 <div align="center">
