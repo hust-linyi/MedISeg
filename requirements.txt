@@ -1,13 +1,10 @@
 albumentations
-torch
+ml_collections
+numpy 
 opencv-python
-imageio
-ftfy regex tqdm
-altair
-streamlit
---upgrade protobuf
+pandas
+rich
+SimpleITK
 timm
-tensorboardX
-matplotlib
-test-tube
-wandb
+torch
+tqdm

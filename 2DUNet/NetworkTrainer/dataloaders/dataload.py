@@ -19,8 +19,8 @@ class DataFolder(data.Dataset):
         self.phase = phase
         self.fold = fold 
         self.root_dir = root_dir
-        self.imgs, self.masks, self.filenames = self.load_dataset()
-        self.imgs_aug, self.masks_aug, _ = self.load_dataset(os.path.join(self.root_dir, 'aug', 'NumpyData'))      
+        self.imgs, self.masks, self.filenames = self.load_dataset(os.path.join(self.root_dir, 'NumpyData'))
+        self.imgs_aug, self.masks_aug, _ = self.load_dataset(os.path.join(self.root_dir, 'aug'))      
 
     def __len__(self):
         return self.filenames.shape[0]
@@ -37,10 +37,10 @@ class DataFolder(data.Dataset):
             mask = transformed['mask']
         return {'image': img, 'label': mask, 'name': name}
     
-    def load_dataset(self):
-        imgs = np.load(os.path.join(self.root_dir, 'NumpyData', 'img.npy'))
-        mask = np.load(os.path.join(self.root_dir, 'NumpyData', 'mask.npy'))
-        filenames = np.load(os.path.join(self.root_dir, 'NumpyData', 'filename.npy'))
+    def load_dataset(self, data_dir):
+        imgs = np.load(os.path.join(data_dir, 'img.npy'))
+        mask = np.load(os.path.join(data_dir, 'mask.npy'))
+        filenames = np.load(os.path.join(data_dir, 'filename.npy'))
         testnum = int(len(filenames) * 0.2)
         teststart = self.fold * testnum
         testend = (self.fold + 1) * testnum
