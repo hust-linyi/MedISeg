@@ -12,7 +12,7 @@
 
 ## Introduction
 <div align="justify">
-The modern MIS publications usually focus on presentations of the major technologies while exorbitantly ignoring some marginal implementation details, leading to a potential problem of the unfair experimental result comparisons. In this work, we collect a series of MIS tricks for different implementation phases, and experimentally explore the effectiveness of these tricks on the consistent CNNs baselines. Witnessed by the extensive experimental results on both the representative 2D and 3D medical image datasets, we explicitly clarify the effect of these tricks on MIS.
+The modern MedISeg publications usually focus on presentations of the major contributions while unwittingly ignoring some marginal implementation tricks, leading to a potential problem of the unfair experimental result comparisons. In this paper, we collect a series of MedISeg tricks for different model implementation phases, and experimentally explore the effectiveness of these tricks on the consistent baselines. Compared to the paper-driven surveys that only blandly focus on the advantage and limitation analyses, our work provides a large number of solid experiments and is more technically operable. Witnessed by the extensive experimental results on both the representative 2D and 3D medical image datasets, we explicitly clarify the effect of these tricks.
 </div>
 
 [comment]: <> ()
@@ -33,7 +33,7 @@ The surveyed medical image segmentation tricks and their latent relations
 ```
 
 ## News
-🌻 1.1.0 was released in 01/08/2022
+🌻 1.1.0 was released in 01/09/2022
 
 - **Supported Backbones:**
 - [x] [ResNet (CVPR'2016)](https://arxiv.org/abs/1512.03385?context=cs)
@@ -45,10 +45,10 @@ The surveyed medical image segmentation tricks and their latent relations
 - [x] [3D-UNet (MICCAI'2016)](https://arxiv.org/abs/1606.06650)
 
 - **Supported Datasets:**
-- [x] [ISIC 2018](https://challenge.isic-archive.com/landing/2018/) 
-- [x] [CoNIC](https://conic-challenge.grand-challenge.org/)
-- [x] [KiTS19](https://kits19.grand-challenge.org/data/)
-- [x] [KiTS19](https://kits19.grand-challenge.org/data/)
+- [x] [2D ISIC 2018](https://challenge.isic-archive.com/landing/2018/) 
+- [x] [2D CoNIC](https://conic-challenge.grand-challenge.org/)
+- [x] [3D KiTS19](https://kits19.grand-challenge.org/data/)
+- [x] [3D LiTS](https://competitions.codalab.org/competitions/17094)
 
 ## Installation
 - **Option 1:**
@@ -81,16 +81,28 @@ Please download datasets from the official website:
 - [x] LiTS17: [3D Liver Tumor Segmentation 2017 Dataset](https://www.kaggle.com/datasets/andrewmvd/liver-tumor-segmentation)
 
 ## Inference with Pre-trained Models
-Download the trained weights from [here](youtube.com). Then run the following command for 2DUNet and 3DUNet:
+Download the trained weights from [here](youtube.com). 
+
+Run the following command for 2DUNet:
 ```
 python 2DUNet/NetworkTrainer/test.py --test-model-path $YOUR_MODEL_PATH
+```
+
+Run the following command for 3DUNet:
+```
 python 3DUNet/NetworkTrainer/test.py --test-model-path $YOUR_MODEL_PATH
 ```
 
 ## Training & Evaluation
-We provide the shell scripts for training and evaluation by 5-fold cross-validation. Please run the following command for the baseline method:
+We provide the shell scripts for training and evaluation by 5-fold cross-validation. 
+
+Run the following command for 2DUNet:
 ```
 sh 2DUNet/config/baseline.sh
+```
+
+Run the following command for 3DUNet:
+```
 sh 3DUNet/config/baseline.sh
 ```
 And the commands train/test with various tricks are also provided in  */config/. For the details of the segmentation tricks, please refer to the paper.
