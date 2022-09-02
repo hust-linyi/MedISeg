@@ -6,16 +6,14 @@ import numpy as np
 import torch
 import torch.optim as optim
 import torch.nn.functional as F
-
 from torch.utils.data import DataLoader
-from NetworkTrainer.networks.unet import UNet3D
-from NetworkTrainer.networks.unet_ds import UNet3D_ds
-from NetworkTrainer.dataloaders.data_kit import DataFolder
+from NetworkTrainer.networks.unet import UNet3D, UNet3D_ds
+from NetworkTrainer.dataloaders.dataload import DataFolder
 from NetworkTrainer.utils.util import save_bestcheckpoint, save_checkpoint, setup_logging, compute_loss_list, AverageMeter
 import logging
 from rich import print
 from torchvision import transforms
-from NetworkTrainer.utils.losses_imbalance import DiceLoss, FocalLoss, TverskyLoss, OHEMLoss, CELoss
+from NetworkTrainer.utils.losses import DiceLoss, FocalLoss, TverskyLoss, OHEMLoss, CELoss
 
 
 class NetworkTrainer:
@@ -39,13 +37,16 @@ class NetworkTrainer:
         torch.cuda.manual_seed_all(num)
     
     def set_network(self):
-        self.net = UNet3D(num_classes=3, input_channels=1, act='relu', norm=self.opt.train['norm'])
+        self.net = UNet3D(num_classes=self.opt.model['num_class'], input_channels=self.opt.model['in_c'], act='relu', norm=self.opt.train['norm'])
         if self.opt.train['deeps']:
-            self.net = UNet3D_ds(num_classes=3, input_channels=1, act='relu', norm=self.opt.train['norm'])
+            self.net = UNet3D_ds(num_classes=self.opt.model['num_class'], input_channels=self.opt.model['in_c'], act='relu', norm=self.opt.train['norm'])
                 
         self.net = torch.nn.DataParallel(self.net)
         self.net = self.net.cuda()
         if self.opt.model['pretrained']:
+            # the pretrained weights from "Zhout et al., Models Genesis: Generic Autodidactic Models for 3D Medical Image Analysis"
+            # details can be found at https://github.com/MrGiovanni/ModelsGenesis
+            # you may change the path to your own pretrained weights
             ckpt_path = '/'.join(self.opt.root_dir.split('/')[:-2]) + '/pretrained_weights/' + 'Genesis_Chest_CT.pt'
             print(f'Loading pretrained weights from {ckpt_path}')
 
@@ -69,14 +70,14 @@ class NetworkTrainer:
         elif self.opt.train['loss'] == 'ohem':
             self.criterion = OHEMLoss()
         elif self.opt.train['loss'] == 'wce':
-            self.criterion = CELoss(weight=torch.tensor([0.1, 0.5, 1.0]))
+            self.criterion = CELoss(weight=torch.tensor([0.2, 0.8]))
 
     def set_optimizer(self):
         self.optimizer = optim.SGD(self.net.parameters(), lr=self.opt.train['lr'], momentum=0.9, weight_decay=self.opt.train['weight_decay'])
         self.scheduler = optim.lr_scheduler.ReduceLROnPlateau(self.optimizer, 'min')
 
     def set_dataloader(self):
-        self.train_set = DataFolder(root_dir=self.opt.root_dir, phase='train', fold=self.opt.fold, data_transform=transforms.Compose(self.opt.transform['train']))
+        self.train_set = DataFolder(root_dir=self.opt.root_dir, phase='train', fold=self.opt.fold, gan_aug=self.opt.gan_aug, data_transform=transforms.Compose(self.opt.transform['train']))
         self.val_set = DataFolder(root_dir=self.opt.root_dir, phase='val', data_transform=transforms.Compose(self.opt.transform['val']), fold=self.opt.fold)
         self.train_loader = DataLoader(self.train_set, batch_size=self.opt.train['batch_size'], shuffle=True, num_workers=self.opt.train['workers'])
         self.val_loader = DataLoader(self.val_set, batch_size=self.opt.train['batch_size'], shuffle=False, drop_last=False, num_workers=self.opt.train['workers'])
@@ -88,6 +89,9 @@ class NetworkTrainer:
         for i_batch, sampled_batch in enumerate(self.train_loader):
             volume_batch, label_batch = sampled_batch['image'], sampled_batch['label']
             volume_batch, label_batch = volume_batch.cuda(), label_batch.cuda()
+            # check if the label is binary when the number of classes is 2
+            if self.opt.model['num_class'] == 2:
+                label_batch = (label_batch > 0).type(torch.float32)
             outputs = self.net(volume_batch)
             if not self.opt.train['deeps']:
                 loss = self.criterion(outputs, label_batch)
@@ -118,7 +122,11 @@ class NetworkTrainer:
         with torch.no_grad():
             for i_batch, sampled_batch in enumerate(self.val_loader):
                 volume_batch, label_batch = sampled_batch['image'], sampled_batch['label']
+                # check if the label is binary when the number of classes is 2
+                if self.opt.model['num_class'] == 2:
+                    label_batch = (label_batch > 0).type(torch.float32)
                 volume_batch, label_batch = volume_batch.cuda(), label_batch.cuda()
+                
                 outputs = self.net(volume_batch)
                 if self.opt.train['deeps']:
                     outputs = outputs[0]                
@@ -129,11 +137,6 @@ class NetworkTrainer:
 
     def run(self):
         num_epoch = self.opt.train['train_epochs']
-        self.logger.info("=> Initial learning rate: {:g}".format(self.opt.train['lr']))
-        self.logger.info("=> Batch size: {:d}".format(self.opt.train['batch_size']))
-        self.logger.info("=> Number of training iterations: {:d} * {:d}".format(num_epoch, int(len(self.train_loader))))
-        self.logger.info("=> Training epochs: {:d}".format(self.opt.train['train_epochs']))
-
         dataprocess = tqdm(range(self.opt.train['start_epoch'], num_epoch))
         best_val_loss = 100.0    
         for epoch in dataprocess:

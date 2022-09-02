@@ -122,8 +122,27 @@ def setup_logging(opt):
 
     logger.info('***** Training starts *****')
     logger.info('save directory: {:s}'.format(opt.train['save_dir']))
+
+    # print options
+    if opt.isTrain:
+        logger.info('training options:')
+        for group, options in opt.__dict__.items():
+            if group == 'test' or group == 'transform':
+                continue
+            try:
+                for name, val in options.items():
+                     logger.info("{:s} = {:s}".format(name, repr(val)))
+            except:
+                 logger.info("{:s} = {:s}".format(group, repr(options)))
+    else:
+        logger.info('test options:')
+        for group, options in opt.__dict__.items():
+            if group == 'test':
+                for name, val in options.items():
+                     logger.info("{:s} = {:s}".format(name, repr(val)))
+
     if mode == 'w':
-        logger_results.info('epoch\ttrain_loss\ttrain_loss_vor\ttrain_loss_cluster\ttrain_loss_repel')
+        logger_results.info('epoch\ttrain_loss\tval_loss')
 
     return logger, logger_results
 
@@ -132,7 +151,7 @@ def save_checkpoint(state, epoch, save_dir, cp_flag):
     cp_dir = '{:s}/checkpoints'.format(save_dir)
     if not os.path.exists(cp_dir):
         os.mkdir(cp_dir)
-    filename = '{:s}/checkpoint_999.pth.tar'.format(cp_dir)
+    filename = '{:s}/checkpoint_999.pth.tar'.format(cp_dir) # 999 is for the latest checkpoint
     torch.save(state, filename)
     if cp_flag:
         shutil.copyfile(filename, '{:s}/checkpoint_{:d}.pth.tar'.format(cp_dir, epoch+1))
@@ -140,7 +159,7 @@ def save_checkpoint(state, epoch, save_dir, cp_flag):
 
 def save_bestcheckpoint(state, save_dir):
     cp_dir = '{:s}/checkpoints'.format(save_dir)
-    torch.save(state, '{:s}/checkpoint_0.pth.tar'.format(cp_dir))
+    torch.save(state, '{:s}/checkpoint_0.pth.tar'.format(cp_dir)) # 0 is for the best checkpoint
 
 
 def compute_loss_list(loss_func, pred=[], target=[], **kwargs):

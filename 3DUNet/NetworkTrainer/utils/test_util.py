@@ -14,7 +14,12 @@ from sklearn.metrics import recall_score, precision_score, f1_score, jaccard_sco
 
 
 def test_all_case(net, image_list, num_classes, patch_size=(112, 112, 80), stride_xy=18, stride_z=4, save_result=True, test_save_path=None):
-    metric_names = ['recall1', 'precision1', 'dice1', 'miou1', 'recall2', 'precision2', 'dice2', 'miou2']
+    if num_classes == 3:
+        metric_names = ['recall1', 'precision1', 'dice1', 'miou1', 'recall2', 'precision2', 'dice2', 'miou2']
+    elif num_classes == 2:
+        metric_names = ['recall1', 'precision1', 'dice1', 'miou1']
+    else:
+        raise ValueError('num_classes should be 2 or 3')
     total_metric = AverageMeterArray(len(metric_names))
     if save_result:
         if not os.path.exists(test_save_path + '/img'):
@@ -33,7 +38,7 @@ def test_all_case(net, image_list, num_classes, patch_size=(112, 112, 80), strid
         if save_result:
             np.save(os.path.join(test_save_path, 'img', case_name+'_pred.npy'), prediction)
             # np.save(os.path.join(test_save_path, 'img', case_name+'_gt.npy'), label)
-            # np.save(os.path.join(test_save_path, 'img', case_name+'_prob.npy'), score_map)
+            np.save(os.path.join(test_save_path, 'img', case_name+'_prob.npy'), score_map)
             # np.save(os.path.join(test_save_path, 'img', case_name+'_img.npy'), image)
         print(case_name, single_metric)
     result_avg = [[total_metric.avg[i]*100 for i in range(len(metric_names))]]

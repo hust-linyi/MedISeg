@@ -1,24 +1,17 @@
 import torch
 import os
 import math
-import nibabel as nib
 import numpy as np
-from medpy import metric
 import torch
 import torch.nn.functional as F
 from tqdm import tqdm
 import os
 import pandas as pd
-from collections import OrderedDict
-import glob
 from NetworkTrainer.utils.util import AverageMeterArray
-from sklearn.metrics import recall_score, precision_score, f1_score, jaccard_score
-from NetworkTrainer.networks.unet import UNet3D
-from NetworkTrainer.networks.unet_ds import UNet3D_ds
-from NetworkTrainer.utils.test_util import test_all_case, calculate_metric_percase
-from NetworkTrainer.dataloaders.data_kit import get_imglist
+from NetworkTrainer.networks.unet import UNet3D, UNet3D_ds
+from NetworkTrainer.utils.test_util import calculate_metric_percase
+from NetworkTrainer.dataloaders.dataload import get_imglist
 from NetworkTrainer.utils.post_process import *
-from NetworkTrainer.utils.tta import TTA
 
 
 class NetworkInfer:
@@ -29,9 +22,9 @@ class NetworkInfer:
        os.environ['CUDA_VISIBLE_DEVICES'] = ','.join(str(x) for x in self.opt.test['gpus'])
  
     def set_network(self):
-        self.net = UNet3D(num_classes=3, input_channels=1, act='relu', norm=self.opt.train['norm'])
+        self.net = UNet3D(num_classes=self.opt.model['num_class'], input_channels=self.opt.model['in_c'], act='relu', norm=self.opt.train['norm'])
         if self.opt.train['deeps']:
-            self.net = UNet3D_ds(num_classes=3, input_channels=1, act='relu', norm=self.opt.train['norm'])
+            self.net = UNet3D_ds(num_classes=self.opt.model['num_class'], input_channels=self.opt.model['in_c'], act='relu', norm=self.opt.train['norm'])
              
         self.net = torch.nn.DataParallel(self.net)
         self.net = self.net.cuda()
@@ -49,7 +42,7 @@ class NetworkInfer:
         tta = TTA(if_flip=self.opt.test['flip'], if_rot=self.opt.test['rotate'])
         patch_size = self.opt.model['input_size']
         stride_xy = patch_size[0]//2
-        stride_z = patch_size[0]//2
+        stride_z = patch_size[2]//2
         # if the size of image is less than patch_size, then padding it
         add_pad = False
         if w < patch_size[0]:
@@ -117,13 +110,16 @@ class NetworkInfer:
 
     def post_process(self, pred):
         if self.opt.post['abl']:
-            pred = abl(pred, for_which_classes=[2,])
+            pred = abl(pred, for_which_classes=[1,])
         if self.opt.post['rsa']:
-            pred = rsa(pred, for_which_classes=[1,2], minimum_valid_object_size={1: 5000, 2: 80})
+            pred = rsa(pred, for_which_classes=[1,2], minimum_valid_object_size={1: 1000, 2: 80})
         return pred
 
     def run(self):
-        metric_names = ['recall1', 'precision1', 'dice1', 'miou1', 'recall2', 'precision2', 'dice2', 'miou2']
+        if self.opt.model['num_class'] == 2:
+            metric_names = ['recall1', 'precision1', 'dice1', 'miou1']
+        else:
+            metric_names = ['recall1', 'precision1', 'dice1', 'miou1', 'recall2', 'precision2', 'dice2', 'miou2']
         total_metric = AverageMeterArray(len(metric_names))
         if self.opt.test['save_flag']:
             if not os.path.exists(self.opt.test['save_dir'] + '/img'):
@@ -142,7 +138,6 @@ class NetworkInfer:
 
             if self.opt.test['save_flag']:
                 np.save(os.path.join(self.opt.test['save_dir'], 'img', case_name+'_pred.npy'), prediction)
-                # np.save(os.path.join(self.opt.test['save_dir'], 'img', case_name+'_gt.npy'), label)
                 np.save(os.path.join(self.opt.test['save_dir'], 'img', case_name+'_prob.npy'), score_map)
                 # np.save(os.path.join(self.opt.test['save_dir'], 'img', case_name+'_img.npy'), image)
             print(case_name, single_metric)

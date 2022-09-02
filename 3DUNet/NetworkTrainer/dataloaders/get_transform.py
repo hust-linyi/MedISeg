@@ -1,4 +1,4 @@
-from NetworkTrainer.dataloaders.data_kit import *
+from NetworkTrainer.dataloaders.dataload import *
 
 def get_transform(opt, phase='train'):
     # define data transforms for validation 
@@ -24,6 +24,24 @@ def get_transform(opt, phase='train'):
                 RandomCrop(opt.model['input_size']),
                 RandomRotation(),
                 RandomMirroring(),
+                ToTensor()
+            ]
+        elif opt.task == 'da2flip':
+            transform = [
+                RandomCrop(opt.model['input_size']),
+                RandomMirroring(),
+                ToTensor()
+            ]
+        elif opt.task == 'da2rot':
+            transform = [
+                RandomCrop(opt.model['input_size']),
+                RandomRotation(),
+                ToTensor()
+            ]
+        elif opt.task == 'da2scale':
+            transform = [
+                RandomScale([0.85, 1.25]),
+                RandomCrop(opt.model['input_size']),
                 ToTensor()
             ]
         elif opt.task == 'da4':

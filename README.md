@@ -51,6 +51,7 @@ The surveyed medical image segmentation tricks and their latent relations
 - [x] [ISIC 2018](https://challenge.isic-archive.com/landing/2018/) 
 - [x] [CoNIC](https://conic-challenge.grand-challenge.org/)
 - [x] [KiTS19](https://kits19.grand-challenge.org/data/)
+- [x] [KiTS19](https://kits19.grand-challenge.org/data/)
 
 ## Installation
 - **Option 1:**
@@ -80,21 +81,32 @@ Please download datasets from the official website:
 - [x] ISIC 2018: [2D ISIC 2018 Lesion Boundary Segmentation Dataset](https://challenge.isic-archive.com/landing/2018/)
 - [x] CoNIC: [2D Colon Nuclei Identification and Counting Challenge Dataset](https://conic-challenge.grand-challenge.org/)
 - [x] KiTS19: [3D Kidney Tumor Segmentation 2019 Dataset](https://kits19.grand-challenge.org/data/)
+- [x] LiTS17: [3D Liver Tumor Segmentation 2017 Dataset](https://www.kaggle.com/datasets/andrewmvd/liver-tumor-segmentation)
 
 ## Inference with Pre-trained Models
-
+Download the trained weights from [here](youtube.com). Then run the following command for 2DUNet and 3DUNet:
+```
+python 2DUNet/NetworkTrainer/test.py --test-model-path $YOUR_MODEL_PATH
+python 3DUNet/NetworkTrainer/test.py --test-model-path $YOUR_MODEL_PATH
+```
 
 ## Training & Evaluation
-
+We provide the shell scripts for training and evaluation by 5-fold cross-validation. Please run the following command for the baseline method:
+```
+sh 2DUNet/config/baseline.sh
+sh 3DUNet/config/baseline.sh
+```
+And the commands train/test with various tricks are also provided in  */config/. For the details of the segmentation tricks, please refer to the paper.
 
 ## Model Zoo
 
 Dataset  | Baseline | Method | Recall (%) | Percision (%) |  Dice (%) |  IoU (%) | Weight
 ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | -------------
-[ISIC 2018](https://challenge.isic-archive.com/landing/2018/)  | 2D-UNet | + PyTorch | 85.80%  | 85.80%  | 85.80% | 85.80%  | weight
-[CoNIC](https://conic-challenge.grand-challenge.org/)  | 2D-UNet | + PyTorch | 87.07%  | 85.80%   | 85.80% | 85.80% | weight 
-[KiTS19](https://kits19.grand-challenge.org/data/) | 3D-UNet | + PyTorch  | 87.35% | 87.35%  | 87.35% | 87.35% | weight
-
+[ISIC 2018](https://challenge.isic-archive.com/landing/2018/)  | 2D-UNet | + PyTorch | 88.27%  | 89.86%  | 86.96% | 85.87%  | [weight](https://drive.google.com/drive/folders/1cwvroWLmjQCvRU9qP_kMnlAVnds5wA9u?usp=sharing)
+[CoNIC](https://conic-challenge.grand-challenge.org/)  | 2D-UNet | + PyTorch | 78.12%  | 77.25%   | 77.23% | 77.58% | [weight](https://drive.google.com/drive/folders/1Opk7fSRRj9Llxi5XhU61RIIFS30ip5HI?usp=sharing)
+[KiTS19](https://kits19.grand-challenge.org/data/) | 3D-UNet | + PyTorch  | 92.63% | 92.99%  | 92.42% | 86.43% | [weight](https://drive.google.com/drive/folders/1JjdN0peTGWAWjbjKRUvkGreakdykzlmU?usp=sharing)
+[LiTS17](https://www.kaggle.com/datasets/andrewmvd/liver-tumor-segmentation) | 3D-UNet | + PyTorch  | 89.33% | 84.03%  | 86.11% | 76.44% | [weight](https://drive.google.com/drive/folders/1EfaXieZrX36DBnBUh8iIWvuBQSF_jd0o?usp=sharing)
+ 	 	 	 
 
 ## Todo list
 - [ ] Experiments on more medical image datasets 

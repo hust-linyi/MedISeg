@@ -8,13 +8,12 @@ from torch.utils.data import DataLoader
 import albumentations as A
 
 from NetworkTrainer.networks.unet import UNet
-from NetworkTrainer.networks.resunet import ResUNet
+from NetworkTrainer.networks.resunet import ResUNet, ResUNet_ds
 from NetworkTrainer.networks.denseunet import DenseUNet
-from NetworkTrainer.networks.resunet_ds import ResUNet_ds
 from NetworkTrainer.networks.vit_seg_modeling import VisionTransformer as ViT_seg
 from NetworkTrainer.networks.vit_seg_modeling import CONFIGS as CONFIGS_ViT_seg
 
-from NetworkTrainer.dataloaders.dataset import DataFolder
+from NetworkTrainer.dataloaders.dataload import DataFolder
 from NetworkTrainer.utils.util import AverageMeterArray
 from NetworkTrainer.utils.accuracy import compute_metrics
 from NetworkTrainer.utils.post_process import *

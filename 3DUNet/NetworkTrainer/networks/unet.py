@@ -112,3 +112,26 @@ class UNet3D(nn.Module):
         out = self.final(out_up_64)
         # return torch.sigmoid(out)
         return out
+
+
+class UNet3D_ds(UNet3D):
+    def __init__(self,num_classes=1):
+        super(UNet3D_ds, self).__init__()
+        self.seg1 = nn.Conv3d(128, num_classes, kernel_size=1)
+        self.seg2 = nn.Conv3d(256, num_classes, kernel_size=1)
+        self.seg3 = nn.Conv3d(512, num_classes, kernel_size=1)
+
+    def forward(self, x):
+        skip_out64 = self.down_tr64(x)
+        skip_out128 = self.down_tr128(self.maxpool(skip_out64))
+        skip_out256 = self.down_tr256(self.maxpool(skip_out128))
+        out512 = self.down_tr512(self.maxpool(skip_out256))
+
+        out_up_256 = self.up_tr256(out512,skip_out256)
+        out_up_128 = self.up_tr128(out_up_256,skip_out128)
+        out_up_64 = self.up_tr64(out_up_128, skip_out64)
+        out = self.final(out_up_64)
+        out1 = self.seg1(out_up_128)
+        out2 = self.seg2(out_up_256)
+        out3 = self.seg3(out512)
+        return [out, out1, out2, out3]

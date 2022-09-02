@@ -1,4 +1,3 @@
-import imp
 import skimage.morphology as morph
 import numpy as np
 from scipy.ndimage import label
@@ -63,7 +62,6 @@ def abl(image: np.ndarray, for_which_classes: list, volume_per_voxel: float = No
                             largest_removed[c] = object_sizes[object_id]
                         else:
                             largest_removed[c] = max(largest_removed[c], object_sizes[object_id])
-    # return image, largest_removed, kept_size
     return image
 
 
@@ -113,33 +111,32 @@ def rsa(image: np.array, for_which_classes: list, volume_per_voxel: float = None
 
 
 class TTA():
-    def __init__(self, if_tta):
-        # for ISIC, the shape is (b, c, h, w)
-        # for Kit, the shape is (x, y, z)
-        self.if_tta = if_tta
+    def __init__(self, if_flip=False, if_rot=False):
+        self.if_flip = if_flip
+        self.if_rot = if_rot
 
     def img_list(self, img):
+        # for Kit, the shape is (x, y, z)
         out = []
         out.append(img)
-        if not self.if_tta:
-            return out
+        if self.if_flip:
         # apply flip
-        import ipdb; ipdb.set_trace()
-        for i in range(3):
-            out.append(np.flip(img, axis=i))
-        # apply rotation
-        for i in range(1, 4):
-            out.append(np.rot90(img, k=i))
+            for i in range(3):
+                out.append(np.flip(img, axis=i))
+        if self.if_rot:
+            # apply rotation
+            for i in range(3):
+                out.append(np.rot90(img, k=(i+1), axes=(0,1)))
         return out
     
     def img_list_inverse(self, img_list):
+        # for Kit, the shape is (c=3, x, y, z)
         out = [img_list[0]]
-        if not self.if_tta:
-            return img_list
-        # apply flip
-        for i in range(3):
-            out.append(np.flip(img_list[i+1], axis=i))
-        if len(img_list) > 4:
+        if self.if_flip:
+            # apply flip
+            for i in range(3):
+                out.append(np.flip(img_list[i+1], axis=(i+1)))
+        if self.if_rot:
             # apply rotation
             for i in range(3):
                 out.append(np.rot90(img_list[i+4], k=-(i+1), axes=(1,2)))
