@@ -12,7 +12,7 @@
 
 ## Introduction
 <div align="justify">
-The modern MedISeg publications usually focus on presentations of the major contributions while unwittingly ignoring some marginal implementation tricks, leading to a potential problem of the unfair experimental result comparisons. In this paper, we collect a series of MedISeg tricks for different model implementation phases, and experimentally explore the effectiveness of these tricks on the consistent baselines. Compared to the paper-driven surveys that only blandly focus on the advantage and limitation analyses, our work provides a large number of solid experiments and is more technically operable. Witnessed by the extensive experimental results on both the representative 2D and 3D medical image datasets, we explicitly clarify the effect of these tricks.
+The modern MedISeg publications usually focus on presentations of the major contributions while unwittingly ignoring some marginal implementation tricks, leading to a potential problem of the unfair experimental result comparisons. In this work, we collect a series of MedISeg tricks for different model implementation phases, and experimentally explore the effectiveness of these tricks on the consistent baselines. Compared to the paper-driven surveys that only blandly focus on the advantage and limitation analyses, our work provides a large number of solid experiments and is more technically operable. Witnessed by the extensive experimental results on both the representative 2D and 3D medical image datasets, we explicitly clarify the effect of these tricks.
 </div>
 
 [comment]: <> ()
@@ -25,7 +25,7 @@ The surveyed medical image segmentation tricks and their latent relations
 🌻 If you use this toolbox or benchmark in your research, please cite:
 ```
 @article{zhangmediseg2022,
-  title={Bag of Tricks with Convolutional Neural Networks for Medical Image Segmentation},
+  title={Deep Learning for Medical Image Segmentation: Tricks, Challenges and Future Directions},
   author={Zhang, Dong and Lin, Yi and Chen, Hao and Tian, Zhuotao and Yang, Xin and Tang, Jinhui and Cheng, Kwang-Ting},
   journal={arXiv},
   year={2022}
