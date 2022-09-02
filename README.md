@@ -107,20 +107,20 @@ And the commands train/test with various tricks are also provided in  */config/.
 
 ## Visualization
 [comment]: <> ()
-![visualization](figures/result_isic.png)
+![visualization](figures/res_isic.png)
 <div align="center">
 ISIC 2018 
 </div>
 
 [comment]: <> ()
-![visualization](figures/result_conic.png)
+![visualization](figures/res_conic.png)
 <div align="center">
 CoNIC
 </div>
 
 
 [comment]: <> ()
-![visualization](figures/video/2_img.gif)![visualization](figures/video/7_img.gif)![visualization](figures/video/8_img.gif)![visualization](figures/video/41_img.gif)![visualization](figures/video/55_img.gif)![visualization](figures/video/65_img.gif)![visualization](figures/video/75_img.gif)
+![visualization](figures/video/2_img.gif#width-50)![visualization](figures/video/7_img.gif)![visualization](figures/video/8_img.gif)![visualization](figures/video/41_img.gif)![visualization](figures/video/55_img.gif)![visualization](figures/video/65_img.gif)![visualization](figures/video/75_img.gif)
 ![visualization](figures/video/2_label.gif)![visualization](figures/video/7_label.gif)![visualization](figures/video/8_label.gif)![visualization](figures/video/41_label.gif)![visualization](figures/video/55_label.gif)![visualization](figures/video/65_label.gif)![visualization](figures/video/75_label.gif)
 ![visualization](figures/video/2_pred.gif)![visualization](figures/video/7_pred.gif)![visualization](figures/video/8_pred.gif)![visualization](figures/video/41_pred.gif)![visualization](figures/video/55_pred.gif)![visualization](figures/video/65_pred.gif)![visualization](figures/video/75_pred.gif)
 <div align="center">
