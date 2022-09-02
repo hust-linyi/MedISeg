@@ -24,7 +24,7 @@ The surveyed medical image segmentation tricks and their latent relations
 ## Citation
 🌻 If you use this toolbox or benchmark in your research, please cite:
 ```
-@article{zhangbatmis2022,
+@article{zhangmediseg2022,
   title={Bag of Tricks with Convolutional Neural Networks for Medical Image Segmentation},
   author={Zhang, Dong and Lin, Yi and Chen, Hao and Tian, Zhuotao and Yang, Xin and Tang, Jinhui and Cheng, Kwang-Ting},
   journal={arXiv},
@@ -45,10 +45,10 @@ The surveyed medical image segmentation tricks and their latent relations
 - [x] [3D-UNet (MICCAI'2016)](https://arxiv.org/abs/1606.06650)
 
 - **Supported Datasets:**
-- [x] [2D ISIC 2018](https://challenge.isic-archive.com/landing/2018/) 
-- [x] [2D CoNIC](https://conic-challenge.grand-challenge.org/)
-- [x] [3D KiTS19](https://kits19.grand-challenge.org/data/)
-- [x] [3D LiTS](https://competitions.codalab.org/competitions/17094)
+- [x] [ISIC 2018](https://challenge.isic-archive.com/landing/2018/) 
+- [x] [CoNIC](https://conic-challenge.grand-challenge.org/)
+- [x] [KiTS19](https://kits19.grand-challenge.org/data/)
+- [x] [LiTS](https://competitions.codalab.org/competitions/17094)
 
 ## Installation
 - **Option 1:**
@@ -111,11 +111,25 @@ And the commands train/test with various tricks are also provided in  */config/.
 
 Dataset  | Baseline | Method | Recall (%) | Percision (%) |  Dice (%) |  IoU (%) | Weight
 ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | -------------
-[ISIC 2018](https://challenge.isic-archive.com/landing/2018/)  | 2D-UNet | + PyTorch | 88.27%  | 89.86%  | 86.96% | 85.87%  | [weight](https://drive.google.com/drive/folders/1cwvroWLmjQCvRU9qP_kMnlAVnds5wA9u?usp=sharing)
-[CoNIC](https://conic-challenge.grand-challenge.org/)  | 2D-UNet | + PyTorch | 78.12%  | 77.25%   | 77.23% | 77.58% | [weight](https://drive.google.com/drive/folders/1Opk7fSRRj9Llxi5XhU61RIIFS30ip5HI?usp=sharing)
-[KiTS19](https://kits19.grand-challenge.org/data/) | 3D-UNet | + PyTorch  | 92.63% | 92.99%  | 92.42% | 86.43% | [weight](https://drive.google.com/drive/folders/1JjdN0peTGWAWjbjKRUvkGreakdykzlmU?usp=sharing)
-[LiTS17](https://www.kaggle.com/datasets/andrewmvd/liver-tumor-segmentation) | 3D-UNet | + PyTorch  | 89.33% | 84.03%  | 86.11% | 76.44% | [weight](https://drive.google.com/drive/folders/1EfaXieZrX36DBnBUh8iIWvuBQSF_jd0o?usp=sharing)
- 	 	 	 
+[ISIC 2018](https://challenge.isic-archive.com/landing/2018/)  | 2DUNet | -- | 88.18%  | 89.88%  | 86.89% | 85.80%  | [weight](https://drive.google.com/drive/folders/1cwvroWLmjQCvRU9qP_kMnlAVnds5wA9u?usp=sharing)
+[ISIC 2018](https://challenge.isic-archive.com/landing/2018/)  | 2DUNet | + Image-21K | 90.21%  | 91.48%  | 89.38% | 88.00%  | [weight] 
+[ISIC 2018](https://challenge.isic-archive.com/landing/2018/)  | 2DUNet | + GTAug-B | 88.32%  | 91.11%  | 88.07% | 86.98%  | [weight] 
+[ISIC 2018](https://challenge.isic-archive.com/landing/2018/)  | 2DUNet | + CBL(Tvers) | 89.40%  | 90.19%  | 87.87% | 86.42%  | [weight] 
+[ISIC 2018](https://challenge.isic-archive.com/landing/2018/)  | 2DUNet | + TTAGTAug-B | 90.21%  | 90.94%  | 88.94% | 87.59%  | [weight] 
+[ISIC 2018](https://challenge.isic-archive.com/landing/2018/)  | 2DUNet | + EnsAvg | 91.08%  | 89.50%  | 88.52% | 87.21%  | [weight] 
+[CoNIC](https://conic-challenge.grand-challenge.org/)  | 2DUNet | + PyTorch | 78.12%  | 77.25%   | 77.23% | 77.58% | [weight](https://drive.google.com/drive/folders/1Opk7fSRRj9Llxi5XhU61RIIFS30ip5HI?usp=sharing)
+[CoNIC](https://conic-challenge.grand-challenge.org/)  | 2DUNet | + Image-21K | 78.79%  | 79.66%   | 78.75% | 78.91% | [weight]
+[CoNIC](https://conic-challenge.grand-challenge.org/)  | 2DUNet | + GTAug-B | 79.28%  | 82.53%   | 80.33% | 80.35% | [weight]
+[CoNIC](https://conic-challenge.grand-challenge.org/)  | 2DUNet | + TTAGTAug-A | 80.19%  | 80.57%   | 80.00% | 79.86% | [weight]
+[KiTS19](https://kits19.grand-challenge.org/data/) | 3DUNet | + PyTorch  | 91.01% | 95.20%  | 92.50% | 87.35% | [weight](https://drive.google.com/drive/folders/1JjdN0peTGWAWjbjKRUvkGreakdykzlmU?usp=sharing)
+[KiTS19](https://kits19.grand-challenge.org/data/) | 3DUNet | + EnsAvg  | 93.00% | 96.69%  | 94.39% | 90.02% | [weight]
+[LiTS17](https://www.kaggle.com/datasets/andrewmvd/liver-tumor-segmentation) | 3DUNet | + PyTorch  | 89.33% | 84.03%  | 86.11% | 76.44% | [weight](https://drive.google.com/drive/folders/1EfaXieZrX36DBnBUh8iIWvuBQSF_jd0o?usp=sharing)
+[LiTS17](https://www.kaggle.com/datasets/andrewmvd/liver-tumor-segmentation) | 3DUNet | + ModelGe  | 90.54% | 84.66%  | 86.99% | 77.67% | [weight]
+[LiTS17](https://www.kaggle.com/datasets/andrewmvd/liver-tumor-segmentation) | 3DUNet | Patching192  | 93.31% | 95.35%  | 94.08% | 89.18% | [weight]
+[LiTS17](https://www.kaggle.com/datasets/andrewmvd/liver-tumor-segmentation) | 3DUNet | + GTAug-A  | 90.28% | 84.24%  | 86.62% | 76.89% | [weight]
+[LiTS17](https://www.kaggle.com/datasets/andrewmvd/liver-tumor-segmentation) | 3DUNet | + OHEM  | 90.14% | 85.64%  | 87.35% | 78.24% | [weight]
+[LiTS17](https://www.kaggle.com/datasets/andrewmvd/liver-tumor-segmentation) | 3DUNet | + EnsAvg  | 90.21% | 88.39%  | 88.77% | 80.73% | [weight]
+[LiTS17](https://www.kaggle.com/datasets/andrewmvd/liver-tumor-segmentation) | 3DUNet | + ABL-CS  | 89.31% | 87.38%  | 87.79% | 79.13% | [weight]
 
 ## Todo list
 - [ ] Experiments on more medical image datasets 
