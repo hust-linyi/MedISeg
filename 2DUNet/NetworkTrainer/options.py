@@ -16,7 +16,7 @@ class Options:
         """ Parse the options, replace the default value if there is a new input """
         parser = argparse.ArgumentParser(description='')
         parser.add_argument('--dataset', type=str, default='isic2018', help='isic2018 or conic')
-        parser.add_argument('--task', type=str, default='baseline', help='')
+        parser.add_argument('--task', type=str, default='debug', help='')
         parser.add_argument('--fold', type=int, default=0, help='0-4, five fold cross validation')
         parser.add_argument('--name', type=str, default='res50', help='res34, res50, res101, res152')
         parser.add_argument('--pretrained', type=bool, default=False, help='True or False')
@@ -51,8 +51,8 @@ class Options:
         self.dataset = args.dataset
         self.task = args.task
         self.fold = args.fold
-        self.root_dir = '~/Data/ISIC-2018'
-        self.result_dir = f'/Experiment/ISIC-2018/{self.dataset}/'
+        self.root_dir = os.path.expanduser("~") + '/Data/ISIC-2018'
+        self.result_dir = os.path.expanduser("~") + f'/Experiment/ISIC-2018/{self.dataset}/'
         self.model['name'] = args.name
         self.model['pretrained'] = args.pretrained
         self.model['in_c'] = args.in_c
@@ -70,7 +70,7 @@ class Options:
         self.train['seed'] = args.train_seed
         self.train['loss'] = args.train_loss
         self.train['deeps'] = args.train_deeps
-        self.train['gan_aug'] = args.gan_aug
+        self.train['gan_aug'] = args.train_gan_aug
 
         # --- resume training --- #
         self.train['start_epoch'] = args.train_start_epoch
@@ -85,7 +85,7 @@ class Options:
         self.test['rotate'] = args.test_rotate
         self.test['save_dir'] = '{:s}/test_results'.format(self.train['save_dir'])
         if not args.test_model_path:
-            self.test['model_path'] = '{:s}/checkpoints/checkpoint_{:d}.pth.tar'.format(self.test['checkpoint_dir'], self.test['test_epoch'])
+            self.test['model_path'] = '{:s}/checkpoints/checkpoint_{:d}.pth.tar'.format(self.train['save_dir'], self.test['test_epoch'])
 
         # --- post processing --- #
         self.post['abl'] = args.post_abl
@@ -101,10 +101,8 @@ class Options:
     def save_options(self):
         if not os.path.exists(self.train['save_dir']):
             os.makedirs(self.train['save_dir'], exist_ok=True)
-        if not os.path.exists(self.test['checkpoint_dir']):
-            os.makedirs(self.test['checkpoint_dir'], exist_ok=True)
-        if not os.path.exists(self.test['save_dir']):
-            os.makedirs(self.test['save_dir'], exist_ok=True)
+            os.makedirs(os.path.join(self.train['save_dir'], 'test_results'), exist_ok=True)
+            os.makedirs(os.path.join(self.train['save_dir'], 'checkpoints'), exist_ok=True)
 
         if self.isTrain:
             filename = '{:s}/train_options.txt'.format(self.train['save_dir'])

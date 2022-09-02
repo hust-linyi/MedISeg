@@ -1,0 +1,37 @@
+# ---------- Options ---------- #
+dataset: isic2018
+isTrain: True
+
+
+-------- model --------
+name = 'res50'
+pretrained = False
+in_c = 3
+input_size = [256, 256]
+
+
+-------- test --------
+test_epoch = 0
+gpus = [0]
+save_flag = False
+batch_size = 4
+flip = False
+rotate = False
+save_dir = '~/Experiment/ISIC-2018/isic2018//debug/res50/fold_0/test_results'
+model_path = '~/Experiment/ISIC-2018/isic2018//debug/res50/fold_0/test_results/checkpoints/checkpoint_0.pth.tar'
+
+
+-------- transform --------
+train:
+	Resize
+	Normalize
+	ToTensorV2
+val:
+	Resize
+	Normalize
+	ToTensorV2
+
+
+-------- post --------
+abl = False
+rsa = False

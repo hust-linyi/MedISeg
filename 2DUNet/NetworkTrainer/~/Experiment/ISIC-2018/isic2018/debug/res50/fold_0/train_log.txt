@@ -1,0 +1,2 @@
+***** Training starts *****
+save directory: ~/Experiment/ISIC-2018/isic2018//debug/res50/fold_0

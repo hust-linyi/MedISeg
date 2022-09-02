@@ -5,9 +5,14 @@ imageio
 ftfy regex tqdm
 altair
 streamlit
---upgrade protobuf
 timm
-tensorboardX
-matplotlib
 test-tube
 wandb
+tqdm
+numpy 
+thop
+scipy
+rich
+ml_collections
+python-opencv
+pandas
