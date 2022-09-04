@@ -81,7 +81,7 @@ Please download datasets from the official website:
 - [x] LiTS17: [3D Liver Tumor Segmentation 2017 Dataset](https://www.kaggle.com/datasets/andrewmvd/liver-tumor-segmentation)
 
 ## Inference with Pre-trained Models
-Download the trained weights from [here](youtube.com). 
+Download the trained weights from [here](#Model-Zoo). 
 
 Run the following command for 2DUNet:
 ```
