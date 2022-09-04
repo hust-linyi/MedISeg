@@ -134,6 +134,12 @@ LiTS17
 
 ## Model Zoo
 
+- Since our Google space is very limited, here we only provide a part of the weight links. 
+
+- In each 5-fold cross-validation, here we only release a weight with a higher performance.
+
+- The full weights can be downloaded [here](https://github.com/hust-linyi/MedISeg)
+
 Training weights on ISIC 2018:
 
 Dataset  | Baseline | Method | Recall (%) | Percision (%) |  Dice (%) |  IoU (%) | Weight
