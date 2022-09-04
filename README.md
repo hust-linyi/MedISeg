@@ -57,20 +57,18 @@ pip install -r requirements.txt
 ```
 - **Option 2:** 
 ```python
-conda install ipython
 pip install albumentations
-pip install torch
+pip install ml_collections
+pip install numpy 
 pip install opencv-python
-pip install imageio
-pip install ftfy regex tqdm
-pip install altair
-pip install streamlit
-pip install --upgrade protobuf
+pip install pandas
+pip install rich
+pip install SimpleITK
 pip install timm
-pip install tensorboardX
-pip install matplotlib
-pip install test-tube
-pip install wandb
+pip install torch
+pip install tqdm
+pip install nibabel
+pip install medpy
 ```
 
 ## Data Preparation
@@ -106,6 +104,33 @@ Run the following command for 3DUNet:
 sh 3DUNet/config/baseline.sh
 ```
 And the commands train/test with various tricks are also provided in  */config/. For the details of the segmentation tricks, please refer to the paper.
+
+## Visualization
+From top to bottom: raw image, ground truth, prediction.
+
+[comment]: <> ()
+![visualization](figures/res_isic.png)
+<div align="center">
+ISIC 2018 
+</div>
+
+[comment]: <> ()
+![visualization](figures/res_conic.png)
+<div align="center">
+CoNIC
+</div>
+
+[comment]: <> ()
+![visualization](figures/res_kits19.gif)
+<div align="center">
+KiTS19
+</div>
+
+[comment]: <> ()
+![visualization](figures/res_lits17.gif)
+<div align="center">
+LiTS17
+</div>
 
 ## Model Zoo
 
