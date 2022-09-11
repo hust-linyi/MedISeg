@@ -79,7 +79,7 @@ Please download datasets from the official website:
 - [x] LiTS17: [3D Liver Tumor Segmentation 2017 Dataset](https://www.kaggle.com/datasets/andrewmvd/liver-tumor-segmentation)
 
 ## Inference with Pre-trained Models
-Download the trained weights from [here](youtube.com). 
+Download the trained weights from [Model Zoo](#Model-Zoo). 
 
 Run the following command for 2DUNet:
 ```
@@ -133,6 +133,12 @@ LiTS17
 </div>
 
 ## Model Zoo
+
+- Since our Google space is very limited, here we only provide a part of the weight links. 
+
+- In each 5-fold cross-validation, here we only release a weight with a higher performance.
+
+- The full weights can be downloaded [Baidu Netdisk](https://github.com/hust-linyi/MedISeg)
 
 Training weights on ISIC 2018:
 
