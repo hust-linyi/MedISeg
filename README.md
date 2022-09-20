@@ -144,42 +144,43 @@ Training weights on ISIC 2018:
 
 Dataset  | Baseline | Method | Recall (%) | Percision (%) |  Dice (%) |  IoU (%) | Weight
 ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | -------------
-[ISIC 2018](https://challenge.isic-archive.com/landing/2018/)  | 2DUNet | PyTorch | 88.18%  | 89.88%  | 86.89% | 85.80%  | [weight](https://drive.google.com/drive/folders/1cwvroWLmjQCvRU9qP_kMnlAVnds5wA9u?usp=sharing)
-[ISIC 2018](https://challenge.isic-archive.com/landing/2018/)  | 2DUNet | + Image-21K | 90.21%  | 91.48%  | 89.38% | 88.00%  | [weight] 
-[ISIC 2018](https://challenge.isic-archive.com/landing/2018/)  | 2DUNet | + GTAug-B | 88.32%  | 91.11%  | 88.07% | 86.98%  | [weight] 
-[ISIC 2018](https://challenge.isic-archive.com/landing/2018/)  | 2DUNet | + CBL(Tvers) | 89.40%  | 90.19%  | 87.87% | 86.42%  | [weight] 
-[ISIC 2018](https://challenge.isic-archive.com/landing/2018/)  | 2DUNet | + TTAGTAug-B | 90.21%  | 90.94%  | 88.94% | 87.59%  | [weight] 
-[ISIC 2018](https://challenge.isic-archive.com/landing/2018/)  | 2DUNet | + EnsAvg | 91.08%  | 89.50%  | 88.52% | 87.21%  | [weight] 
+[ISIC 2018](https://challenge.isic-archive.com/landing/2018/)  | 2DUNet | PyTorch | 88.37% |	91.41% |	88.17% |	86.66% | [weight](https://drive.google.com/drive/folders/1IdWfJG2xC_OiVxSFlwEZBdQuFAMWKilW?usp=sharing)
+[ISIC 2018](https://challenge.isic-archive.com/landing/2018/)  | 2DUNet | + Image-21K | 90.06% |	92.64% |	90.07% |	88.44% | [weight](https://drive.google.com/drive/folders/1yrNhgoEWLCC--vrQpmwvFOfe_jq4qc59?usp=sharing) 
+[ISIC 2018](https://challenge.isic-archive.com/landing/2018/)  | 2DUNet | + GTAug-B | 88.46% |	93.22% |	89.19% |	87.68% | [weight](https://drive.google.com/drive/folders/1WQxMGWl4shCvMxqBPc8kbr5Vry7Z20ba?usp=sharing)
+[ISIC 2018](https://challenge.isic-archive.com/landing/2018/)  | 2DUNet | + CBL(Tvers) | 89.93% |	90.47% |	88.53% |	86.72% | [weight](https://drive.google.com/drive/folders/1WQxMGWl4shCvMxqBPc8kbr5Vry7Z20ba?usp=sharing) 
+[ISIC 2018](https://challenge.isic-archive.com/landing/2018/)  | 2DUNet | + TTAGTAug-B | 89.74% |	92.40% |	89.61% |	88.14% | -
+[ISIC 2018](https://challenge.isic-archive.com/landing/2018/)  | 2DUNet | + EnsAvg | 90.80% |	90.88% |	89.32% |	87.72% | [weight](https://drive.google.com/drive/folders/1WQxMGWl4shCvMxqBPc8kbr5Vry7Z20ba?usp=sharing)
 
 
 Training weights on CoNIC:
 
 Dataset  | Baseline | Method | Recall (%) | Percision (%) |  Dice (%) |  IoU (%) | Weight
 ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | -------------
-[CoNIC](https://conic-challenge.grand-challenge.org/)  | 2DUNet | PyTorch | 78.12%  | 77.25%   | 77.23% | 77.58% | [weight](https://drive.google.com/drive/folders/1Opk7fSRRj9Llxi5XhU61RIIFS30ip5HI?usp=sharing)
-[CoNIC](https://conic-challenge.grand-challenge.org/)  | 2DUNet | + Image-21K | 78.79%  | 79.66%   | 78.75% | 78.91% | [weight]
-[CoNIC](https://conic-challenge.grand-challenge.org/)  | 2DUNet | + GTAug-B | 79.28%  | 82.53%   | 80.33% | 80.35% | [weight]
-[CoNIC](https://conic-challenge.grand-challenge.org/)  | 2DUNet | + TTAGTAug-A | 80.19%  | 80.57%   | 80.00% | 79.86% | [weight]
+[CoNIC](https://conic-challenge.grand-challenge.org/)  | 2DUNet | PyTorch | 77.76% |	74.71% |	75.76% |	77.17% | [weight](https://drive.google.com/drive/folders/1bbezwI6GPvncD74SrWTYFkNsc2qXHQu7?usp=sharing)
+[CoNIC](https://conic-challenge.grand-challenge.org/)  | 2DUNet | + Image-21K | 80.59% |	76.71% |	78.25% |	79.14% | [weight](https://drive.google.com/drive/folders/1M7wxlR6Hq1T61CMYu4pZYauUwOFXc2iN?usp=sharing)
+[CoNIC](https://conic-challenge.grand-challenge.org/)  | 2DUNet | + GTAug-B | 81.23% |	80.57% |	80.53% |	81.02% | [weight](https://drive.google.com/drive/folders/1BndVGRwz-QHYlrXuCY-t9l3zYoDgHdNM?usp=sharing)
+[CoNIC](https://conic-challenge.grand-challenge.org/)  | 2DUNet | + TTAGTAug-A | 80.22% |	79.29% |	79.28% |	79.98% | -
 
 
 Training weights on KiTS19:
 
 Dataset  | Baseline | Method | Recall (%) | Percision (%) |  Dice (%) |  IoU (%) | Weight
 ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | -------------
-[KiTS19](https://kits19.grand-challenge.org/data/) | 3DUNet | PyTorch  | 91.01% | 95.20%  | 92.50% | 87.35% | [weight](https://drive.google.com/drive/folders/1JjdN0peTGWAWjbjKRUvkGreakdykzlmU?usp=sharing)
-[KiTS19](https://kits19.grand-challenge.org/data/) | 3DUNet | + EnsAvg  | 93.00% | 96.69%  | 94.39% | 90.02% | [weight]
+[KiTS19](https://kits19.grand-challenge.org/data/) | 3DUNet | PyTorch  | 93.69% |	95.28% |	94.32% |	89.44% | [weight](https://drive.google.com/drive/folders/1JjdN0peTGWAWjbjKRUvkGreakdykzlmU?usp=sharing)
+[KiTS19](https://kits19.grand-challenge.org/data/) | 3DUNet | + EnsAvg  | 94.46% |	96.29% |	95.27% |	91.09% | [weight](https://drive.google.com/drive/folders/1lgmcqNzGZDJgcz44pLQ318sz7b2Hl1LS?usp=sharing)
 
 Training weights on LiTS17:
 
 Dataset  | Baseline | Method | Recall (%) | Percision (%) |  Dice (%) |  IoU (%) | Weight
 ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | -------------
-[LiTS17](https://www.kaggle.com/datasets/andrewmvd/liver-tumor-segmentation) | 3DUNet | PyTorch  | 89.33% | 84.03%  | 86.11% | 76.44% | [weight](https://drive.google.com/drive/folders/1EfaXieZrX36DBnBUh8iIWvuBQSF_jd0o?usp=sharing)
-[LiTS17](https://www.kaggle.com/datasets/andrewmvd/liver-tumor-segmentation) | 3DUNet | + ModelGe  | 90.54% | 84.66%  | 86.99% | 77.67% | [weight]
-[LiTS17](https://www.kaggle.com/datasets/andrewmvd/liver-tumor-segmentation) | 3DUNet | Patching192  | 93.31% | 95.35%  | 94.08% | 89.18% | [weight]
-[LiTS17](https://www.kaggle.com/datasets/andrewmvd/liver-tumor-segmentation) | 3DUNet | + GTAug-A  | 90.28% | 84.24%  | 86.62% | 76.89% | [weight]
-[LiTS17](https://www.kaggle.com/datasets/andrewmvd/liver-tumor-segmentation) | 3DUNet | + OHEM  | 90.14% | 85.64%  | 87.35% | 78.24% | [weight]
-[LiTS17](https://www.kaggle.com/datasets/andrewmvd/liver-tumor-segmentation) | 3DUNet | + EnsAvg  | 90.21% | 88.39%  | 88.77% | 80.73% | [weight]
-[LiTS17](https://www.kaggle.com/datasets/andrewmvd/liver-tumor-segmentation) | 3DUNet | + ABL-CS  | 89.31% | 87.38%  | 87.79% | 79.13% | [weight]
+[LiTS17](https://www.kaggle.com/datasets/andrewmvd/liver-tumor-segmentation) | 3DUNet | PyTorch  | 93.66% |	82.08% |	87.00% |	77.37% | [weight](https://drive.google.com/drive/folders/1vgPJX4ISO-N8qi2y9RrwJHW3_hGGMYfR?usp=sharing)
+[LiTS17](https://www.kaggle.com/datasets/andrewmvd/liver-tumor-segmentation) | 3DUNet | + ModelGe  | 92.98% |	80.80% |	85.89% |	75.63% | [weight](https://drive.google.com/drive/folders/1dapMlJDTRZgsRtXkPqWJzs83YVUlDpLE?usp=sharing)
+[LiTS17](https://www.kaggle.com/datasets/andrewmvd/liver-tumor-segmentation) | 3DUNet | Patching192  | 95.33% |	94.67% |	94.87% |	90.40% | [weight](https://drive.google.com/drive/folders/1iqCeI9YIW7-UA2i3P93hiBGo2I8nN9N5?usp=sharing)
+[LiTS17](https://www.kaggle.com/datasets/andrewmvd/liver-tumor-segmentation) | 3DUNet | + GTAug-A  | 92.08% |	73.40% |	81.15% |	68.71% | [weight](https://drive.google.com/drive/folders/1fyT4l04mZ3I9ADm9A38tDw_fUVa3LJX-?usp=sharing)
+[LiTS17](https://www.kaggle.com/datasets/andrewmvd/liver-tumor-segmentation) | 3DUNet | + OHEM  | 92.50% |	82.78% |	86.81% |	77.12% | [weight](https://drive.google.com/drive/folders/1gR_y_7nVzm0vUAXavlSUrzTnu3R2DLXF?usp=sharing)
+[LiTS17](https://www.kaggle.com/datasets/andrewmvd/liver-tumor-segmentation) | 3DUNet | + EnsAvg  | 92.10% |	87.21% |	89.07% |	80.70% | [weight](https://drive.google.com/drive/folders/1nLWZ3EcqIGpe9KFhHKBPld4Jn6O7YDrv?usp=sharing)
+[LiTS17](https://www.kaggle.com/datasets/andrewmvd/liver-tumor-segmentation) | 3DUNet | + ABL-CS  | 93.65% |	84.97% |	88.60% |	80.01% | -
+
 
 ## Todo list
 - [ ] Experiments on more datasets 
