@@ -22,7 +22,7 @@ The surveyed medical image segmentation tricks and their latent relations
 </div>
 
 ## Citation
-🌻 If you use this toolbox or benchmark in your research, please cite [MedISeg](https://github.com/hust-linyi/MedISeg):
+🌻 If you use this toolbox or benchmark in your research, please cite [MedISeg](https://arxiv.org/abs/2209.10307):
 ```
 @article{zhangmediseg2022,
   title={Deep Learning for Medical Image Segmentation: Tricks, Challenges and Future Directions},
