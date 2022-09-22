@@ -10,9 +10,11 @@
 
 </div>
 
-This is an official implementation for paper [MedISeg](https://arxiv.org/abs/2209.10307)
 
-Here is a brief introduction on [知乎](https://zhuanlan.zhihu.com/p/566993442) 
+🌻 This is an official implementation for paper [MedISeg](https://arxiv.org/abs/2209.10307)
+
+🌻 Here is a brief introduction on [知乎](https://zhuanlan.zhihu.com/p/566993442) 
+
 
 ## Introduction
 <div align="justify">
