@@ -10,6 +10,10 @@
 
 </div>
 
+This is an official implementation for paper [MedISeg](https://arxiv.org/abs/2209.10307)
+
+Here is a brief introduction on [知乎](https://zhuanlan.zhihu.com/p/566993442) 
+
 ## Introduction
 <div align="justify">
 In this paper, we collect a series of MedISeg tricks for different model implementation phases (i.e., pre-training model, data pre-processing, data augmentation, model implementation, model inference, and result post-processing), and experimentally explore the effectiveness of these tricks on the consistent baseline models. Compared to paper-driven surveys that only blandly focus on the advantages and limitation analyses of segmentation models, our work provides a large number of solid experiments and is more technically operable. With the extensive experimental results on both the representative 2D and 3D medical image datasets, we explicitly clarify the effect of these tricks.
@@ -22,7 +26,7 @@ The surveyed medical image segmentation tricks and their latent relations
 </div>
 
 ## Citation
-🌻 If you use this toolbox or benchmark in your research, please cite [MedISeg](https://arxiv.org/abs/2209.10307):
+🌻 If you use this toolbox or benchmark in your research, please cite:
 ```
 @article{zhangmediseg2022,
   title={Deep Learning for Medical Image Segmentation: Tricks, Challenges and Future Directions},
