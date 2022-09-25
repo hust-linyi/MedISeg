@@ -47,7 +47,7 @@ The surveyed medical image segmentation tricks and their latent relations
 - [x] [ViT (ICLR'2021)](https://arxiv.org/abs/2010.11929)
 
 - **Supported Methods:**
-- [x] [2D-UNet (MICCAI'2016)](https://arxiv.org/abs/1505.04597)
+- [x] [2D-UNet (MICCAI'2015)](https://arxiv.org/abs/1505.04597)
 - [x] [3D-UNet (MICCAI'2016)](https://arxiv.org/abs/1606.06650)
 
 - **Supported Datasets:**
@@ -58,11 +58,11 @@ The surveyed medical image segmentation tricks and their latent relations
 
 ## Installation
 - **Option 1:**
-```python
+```
 pip install -r requirements.txt
 ```
 - **Option 2:** 
-```python
+```
 pip install albumentations
 pip install ml_collections
 pip install numpy 
@@ -144,7 +144,7 @@ LiTS17
 
 - In each 5-fold cross-validation, here we only release a weight with a higher performance.
 
-- The full weights can be downloaded [Baidu Netdisk](https://github.com/hust-linyi/MedISeg)
+- The full weights can be downloaded from [Baidu Netdisk](https://github.com/hust-linyi/MedISeg).
 
 Training weights on ISIC 2018:
 
