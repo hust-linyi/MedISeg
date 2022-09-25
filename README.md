@@ -144,7 +144,7 @@ LiTS17
 
 - In each 5-fold cross-validation, here we only release a weight with a higher performance.
 
-- The full weights can be downloaded from [Baidu Netdisk](https://github.com/hust-linyi/MedISeg).
+- The full weights can be downloaded from [Baidu Netdisk](https://pan.baidu.com/s/16YAZrN1lY0JmTMkJjLUwbQ?pwd=bi33).
 
 Training weights on ISIC 2018:
 
