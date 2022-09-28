@@ -12,7 +12,7 @@ model_urls = {
     'res50': 'https://download.pytorch.org/models/resnet50-19c8e357.pth',
     'res50_1k': 'https://dl.fbaipublicfiles.com/semiweaksupervision/model_files/semi_weakly_supervised_resnet50-16a12f1b.pth',    
     'res50_21k': 'https://miil-public-eu.oss-eu-central-1.aliyuncs.com/model-zoo/ImageNet_21K_P/models/resnet50_miil_21k.pth',
-    'res50_moco': 'moco_v2_800ep_pretrain.pth.tar',
+    'res50_moco': 'https://dl.fbaipublicfiles.com/moco/moco_checkpoints/moco_v2_800ep/moco_v2_800ep_pretrain.pth.tar',
     'res50_simclr': 'checkpoint_0040.pth.tar',
     'res101': 'https://download.pytorch.org/models/resnet101-5d3b4d8f.pth',
     'resnet152': 'https://download.pytorch.org/models/resnet152-b121ed2d.pth',
