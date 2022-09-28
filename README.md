@@ -30,10 +30,10 @@ The surveyed medical image segmentation tricks and their latent relations
 ## Citation
 🌻 If you use this toolbox or benchmark in your research, please cite:
 ```
-@article{zhangmediseg2022,
+@article{zhang2022deep,
   title={Deep Learning for Medical Image Segmentation: Tricks, Challenges and Future Directions},
-  author={Zhang, Dong and Lin, Yi and Chen, Hao and Tian, Zhuotao and Yang, Xin and Tang, Jinhui and Cheng, Kwang-Ting},
-  journal={arXiv},
+  author={Zhang, Dong and Lin, Yi and Chen, Hao and Tian, Zhuotao and Yang, Xin and Tang, Jinhui and Cheng, Kwang Ting},
+  journal={arXiv preprint arXiv:2209.10307},
   year={2022}
 }
 ```
