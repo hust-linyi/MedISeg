@@ -32,7 +32,7 @@ class DataFolder(Dataset):
         self.gan_aug = gan_aug
         self.phase = phase
         self.fold = fold
-        self.image_list = self.get_imglist(self.root_dir, self.fold, self.phase)
+        self.image_list = get_imglist(self.root_dir, self.fold, self.phase)
         print(f"total {len(self.image_list)} samples for {phase}")
 
     def __len__(self):
