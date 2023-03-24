@@ -51,7 +51,7 @@ class Options:
         self.dataset = args.dataset
         self.task = args.task
         self.fold = args.fold
-        self.root_dir = os.path.expanduser("~") + '/Data/ISIC-2018'
+        self.root_dir = os.path.expanduser("~") + '/DATA/ISIC-2018'
         self.result_dir = os.path.expanduser("~") + f'/Experiment/ISIC-2018/{self.dataset}/'
         self.model['name'] = args.name
         self.model['pretrained'] = args.pretrained

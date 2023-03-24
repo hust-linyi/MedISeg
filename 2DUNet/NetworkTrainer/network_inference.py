@@ -100,7 +100,7 @@ class NetworkInference:
                 metrics = compute_metrics(pred[j], gt[j], metric_names)
                 if metrics[metric_names[0]] == -1:
                     continue
-                print(f"{name[j]}: {metrics[2]}")
+                # print(f"{name[j]}: {metrics[2]}")
                 all_result.update([metrics[metric_name] for metric_name in metric_names])
                 if self.opt.test['save_flag']:
                     imageio.imwrite(os.path.join(self.opt.test['save_dir'], 'img', f'{name[j]}_pred.png'), (pred[j] * 255).astype(np.uint8))

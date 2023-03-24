@@ -12,6 +12,7 @@ from os.path import join as pjoin
 import torch
 import torch.nn as nn
 import numpy as np
+from torch.hub import load_state_dict_from_url
 
 from torch.nn import CrossEntropyLoss, Dropout, Softmax, Linear, Conv2d, LayerNorm
 from torch.nn.modules.utils import _pair
@@ -31,6 +32,16 @@ FC_0 = "MlpBlock_3/Dense_0"
 FC_1 = "MlpBlock_3/Dense_1"
 ATTENTION_NORM = "LayerNorm_0"
 MLP_NORM = "LayerNorm_2"
+
+model_urls = {
+    'ViT-B_16_mae': 'https://dl.fbaipublicfiles.com/mae/pretrain/mae_pretrain_vit_base.pth',
+    'ViT-B_32_mae': 'https://dl.fbaipublicfiles.com/mae/pretrain/mae_pretrain_vit_base.pth',
+    'ViT-L_16_mae': 'https://dl.fbaipublicfiles.com/mae/pretrain/mae_pretrain_vit_large.pth',
+    'ViT-L_32_mae': 'https://dl.fbaipublicfiles.com/mae/pretrain/mae_pretrain_vit_large.pth',
+    'ViT-H_14_mae': 'https://dl.fbaipublicfiles.com/mae/pretrain/mae_pretrain_vit_huge.pth',
+    'ViT-B_16_mocov3': 'https://dl.fbaipublicfiles.com/moco-v3/vit-b-300ep/vit-b-300ep.pth.tar',
+    'ViT-B_32_mocov3': 'https://dl.fbaipublicfiles.com/moco-v3/vit-b-300ep/vit-b-300ep.pth.tar'
+}
 
 
 def np2th(weights, conv=False):
@@ -439,6 +450,35 @@ class VisionTransformer(nn.Module):
                     for uname, unit in block.named_children():
                         unit.load_from(res_weight, n_block=bname, n_unit=uname)
 
+
+def load_pretrained(model, options):
+    if options.model['pretrained']:
+        assert options.model['name'] in model_urls, "=> no checkpoint found at '{}'".format(options.model['name'])
+        print("=> using pre-trained model '{}'".format(options.model['name']))
+        weights = load_state_dict_from_url(model_urls[options.model['name']], progress=True)
+        # model.load_from(weights)
+        if 'model' not in weights.keys():
+            weights['model'] = weights['state_dict']
+            del weights['state_dict']
+        for k in list(weights['model'].keys()):
+            if k.startswith('module.base_encoder') and not k.startswith('module.base_encoder.head'):
+                # remove prefix
+                weights['model'][k[len("module.base_encoder."):]] = weights['model'][k]
+                del weights['model'][k]
+        checkpoint_model = weights['model']
+        state_dict = model.state_dict()
+        for k in ['head.weight', 'head.bias']:
+            if k in checkpoint_model and checkpoint_model[k].shape != state_dict[k].shape:
+                print(f"Removing key {k} from pretrained checkpoint")
+                del checkpoint_model[k]
+
+        # load pre-trained model
+        model.load_state_dict(checkpoint_model, strict=False)
+    else:
+        print("=> Training from scratch")
+    return model
+
+
 CONFIGS = {
     'ViT-B_16': configs.get_b16_config(),
     'ViT-B_32': configs.get_b32_config(),
@@ -448,6 +488,13 @@ CONFIGS = {
     'R50-ViT-B_16': configs.get_r50_b16_config(),
     'R50-ViT-L_16': configs.get_r50_l16_config(),
     'testing': configs.get_testing(),
+    'ViT-B_16_mae': configs.get_b16_config(), # for mae
+    'ViT-B_32_mae': configs.get_b32_config(), # for mae
+    'ViT-L_16_mae': configs.get_l16_config(), # for mae
+    'ViT-L_32_mae': configs.get_l32_config(), # for mae
+    'ViT-H_14_mae': configs.get_h14_config(), # for mae
+    'ViT-B_16_mocov3': configs.get_b16_config(), # for moco v3
+    'ViT-B_32_mocov3': configs.get_b32_config(), # for moco v3
 }
 
 

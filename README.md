@@ -84,6 +84,8 @@ Please download datasets from the official website:
 - [x] KiTS19: [3D Kidney Tumor Segmentation 2019 Dataset](https://kits19.grand-challenge.org/data/)
 - [x] LiTS17: [3D Liver Tumor Segmentation 2017 Dataset](https://www.kaggle.com/datasets/andrewmvd/liver-tumor-segmentation)
 
+The data preparation code is provided in "*/NetworkTrainer/dataloaders/data_prepare.py" for both 2D and 3D datasets.
+
 ## Inference with Pre-trained Models
 Download the trained weights from [Model Zoo](#Model-Zoo). 
 
@@ -199,6 +201,8 @@ Dataset  | Baseline | Method | Recall (%) | Percision (%) |  Dice (%) |  IoU (%)
 
 
 ## Announcements
+🌻 Some codes are borrowed from [nnUNet](https://github.com/MIC-DKFZ/nnUNet) and [TransUNet](https://github.com/Beckschen/TransUNet), thanks for their great work.
+
 🌻 We welcome more like-minded friends to join in this project and continue to expand this storage
 
 🌻 If you have any suggestions or comments please let us know

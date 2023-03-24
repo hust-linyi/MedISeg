@@ -2,7 +2,7 @@
 GPU=0
 MAX_FOLD=4
 SEED=2022 # In our exepriment, we use different seed for enesmble, i.e, from 2022 to 2026.
-cd /home/ylindq/CODE/seg_trick/3DUNet/ensembleinit
+cd ../NetworkTrainer/ensembleinit
 
 # FOLD 0-4
 for fold_id in $(seq 0 1 $MAX_FOLD)
