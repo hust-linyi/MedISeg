@@ -32,7 +32,7 @@ class NetworkInference:
                 self.net = ResUNet_ds(net=self.opt.model['name'], seg_classes=2, colour_classes=3, pretrained=self.opt.model['pretrained'])
         elif 'dense' in self.opt.model['name']:
             self.net = DenseUNet(net=self.opt.model['name'], seg_classes=2)
-        elif 'trans' in self.opt.model['name']:
+        elif 'ViT' in self.opt.model['name']:
             config_vit = CONFIGS_ViT_seg[self.opt.model['name']]
             config_vit.n_classes = 2
             config_vit.n_skip = 4
