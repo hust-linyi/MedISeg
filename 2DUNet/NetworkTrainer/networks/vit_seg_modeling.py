@@ -325,6 +325,70 @@ class DecoderBlock(nn.Module):
         x = self.conv2(x)
         return x
 
+class NaiveDecoderBlock(nn.Module):
+    def __init__(
+            self,
+            in_channels,
+            mid_channels,
+            out_channels,
+            skip_channels=0,
+            use_batchnorm=True,
+    ):
+        super().__init__()
+        self.conv1 = Conv2dReLU(
+            in_channels + skip_channels,
+            mid_channels,
+            kernel_size=1,
+            padding=0,
+            use_batchnorm=use_batchnorm,
+        )
+        self.conv2 = nn.Conv2d(mid_channels,
+                               out_channels,
+                                kernel_size=1,
+                                padding=0,
+        )
+
+        self.up = nn.UpsamplingBilinear2d(scale_factor=16)
+
+    def forward(self, x):
+
+
+        x = self.conv1(x)
+        x = self.conv2(x)
+        x = self.up(x)
+        return x
+
+class NaiveDecoder(nn.Module):
+    def __init__(self, config):
+        super().__init__()
+        self.config = config
+        head_channels = 512
+        self.conv_more = Conv2dReLU(
+            config.hidden_size,
+            head_channels,
+            kernel_size=3,
+            padding=1,
+            use_batchnorm=True,
+        )
+
+        in_channels = 512
+        mid_channels = 128
+        out_channels = 16
+
+        self.block = NaiveDecoderBlock(in_channels,
+                                       mid_channels,
+                                       out_channels,
+        )
+
+
+    def forward(self, hidden_states):
+        B, n_patch, hidden = hidden_states.size()  # reshape from (B, n_patch, hidden) to (B, h, w, hidden)
+        h, w = int(np.sqrt(n_patch)), int(np.sqrt(n_patch))
+        x = hidden_states.permute(0, 2, 1)
+        x = x.contiguous().view(B, hidden, h, w)
+        x = self.conv_more(x)
+        x = self.block(x)
+        return x
 
 class SegmentationHead(nn.Sequential):
 
@@ -386,6 +450,7 @@ class VisionTransformer(nn.Module):
         self.classifier = config.classifier
         self.transformer = Transformer(config, img_size, vis)
         self.decoder = DecoderCup(config)
+        #self.decoder = NaiveDecoder(config)
         self.segmentation_head = SegmentationHead(
             in_channels=config['decoder_channels'][-1],
             out_channels=config['n_classes'],
