@@ -38,6 +38,22 @@ class DiceLoss(nn.Module):
         dice = 1 - (intersection / union)
         return dice.mean()
 
+class IOUloss(nn.Module):
+    def __init__(self,weight=None):
+        super(IOUloss,self).__init__()
+        self.weight = weight
+
+    def forward(self,y_pred,y_true):
+        axis = identify_axis(y_pred.shape)
+        y_pred = nn.Softmax(dim=1)(y_pred)
+        if self.weight is not None:
+            self.weight = self.weight.to(y_pred.device)
+        tp, fp, fn, _ = get_tp_fp_fn_tn(y_pred, y_true, axis)
+        inter = tp
+        union = 2 * tp + fp + fn
+        iou = 1 - (inter + 1) / (union - inter + 1)
+        return iou.mean()
+
 
 # taken from https://github.com/JunMa11/SegLoss/blob/master/test/nnUNetV2/loss_functions/focal_loss.py
 class FocalLoss(nn.Module):
@@ -177,7 +193,7 @@ def to_onehot(y_pred, y_true):
 
 
 
-def get_tp_fp_fn_tn(net_output, gt, axes=None, square=False):
+def get_tp_fp_fn_tn(net_output, gt, axes=None, square=False, weight=None):
     """
     net_output must be (b, c, x, y(, z)))
     gt must be a label map (shape (b, 1, x, y(, z)) OR shape (b, x, y(, z))) or one hot encoding (b, c, x, y(, z))
@@ -191,10 +207,12 @@ def get_tp_fp_fn_tn(net_output, gt, axes=None, square=False):
 
     y_onehot = to_onehot(net_output, gt)
 
-    tp = net_output * y_onehot
-    fp = net_output * (1 - y_onehot)
-    fn = (1 - net_output) * y_onehot
-    tn = (1 - net_output) * (1 - y_onehot)
+    if weight is None:
+        weight = torch.ones(net_output.shape).to(net_output.device)
+    tp = net_output * y_onehot*weight
+    fp = net_output * (1 - y_onehot)*weight
+    fn = (1 - net_output) * y_onehot*weight
+    tn = (1 - net_output) * (1 - y_onehot)*weight
 
     if square:
         tp = tp ** 2
