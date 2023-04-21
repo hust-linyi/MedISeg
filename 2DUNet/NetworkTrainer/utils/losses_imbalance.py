@@ -39,19 +39,19 @@ class DiceLoss(nn.Module):
         return dice.mean()
 
 class IOUloss(nn.Module):
-    def __init__(self,weight=None):
+    def __init__(self,smooth):
         super(IOUloss,self).__init__()
-        self.weight = weight
+        self.smooth = smooth
 
-    def forward(self,y_pred,y_true):
+    def forward(self,y_pred,y_true,weight=None):
         axis = identify_axis(y_pred.shape)
         y_pred = nn.Softmax(dim=1)(y_pred)
-        if self.weight is not None:
-            self.weight = self.weight.to(y_pred.device)
-        tp, fp, fn, _ = get_tp_fp_fn_tn(y_pred, y_true, axis)
+        if weight is not None:
+            weight = weight.to(y_pred.device)
+        tp, fp, fn, _ = get_tp_fp_fn_tn(y_pred, y_true, axis,weight=weight)
         inter = tp
         union = 2 * tp + fp + fn
-        iou = 1 - (inter + 1) / (union - inter + 1)
+        iou = 1 - (inter + self.smooth) / (union - inter + self.smooth)
         return iou.mean()
 
 
@@ -208,7 +208,7 @@ def get_tp_fp_fn_tn(net_output, gt, axes=None, square=False, weight=None):
     y_onehot = to_onehot(net_output, gt)
 
     if weight is None:
-        weight = torch.ones(net_output.shape).to(net_output.device)
+        weight = 1
     tp = net_output * y_onehot*weight
     fp = net_output * (1 - y_onehot)*weight
     fn = (1 - net_output) * y_onehot*weight
