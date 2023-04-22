@@ -95,6 +95,7 @@ class Options:
         self.transform['train'] = get_transform(self, 'train')
         self.transform['val'] = get_transform(self, 'val')
         self.transform['test'] = get_transform(self, 'test')
+        return parser
 
 
 
