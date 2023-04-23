@@ -22,6 +22,27 @@ class CELoss(nn.Module):
         return loss(y_pred, y_true)
 
 
+class WCELoss(nn.Module):
+    """
+    This loss function is a pixel-wise cross entropy loss which means it assigns different
+    weight to different pixels. It allows us to pay more attention to hard pixels.
+    Reference: https://arxiv.org/abs/1911.11445
+
+    """
+    def __init__(self,reduction="mean"):
+        super().__init__()
+        self.reduction = reduction
+    
+    def forward(self,y_pred,y_true,weight=None):
+        y_true = y_true.long()
+        if weight is None:
+            weight = 1
+        if len(y_true.shape) == 5:
+            y_true = y_true[:, 0, ...]
+        loss = nn.CrossEntropyLoss(reduction=self.reduction)
+        return loss(y_pred,y_true)*weight
+        
+
 class DiceLoss(nn.Module):
     def __init__(self, smooth=1e-8):
         super(DiceLoss, self).__init__()
@@ -37,6 +58,7 @@ class DiceLoss(nn.Module):
         union = 2 * tp + fp + fn + self.smooth
         dice = 1 - (intersection / union)
         return dice.mean()
+
 
 class IOUloss(nn.Module):
     def __init__(self,smooth):
