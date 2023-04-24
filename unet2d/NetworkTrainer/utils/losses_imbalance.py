@@ -29,18 +29,17 @@ class WCELoss(nn.Module):
     Reference: https://arxiv.org/abs/1911.11445
 
     """
-    def __init__(self,reduction="mean"):
+    def __init__(self):
         super().__init__()
-        self.reduction = reduction
     
     def forward(self,y_pred,y_true,weight=None):
         y_true = y_true.long()
         if weight is None:
             weight = 1
-        if len(y_true.shape) == 5:
+        if len(y_true.shape) == 4:
             y_true = y_true[:, 0, ...]
-        loss = nn.CrossEntropyLoss(reduction=self.reduction)
-        return loss(y_pred,y_true)*weight
+        loss = nn.CrossEntropyLoss(reduction='none')
+        return (loss(y_pred,y_true)*weight).mean()
         
 
 class DiceLoss(nn.Module):
@@ -231,10 +230,10 @@ def get_tp_fp_fn_tn(net_output, gt, axes=None, square=False, weight=None):
 
     if weight is None:
         weight = 1
-    tp = net_output * y_onehot*weight
-    fp = net_output * (1 - y_onehot)*weight
-    fn = (1 - net_output) * y_onehot*weight
-    tn = (1 - net_output) * (1 - y_onehot)*weight
+    tp = net_output * y_onehot * weight
+    fp = net_output * (1 - y_onehot) * weight
+    fn = (1 - net_output) * y_onehot * weight
+    tn = (1 - net_output) * (1 - y_onehot) * weight
 
     if square:
         tp = tp ** 2

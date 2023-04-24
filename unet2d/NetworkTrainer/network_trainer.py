@@ -25,7 +25,7 @@ class NetworkTrainer:
         self.criterion = CELoss()
 
     def set_GPU_device(self):
-        os.environ['CUDA_VISIBLE_DEVICES'] = ','.join(str(x) for x in self.opt.train['gpus'])
+        torch.cuda.set_device(self.opt.train['gpus'][0])
     
     def set_logging(self):
         self.logger, self.logger_results = setup_logging(self.opt)
@@ -56,7 +56,7 @@ class NetworkTrainer:
             self.net = load_pretrained(self.net, self.opt)
         else:
             self.net = UNet(3, 2, 2)
-        self.net = torch.nn.DataParallel(self.net)
+        self.net = torch.nn.DataParallel(self.net,device_ids=self.opt.train['gpus'])
         self.net = self.net.cuda()
 
     def set_loss(self):
