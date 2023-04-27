@@ -16,7 +16,7 @@ class CELoss(nn.Module):
         y_true = y_true.long()
         if self.weight is not None:
             self.weight = self.weight.to(y_pred.device)
-        if len(y_true.shape) == 5:
+        if len(y_true.shape) == 4:
             y_true = y_true[:, 0, ...]
         loss = nn.CrossEntropyLoss(weight=self.weight, reduction=self.reduction)
         return loss(y_pred, y_true)
@@ -59,9 +59,9 @@ class DiceLoss(nn.Module):
         return dice.mean()
 
 
-class IOUloss(nn.Module):
+class IOULoss(nn.Module):
     def __init__(self,smooth):
-        super(IOUloss,self).__init__()
+        super(IOULoss,self).__init__()
         self.smooth = smooth
 
     def forward(self,y_pred,y_true,weight=None):

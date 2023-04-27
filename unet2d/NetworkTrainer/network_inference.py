@@ -23,7 +23,7 @@ class NetworkInference:
         self.opt = opt
 
     def set_GPU_device(self):
-        os.environ['CUDA_VISIBLE_DEVICES'] = ','.join(str(x) for x in self.opt.test['gpus'])
+        torch.cuda.set_device(self.opt.train['gpus'][0])
 
     def set_network(self):
         if 'res' in self.opt.model['name']:
@@ -41,7 +41,7 @@ class NetworkInference:
             self.net = ViT_seg(config_vit, img_size=self.opt.model['input_size'][0], num_classes=config_vit.n_classes).cuda()
         else:
             self.net = UNet(3, 2, 2)
-        self.net = torch.nn.DataParallel(self.net)
+        self.net = torch.nn.DataParallel(self.net,device_ids=self.opt.train['gpus'])
         self.net = self.net.cuda()
 
         # ----- load trained model ----- #
