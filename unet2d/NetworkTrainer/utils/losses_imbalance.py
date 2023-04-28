@@ -71,8 +71,8 @@ class IOULoss(nn.Module):
             weight = weight.to(y_pred.device)
         tp, fp, fn, _ = get_tp_fp_fn_tn(y_pred, y_true, axis,weight=weight)
         inter = tp
-        union = 2 * tp + fp + fn
-        iou = 1 - (inter + self.smooth) / (union - inter + self.smooth)
+        union = tp + fp + fn
+        iou = 1 - (inter + self.smooth) / (union + self.smooth)
         return iou.mean()
 
 
