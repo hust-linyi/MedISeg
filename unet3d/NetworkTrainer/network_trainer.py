@@ -22,7 +22,7 @@ class NetworkTrainer:
         self.criterion = CELoss()
 
     def set_GPU_device(self):
-        os.environ['CUDA_VISIBLE_DEVICES'] = ','.join(str(x) for x in self.opt.train['gpus'])
+        torch.cuda.set_device(self.opt.train['gpus'][0])
     
     def set_logging(self):
         self.logger, self.logger_results = setup_logging(self.opt)
@@ -41,7 +41,7 @@ class NetworkTrainer:
         if self.opt.train['deeps']:
             self.net = UNet3D_ds(num_classes=self.opt.model['num_class'], input_channels=self.opt.model['in_c'], act='relu', norm=self.opt.train['norm'])
                 
-        self.net = torch.nn.DataParallel(self.net)
+        self.net = torch.nn.DataParallel(self.net, device_ids=self.opt.train['gpus'])
         self.net = self.net.cuda()
         if self.opt.model['pretrained']:
             # the pretrained weights from "Zhout et al., Models Genesis: Generic Autodidactic Models for 3D Medical Image Analysis"
