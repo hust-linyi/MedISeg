@@ -91,12 +91,12 @@ Download the trained weights from [Model Zoo](#Model-Zoo).
 
 Run the following command for 2DUNet:
 ```
-python 2DUNet/NetworkTrainer/test.py --test-model-path $YOUR_MODEL_PATH
+python unet2d/NetworkTrainer/test.py --test-model-path $YOUR_MODEL_PATH
 ```
 
 Run the following command for 3DUNet:
 ```
-python 3DUNet/NetworkTrainer/test.py --test-model-path $YOUR_MODEL_PATH
+python unet3d/NetworkTrainer/test.py --test-model-path $YOUR_MODEL_PATH
 ```
 
 ## Training & Evaluation
@@ -104,12 +104,12 @@ We provide the shell scripts for training and evaluation by 5-fold cross-validat
 
 Run the following command for 2DUNet:
 ```
-sh 2DUNet/config/baseline.sh
+sh unet2d/config/baseline.sh
 ```
 
 Run the following command for 3DUNet:
 ```
-sh 3DUNet/config/baseline.sh
+sh unet3d/config/baseline.sh
 ```
 And the commands train/test with various tricks are also provided in  */config/. For the details of the segmentation tricks, please refer to the paper.
 

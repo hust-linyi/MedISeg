@@ -16,11 +16,31 @@ class CELoss(nn.Module):
         y_true = y_true.long()
         if self.weight is not None:
             self.weight = self.weight.to(y_pred.device)
-        if len(y_true.shape) == 5:
+        if len(y_true.shape) == 4:
             y_true = y_true[:, 0, ...]
         loss = nn.CrossEntropyLoss(weight=self.weight, reduction=self.reduction)
         return loss(y_pred, y_true)
 
+
+class WCELoss(nn.Module):
+    """
+    This loss function is a pixel-wise cross entropy loss which means it assigns different
+    weight to different pixels. It allows us to pay more attention to hard pixels.
+    Reference: https://arxiv.org/abs/1911.11445
+
+    """
+    def __init__(self):
+        super().__init__()
+    
+    def forward(self,y_pred,y_true,weight=None):
+        y_true = y_true.long()
+        if weight is None:
+            weight = 1
+        if len(y_true.shape) == 4:
+            y_true = y_true[:, 0, ...]
+        loss = nn.CrossEntropyLoss(reduction='none')
+        return (loss(y_pred,y_true)*weight).mean()
+        
 
 class DiceLoss(nn.Module):
     def __init__(self, smooth=1e-8):
@@ -37,6 +57,23 @@ class DiceLoss(nn.Module):
         union = 2 * tp + fp + fn + self.smooth
         dice = 1 - (intersection / union)
         return dice.mean()
+
+
+class IOULoss(nn.Module):
+    def __init__(self,smooth):
+        super(IOULoss,self).__init__()
+        self.smooth = smooth
+
+    def forward(self,y_pred,y_true,weight=None):
+        axis = identify_axis(y_pred.shape)
+        y_pred = nn.Softmax(dim=1)(y_pred)
+        if weight is not None:
+            weight = weight.to(y_pred.device)
+        tp, fp, fn, _ = get_tp_fp_fn_tn(y_pred, y_true, axis,weight=weight)
+        inter = tp
+        union = tp + fp + fn
+        iou = 1 - (inter + self.smooth) / (union + self.smooth)
+        return iou.mean()
 
 
 # taken from https://github.com/JunMa11/SegLoss/blob/master/test/nnUNetV2/loss_functions/focal_loss.py
@@ -177,7 +214,7 @@ def to_onehot(y_pred, y_true):
 
 
 
-def get_tp_fp_fn_tn(net_output, gt, axes=None, square=False):
+def get_tp_fp_fn_tn(net_output, gt, axes=None, square=False, weight=None):
     """
     net_output must be (b, c, x, y(, z)))
     gt must be a label map (shape (b, 1, x, y(, z)) OR shape (b, x, y(, z))) or one hot encoding (b, c, x, y(, z))
@@ -191,10 +228,12 @@ def get_tp_fp_fn_tn(net_output, gt, axes=None, square=False):
 
     y_onehot = to_onehot(net_output, gt)
 
-    tp = net_output * y_onehot
-    fp = net_output * (1 - y_onehot)
-    fn = (1 - net_output) * y_onehot
-    tn = (1 - net_output) * (1 - y_onehot)
+    if weight is None:
+        weight = 1
+    tp = net_output * y_onehot * weight
+    fp = net_output * (1 - y_onehot) * weight
+    fn = (1 - net_output) * y_onehot * weight
+    tn = (1 - net_output) * (1 - y_onehot) * weight
 
     if square:
         tp = tp ** 2
