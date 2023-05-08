@@ -39,7 +39,7 @@ The surveyed medical image segmentation tricks and their latent relations
 ```
 
 ## News
-🌻 1.1.1 was released in 01/05/2023
+🌻 1.1.1 was released in 01/05/2023   
 🌻 1.1.0 was released in 01/09/2022
 
 - **Supported Backbones:**
