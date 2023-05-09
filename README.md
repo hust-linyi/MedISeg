@@ -33,7 +33,7 @@ The surveyed medical image segmentation tricks and their latent relations
 @article{zhang2022deep,
   title={Understanding the Tricks of Deep Learning in Medical Image Segmentation: Challenges and Future Directions},
   author={Zhang, Dong and Lin, Yi and Chen, Hao and Tian, Zhuotao and Yang, Xin and Tang, Jinhui and Cheng, Kwang Ting},
-  journal={arXiv},
+  journal={arXiv preprint arXiv:2209.10307},
   year={2022}
 }
 ```
